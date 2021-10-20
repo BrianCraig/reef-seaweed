@@ -3,10 +3,13 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { NetworkContextProvider } from './contexts/NetworkContext';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <NetworkContextProvider>
+      <App />
+    </NetworkContextProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

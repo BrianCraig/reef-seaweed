@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import { NetworkContext } from './contexts/NetworkContext';
 
 function App() {
+  const { connected } = useContext(NetworkContext);
   return (
     <div className="App">
       <header className="App-header">
@@ -10,14 +12,9 @@ function App() {
         <p>
           Edit <code>src/App.tsx</code> and save to reload.
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <p>
+          {connected ? "Connected" : "Not connected"}
+        </p>
       </header>
     </div>
   );
