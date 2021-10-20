@@ -4,11 +4,14 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { NetworkContextProvider } from './contexts/NetworkContext';
+import { AccountsContextProvider } from './contexts/AccountsContext';
 
 ReactDOM.render(
   <React.StrictMode>
     <NetworkContextProvider>
-      <App />
+      <AccountsContextProvider>
+        <App />
+      </AccountsContextProvider>
     </NetworkContextProvider>
   </React.StrictMode>,
   document.getElementById('root')
