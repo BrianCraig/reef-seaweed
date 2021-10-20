@@ -2795,20 +2795,7 @@
     tweetnacl "^1.0.3"
     xxhashjs "^0.2.2"
 
-"@polkadot/util@6.11.1", "@polkadot/util@^6.11.1":
-  version "6.11.1"
-  resolved "https://registry.yarnpkg.com/@polkadot/util/-/util-6.11.1.tgz#8950b038ba3e6ebfc0a7ff47feeb972e81b2626c"
-  integrity sha512-TEdCetr9rsdUfJZqQgX/vxLuV4XU8KMoKBMJdx+JuQ5EWemIdQkEtMBdL8k8udNGbgSNiYFA6rPppATeIxAScg==
-  dependencies:
-    "@babel/runtime" "^7.14.6"
-    "@polkadot/x-textdecoder" "6.11.1"
-    "@polkadot/x-textencoder" "6.11.1"
-    "@types/bn.js" "^4.11.6"
-    bn.js "^4.11.9"
-    camelcase "^5.3.1"
-    ip-regex "^4.3.0"
-
-"@polkadot/util@7.5.1", "@polkadot/util@^7.4.1", "@polkadot/util@^7.5.1":
+"@polkadot/util@6.11.1", "@polkadot/util@7.5.1", "@polkadot/util@^6.11.1", "@polkadot/util@^7.4.1", "@polkadot/util@^7.5.1":
   version "7.5.1"
   resolved "https://registry.yarnpkg.com/@polkadot/util/-/util-7.5.1.tgz#aa5db65bb543173afe9db6749475b40908d98b76"
   integrity sha512-6ltZyYZg/eUnyB5IBIcFpFFfhDL/ZW57Nt8CVcZmKqiKTL1kF60HmIvWky/agEV7fa00Ibd/zpANoQitEqNE0Q==
@@ -2892,14 +2879,6 @@
     "@babel/runtime" "^7.14.6"
     rxjs "^6.6.7"
 
-"@polkadot/x-textdecoder@6.11.1":
-  version "6.11.1"
-  resolved "https://registry.yarnpkg.com/@polkadot/x-textdecoder/-/x-textdecoder-6.11.1.tgz#6cc314645681cc4639085c03b65328671c7f182c"
-  integrity sha512-DI1Ym2lyDSS/UhnTT2e9WutukevFZ0WGpzj4eotuG2BTHN3e21uYtYTt24SlyRNMrWJf5+TkZItmZeqs1nwAfQ==
-  dependencies:
-    "@babel/runtime" "^7.14.6"
-    "@polkadot/x-global" "6.11.1"
-
 "@polkadot/x-textdecoder@7.5.1":
   version "7.5.1"
   resolved "https://registry.yarnpkg.com/@polkadot/x-textdecoder/-/x-textdecoder-7.5.1.tgz#cfed161b94edd1721a2ab6f9f9114eee3960e2e9"
@@ -2907,14 +2886,6 @@
   dependencies:
     "@babel/runtime" "^7.15.4"
     "@polkadot/x-global" "7.5.1"
-
-"@polkadot/x-textencoder@6.11.1":
-  version "6.11.1"
-  resolved "https://registry.yarnpkg.com/@polkadot/x-textencoder/-/x-textencoder-6.11.1.tgz#73e89da5b91954ae380042c19314c90472f59d9e"
-  integrity sha512-8ipjWdEuqFo+R4Nxsc3/WW9CSEiprX4XU91a37ZyRVC4e9R1bmvClrpXmRQLVcAQyhRvG8DKOOtWbz8xM+oXKg==
-  dependencies:
-    "@babel/runtime" "^7.14.6"
-    "@polkadot/x-global" "6.11.1"
 
 "@polkadot/x-textencoder@7.5.1":
   version "7.5.1"
@@ -2934,7 +2905,7 @@
     "@types/websocket" "^1.0.3"
     websocket "^1.0.34"
 
-"@reef-defi/api-derive@^0.1.7":
+"@reef-defi/api-derive@^0.1.7", "@reef-defi/api-derive@^0.1.7-0":
   version "0.1.8"
   resolved "https://registry.yarnpkg.com/@reef-defi/api-derive/-/api-derive-0.1.8.tgz#78b78f0fc4ea997836f38c7a71bbc04384a94940"
   integrity sha512-fCQraKePodJpzZqK8VSuF5drXU+W9LVlKUYWOeR9MpRfVslGwGDzciNDkPC57iggrXoTTvE6e5rZZysFVcG/kg==
@@ -2943,7 +2914,7 @@
     "@open-web3/orml-types" "^0.9.1"
     "@polkadot/api-derive" "^4.3.1"
 
-"@reef-defi/api@^0.1.7":
+"@reef-defi/api@^0.1.7", "@reef-defi/api@^0.1.7-0":
   version "0.1.8"
   resolved "https://registry.yarnpkg.com/@reef-defi/api/-/api-0.1.8.tgz#1eae96e40b86957d11b156aa9fb6c4a42c02fc41"
   integrity sha512-QGpvBYu3Ved3EC4473ufHmw1tDnmSJfiAcMQ+F9RCpbIHRbtK8iTTZxhvHMZYBD+xUbYUYbKsThtB0ehpxVxRw==
@@ -2953,7 +2924,7 @@
     "@polkadot/api" "^4.3.1"
     "@polkadot/rpc-core" "^4.3.1"
 
-"@reef-defi/evm-provider@^0.1.10":
+"@reef-defi/evm-provider@^0.1.9":
   version "0.1.10"
   resolved "https://registry.yarnpkg.com/@reef-defi/evm-provider/-/evm-provider-0.1.10.tgz#e22bba9725a460c433d3660d359ffd6f0efa82ad"
   integrity sha512-9rWIst7GlANWeaVLtNzcO0E4+PsTtjpKbKgaxEsQgECEDieOlO0o75hkEHseaZTUs6YLb+bvYvROjtA0CaAk9Q==
@@ -2969,14 +2940,14 @@
     blakejs "^1.1.0"
     ethers "5.0.24"
 
-"@reef-defi/type-definitions@^0.1.7":
+"@reef-defi/type-definitions@^0.1.7", "@reef-defi/type-definitions@^0.1.7-0":
   version "0.1.8"
   resolved "https://registry.yarnpkg.com/@reef-defi/type-definitions/-/type-definitions-0.1.8.tgz#00a8baa0b730e579773ea380ff6c97618f0ba769"
   integrity sha512-ras0FxjI0pibBVIF81QuDRbZvuiSDnKf9bLM3UHb20lC95TJsJvpOtBqYbERh146TVHOzEZyQ0h4qzDuOBcsKQ==
   dependencies:
     "@open-web3/orml-type-definitions" "^0.9.1"
 
-"@reef-defi/types@^0.1.7":
+"@reef-defi/types@^0.1.7", "@reef-defi/types@^0.1.7-0":
   version "0.1.8"
   resolved "https://registry.yarnpkg.com/@reef-defi/types/-/types-0.1.8.tgz#cf2bcbb57630716b109f1b44b240f3e2abfdb379"
   integrity sha512-1o2I5M/EVNKddr9pfNdfDtWc/EvMArr2rdg/ZHrzz5JIBs9GGu4Z2QsHiyNR14tbjTDnnIpdCLcs2Ggcz34h2Q==
