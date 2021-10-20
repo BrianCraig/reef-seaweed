@@ -33,6 +33,7 @@ export const reefNetworks: ReefNetworks = {
 
 interface NetworkContextInterface {
   connected: boolean,
+  provider?: Provider
 }
 
 export const NetworkContext = React.createContext<NetworkContextInterface>({
@@ -41,6 +42,8 @@ export const NetworkContext = React.createContext<NetworkContextInterface>({
 
 export const NetworkContextProvider: React.FunctionComponent = ({ children }) => {
   let [connected, setConnected] = useState<boolean>(false);
+  let [provider, setProvider] = useState<Provider | undefined>();
+
 
   useEffect(() => {
     const load = async (): Promise<void> => {
@@ -50,6 +53,7 @@ export const NetworkContextProvider: React.FunctionComponent = ({ children }) =>
       await newProvider.api.isReadyOrError;
       if (await newProvider.api.isReady) {
         setConnected(true);
+        setProvider(newProvider);
       }
     }
     load();
@@ -57,7 +61,8 @@ export const NetworkContextProvider: React.FunctionComponent = ({ children }) =>
 
   return <NetworkContext.Provider value={
     {
-      connected
+      connected,
+      provider
     }} >
     {children}
   </NetworkContext.Provider >
