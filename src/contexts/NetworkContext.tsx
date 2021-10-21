@@ -1,6 +1,5 @@
-import React, { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
 import { WsProvider } from '@polkadot/api';
 import { Provider } from '@reef-defi/evm-provider';
 
