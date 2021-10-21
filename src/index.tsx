@@ -4,12 +4,15 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { NetworkContextProvider } from './contexts/NetworkContext';
 import { AccountsContextProvider } from './contexts/AccountsContext';
+import { SignerStatusContextProvider } from './contexts/SignerStatusContext';
 
 ReactDOM.render(
   <React.StrictMode>
     <NetworkContextProvider>
       <AccountsContextProvider>
-        <App />
+        <SignerStatusContextProvider>
+          <App />
+        </SignerStatusContextProvider>
       </AccountsContextProvider>
     </NetworkContextProvider>
   </React.StrictMode>,

@@ -6,6 +6,7 @@ import { AccountsContext } from './contexts/AccountsContext';
 import { NetworkContext } from './contexts/NetworkContext';
 import "./app.css"
 import { ActualReefComponent } from './components/SmallComponents';
+import { SignerStatusContext } from './contexts/SignerStatusContext';
 
 const SignerDisplay: React.FunctionComponent<({ signer: AccountSigner })> = ({ signer }) => {
   return (
@@ -16,6 +17,7 @@ const SignerDisplay: React.FunctionComponent<({ signer: AccountSigner })> = ({ s
 function App() {
   const { connected } = useContext(NetworkContext);
   const { signers, selectedSigner, setSelectedSigner } = useContext(AccountsContext);
+  const { status } = useContext(SignerStatusContext)
   return (
     <Pane display="flex" flexDirection={"column"} height="100vh" width="100vw" alignItems="center">
       <Pane display="flex" alignItems="center" justifyContent={"flex-end"} padding={majorScale(1)} gap={majorScale(1)} background="tint1" width="100%">
@@ -29,13 +31,13 @@ function App() {
       <Pane display="flex" flexDirection={"column"} padding={majorScale(2)} width={1080} gap={majorScale(1)} flexGrow={0} flexShrink={1}>
         <Heading is="h2" size={700}>Account information</Heading>
         <Pane display={"flex"} alignItems="center" gap={majorScale(1)}>
-          <Text>Frozen: 500 REEF</Text>
-          <Button>Freeze</Button>
-          <Button>Unfreeze</Button>
+          <Text>Locked: {status?.lockedBalance.toHuman() || " "}</Text>
+          <Button>Lock</Button>
+          <Button>Unlock</Button>
         </Pane>
         <Pane display={"flex"} alignItems="center" gap={majorScale(1)}>
-          <Text>EVM Address: 0x203948203840293</Text>
-          <Button>Generate EVM</Button>
+          <Text>EVM Address: {selectedSigner?.evmAddress || " "}</Text>
+          {!selectedSigner?.isEvmClaimed && <Button>Generate EVM</Button>}
         </Pane>
         <Heading is="h2" size={700}>Tokens</Heading>
         <Pane display={"flex"} alignItems="center" gap={majorScale(1)}>
