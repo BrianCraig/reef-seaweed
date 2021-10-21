@@ -1,18 +1,12 @@
 import { useContext } from 'react';
-import { Button, Pane, Text, majorScale, Select, Alert, InlineAlert, Heading } from 'evergreen-ui'
+import { Button, Pane, Text, majorScale, Select, InlineAlert, Heading } from 'evergreen-ui'
 import { stringShorten } from '@polkadot/util';
-import { AccountSigner } from './utils/types';
 import { AccountsContext } from './contexts/AccountsContext';
 import { NetworkContext } from './contexts/NetworkContext';
 import "./app.css"
 import { ActualReefComponent } from './components/SmallComponents';
 import { SignerStatusContext } from './contexts/SignerStatusContext';
 
-const SignerDisplay: React.FunctionComponent<({ signer: AccountSigner })> = ({ signer }) => {
-  return (
-    <p>{signer.address} {signer.evmAddress} {signer.isEvmClaimed ? "claimed" : "not claimed"} {signer.name}</p>
-  )
-}
 
 function App() {
   const { connected } = useContext(NetworkContext);
