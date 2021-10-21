@@ -4,8 +4,7 @@ body {
 }
 
 .clipText {
-  -webkit-background-clip: text;
-  font-size: 1.4em;
-  font-weight: 700;
+  -webkit-background-clip: text !important;
+  font-size: 1.4em !important;
   -webkit-text-fill-color: transparent;
 }
