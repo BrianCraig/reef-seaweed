@@ -3,3 +3,6 @@ export const ensure = (condition: boolean, message: string): void => {
     throw new Error(message);
   }
 };
+
+export const sleep = (time: number) =>
+  new Promise((resolve) => setTimeout(resolve, time));

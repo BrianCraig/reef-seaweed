@@ -31,7 +31,7 @@ export interface InjectedAccountWithMeta {
   type?: KeypairType;
 }
 
-export interface ReefswapSigner {
+export interface AccountSigner {
   signer: Signer;
   name: string;
   address: string;

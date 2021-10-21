@@ -1,0 +1,10 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.clipText {
+  -webkit-background-clip: text;
+  font-size: 2em;
+  font-weight: 700;
+}
