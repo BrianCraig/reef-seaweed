@@ -6,6 +6,7 @@ import { NetworkContextProvider } from './contexts/NetworkContext';
 import { AccountsContextProvider } from './contexts/AccountsContext';
 import { SignerStatusContextProvider } from './contexts/SignerStatusContext';
 import { TxContextProvider } from './contexts/TxContext';
+import { ContractsContextProvider } from './contexts/ContractsContext';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -13,7 +14,9 @@ ReactDOM.render(
       <AccountsContextProvider>
         <SignerStatusContextProvider>
           <TxContextProvider>
-            <App />
+            <ContractsContextProvider>
+              <App />
+            </ContractsContextProvider>
           </TxContextProvider>
         </SignerStatusContextProvider>
       </AccountsContextProvider>

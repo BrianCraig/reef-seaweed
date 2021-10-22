@@ -8,11 +8,14 @@ import { SignerStatusContext } from './contexts/SignerStatusContext';
 import { TxContext } from './contexts/TxContext';
 import { ClaimEvmTx } from './utils/txFactorys';
 import { TxCallerComponent } from './components/TxCallerComponent';
+import { ContractsContext } from './contexts/ContractsContext';
+import { TokenInformationComponent } from './components/TokenInformationComponent';
 
 function App() {
   const { selectedSigner } = useContext(AccountsContext);
   const { status } = useContext(SignerStatusContext)
   const { setTx } = useContext(TxContext)
+  const { ERC20Contracts } = useContext(ContractsContext)
   let claimEvm = () => setTx({ args: {}, type: ClaimEvmTx })
   return (
     <Pane display="flex" flexDirection={"column"} height="100vh" width="100vw" alignItems="center">
@@ -32,16 +35,7 @@ function App() {
           {!selectedSigner?.isEvmClaimed && <Button onClick={claimEvm}>Generate EVM</Button>}
         </Pane>
         <Heading is="h2" size={700}>Tokens</Heading>
-        <Pane display={"flex"} alignItems="center" gap={majorScale(1)}>
-          <Text>Sea Weed Token: 193 SWT</Text>
-          <Button>Send</Button>
-          <Button>Approve</Button>
-        </Pane>
-        <Pane display={"flex"} alignItems="center" gap={majorScale(1)}>
-          <Text>Another Token: 0</Text>
-          <Button>Send</Button>
-          <Button>Approve</Button>
-        </Pane>
+        {Array.from(ERC20Contracts.entries()).map(([key, contract]) => <TokenInformationComponent key={key} contract={contract} />)}
       </Pane>
       <TxCallerComponent />
     </Pane>

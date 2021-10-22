@@ -3,6 +3,7 @@ import { Provider } from '@reef-defi/evm-provider';
 import { AccountSigner } from '../utils/types';
 import { ensure } from './utils';
 import BN from "bn.js"
+import { utils } from "ethers";
 
 export enum FieldType {
   Address,
@@ -45,7 +46,6 @@ export const ClaimEvmTx: TxType = {
   }
 }
 
-
 export const TransferTx: TxType = {
   title: "Transfer REEF",
   fields: [
@@ -73,5 +73,39 @@ export const TransferTx: TxType = {
           unsub();
         }
       });
+  }
+}
+
+export const SendERC20TX: TxType = {
+  title: "Send ERC20 Tokens",
+  fields: [
+    {
+      name: "address",
+      type: FieldType.Address
+    },
+    {
+      name: "quantity",
+      type: FieldType.Amount
+    }
+  ],
+  action: async ({ params: { quantity, address }, args: { contract } }) => {
+    await contract.transfer(address, utils.parseEther(quantity));
+  }
+}
+
+export const ApproveERC20TX: TxType = {
+  title: "Approve ERC20 Tokens Usage",
+  fields: [
+    {
+      name: "address",
+      type: FieldType.Address
+    },
+    {
+      name: "quantity",
+      type: FieldType.Amount
+    }
+  ],
+  action: async ({ params: { quantity, address }, args: { contract } }) => {
+    await contract.approve(address, utils.parseEther(quantity));
   }
 }
