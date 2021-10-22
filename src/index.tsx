@@ -5,13 +5,16 @@ import reportWebVitals from './reportWebVitals';
 import { NetworkContextProvider } from './contexts/NetworkContext';
 import { AccountsContextProvider } from './contexts/AccountsContext';
 import { SignerStatusContextProvider } from './contexts/SignerStatusContext';
+import { TxContextProvider } from './contexts/TxContext';
 
 ReactDOM.render(
   <React.StrictMode>
     <NetworkContextProvider>
       <AccountsContextProvider>
         <SignerStatusContextProvider>
-          <App />
+          <TxContextProvider>
+            <App />
+          </TxContextProvider>
         </SignerStatusContextProvider>
       </AccountsContextProvider>
     </NetworkContextProvider>
