@@ -1,9 +1,8 @@
 import { useContext } from 'react';
-import { Button, Pane, Text, majorScale, InlineAlert, Heading } from 'evergreen-ui'
+import { Button, Pane, Text, majorScale, Heading } from 'evergreen-ui'
 import { AccountsContext } from './contexts/AccountsContext';
 import "./app.css"
 import { ActualReefComponent, ConnectionStatusComponent, SelectAccountComponent, ReefManageComponent } from './components/SmallComponents';
-import { SignerStatusContext } from './contexts/SignerStatusContext';
 import { TxContext } from './contexts/TxContext';
 import { ClaimEvmTx } from './utils/txFactorys';
 import { TxCallerComponent } from './components/TxCallerComponent';
@@ -13,7 +12,6 @@ import { ContractDeployerComponent } from './components/ContractDeployerComponen
 
 function App() {
   const { selectedSigner } = useContext(AccountsContext);
-  const { status } = useContext(SignerStatusContext)
   const { setTx } = useContext(TxContext)
   const { ERC20Contracts } = useContext(ContractsContext)
   let claimEvm = () => setTx({ args: {}, type: ClaimEvmTx })
