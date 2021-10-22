@@ -143,3 +143,29 @@ export const ContractERC20TX: TxType = {
     console.log(await contract.deploy(name, symbol, utils.parseEther(balance)));
   }
 }
+
+export const StakeTX: TxType = {
+  title: "Stack",
+  fields: [
+    {
+      name: "quantity",
+      type: FieldType.Amount
+    }
+  ],
+  action: async ({ params: { quantity }, args: { contract } }) => {
+    console.log(await contract.enterStaking(utils.parseEther(quantity)));
+  }
+}
+
+export const WithdrawTX: TxType = {
+  title: "Withdraw",
+  fields: [
+    {
+      name: "quantity",
+      type: FieldType.Amount
+    }
+  ],
+  action: async ({ params: { quantity }, args: { contract } }) => {
+    console.log(await contract.leaveStaking(utils.parseEther(quantity)));
+  }
+}

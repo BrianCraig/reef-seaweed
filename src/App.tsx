@@ -9,6 +9,7 @@ import { TxCallerComponent } from './components/TxCallerComponent';
 import { ContractsContext } from './contexts/ContractsContext';
 import { TokenInformationComponent } from './components/TokenInformationComponent';
 import { ContractDeployerComponent } from './components/ContractDeployerComponent';
+import { StakingControlsComponent } from './components/StakingControlsComponent';
 
 function App() {
   const { selectedSigner } = useContext(AccountsContext);
@@ -36,6 +37,8 @@ function App() {
         {Array.from(ERC20Contracts.entries()).map(([key, contract]) => <TokenInformationComponent key={key} contract={contract} />)}
         <Heading is="h2" size={700}>Contract Deployer</Heading>
         <ContractDeployerComponent />
+        <Heading is="h2" size={700}>Stacking Controls</Heading>
+        <StakingControlsComponent />
       </Pane>
       <TxCallerComponent />
     </Pane>
