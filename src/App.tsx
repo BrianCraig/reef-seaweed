@@ -1,7 +1,6 @@
 import { useContext } from 'react';
 import { Button, Pane, Text, majorScale, InlineAlert, Heading } from 'evergreen-ui'
 import { AccountsContext } from './contexts/AccountsContext';
-import { NetworkContext } from './contexts/NetworkContext';
 import "./app.css"
 import { ActualReefComponent, ConnectionStatusComponent, SelectAccountComponent, ReefManageComponent } from './components/SmallComponents';
 import { SignerStatusContext } from './contexts/SignerStatusContext';
@@ -10,6 +9,7 @@ import { ClaimEvmTx } from './utils/txFactorys';
 import { TxCallerComponent } from './components/TxCallerComponent';
 import { ContractsContext } from './contexts/ContractsContext';
 import { TokenInformationComponent } from './components/TokenInformationComponent';
+import { ContractDeployerComponent } from './components/ContractDeployerComponent';
 
 function App() {
   const { selectedSigner } = useContext(AccountsContext);
@@ -36,6 +36,8 @@ function App() {
         </Pane>
         <Heading is="h2" size={700}>Tokens</Heading>
         {Array.from(ERC20Contracts.entries()).map(([key, contract]) => <TokenInformationComponent key={key} contract={contract} />)}
+        <Heading is="h2" size={700}>Contract Deployer</Heading>
+        <ContractDeployerComponent />
       </Pane>
       <TxCallerComponent />
     </Pane>

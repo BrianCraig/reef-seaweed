@@ -10,6 +10,11 @@ interface ContractsContextInterface {
   ERC20Contracts: Map<string, Contract>
 }
 
+const defaultContracts = [
+  "0xbc632D46e589d6105B156F073f029FDF56Fe694A",
+  "0x4b9283D177b45ffd28F3Bfc66Df7F9C59b6D7701"
+]
+
 export const ContractsContext = React.createContext<ContractsContextInterface>({
   ERC20Contracts: new Map()
 });
@@ -20,7 +25,7 @@ export const ContractsContextProvider: React.FunctionComponent = ({ children }) 
   useEffect(() => {
     const load = async (): Promise<void> => {
       if (contractsList.length < 1) {
-        setContractsList(["0xbc632D46e589d6105B156F073f029FDF56Fe694A"])
+        setContractsList(defaultContracts);
       }
     }
     load()

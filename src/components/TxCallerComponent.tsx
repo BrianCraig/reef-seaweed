@@ -28,6 +28,7 @@ export const TxCallerComponent: React.FunctionComponent = () => {
           value={values[field.name] || ""}
         />
       )}
+      {null}
     </CornerDialog>
   )
 }

@@ -109,3 +109,37 @@ export const ApproveERC20TX: TxType = {
     await contract.approve(address, utils.parseEther(quantity));
   }
 }
+
+export const ContractStackingMockTX: TxType = {
+  title: "Deploy Mock Stacking Contract",
+  fields: [
+    {
+      name: "address",
+      type: FieldType.Address
+    }
+  ],
+  action: async ({ params: { address }, args: { contract } }) => {
+    console.log(await contract.deploy(address));
+  }
+}
+
+export const ContractERC20TX: TxType = {
+  title: "Deploy ERC20 Contract",
+  fields: [
+    {
+      name: "name",
+      type: FieldType.Address
+    },
+    {
+      name: "symbol",
+      type: FieldType.Address
+    },
+    {
+      name: "balance",
+      type: FieldType.Address
+    }
+  ],
+  action: async ({ params: { name, symbol, balance }, args: { contract } }) => {
+    console.log(await contract.deploy(name, symbol, utils.parseEther(balance)));
+  }
+}

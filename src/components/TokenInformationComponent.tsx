@@ -33,5 +33,6 @@ export const TokenInformationComponent: React.FunctionComponent<{ contract: Cont
     <Text>{name.value}: {bstr} {symbol.value}</Text>
     <Button onClick={send}>Send</Button>
     <Button onClick={approve}>Approve</Button>
+    <Text>{contract.address}</Text>
   </Pane>
 }
