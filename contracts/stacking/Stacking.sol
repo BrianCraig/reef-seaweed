@@ -36,7 +36,7 @@ contract Staking {
 
     function leaveStaking(uint256 _amount) public {
         require(staking[msg.sender] >= _amount, "Where's your stack boy");
-        token.transferFrom(address(this), msg.sender, _amount);
+        token.transfer(msg.sender, _amount);
         staking[msg.sender] -= _amount;
         emit Withdraw(msg.sender, _amount);
     }
