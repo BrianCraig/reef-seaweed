@@ -9,6 +9,7 @@ import { AccountsContext } from "../contexts/AccountsContext";
 import { ContractsContext } from "../contexts/ContractsContext";
 import { TxContext } from "../contexts/TxContext";
 import { ClaimEvmTx } from "../utils/txFactorys";
+import { IDOListcomponent } from "../components/IDOListComponent";
 
 
 
@@ -35,6 +36,8 @@ export const ToolsPage: FunctionComponent = () => {
     <StakingControlsComponent />
     <Heading is="h2" size={700}>Contract addresses</Heading>
     <ContractListEditorComponent />
+    <Heading is="h2" size={700}>IDO list</Heading>
+    <IDOListcomponent />
   </>
 
 }

@@ -1,14 +1,13 @@
-import React from 'react';
 import { Pane, Text, majorScale } from 'evergreen-ui'
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import "./app.css"
 import { ActualReefComponent, ConnectionStatusComponent, SelectAccountComponent } from './components/SmallComponents';
 import { TxCallerComponent } from './components/TxCallerComponent';
 import { ToolsPage } from './pages/ToolsPage';
+import { IDOShowPage } from './pages/IDOShowPage';
 
+import "./app.css"
 
 export const Layout = () => {
-
   return (
     <Router>
       <Pane display="flex" flexDirection={"column"} height="100vh" width="100vw" alignItems="center">
@@ -22,6 +21,9 @@ export const Layout = () => {
           <Switch>
             <Route exact path="/">
               <ToolsPage />
+            </Route>
+            <Route path="/ido/:tx">
+              <IDOShowPage />
             </Route>
           </Switch>
         </Pane>
