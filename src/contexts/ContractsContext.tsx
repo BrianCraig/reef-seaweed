@@ -1,15 +1,19 @@
 
-import React, { useContext, useEffect, useMemo } from "react";
+import React, { useContext, useMemo } from "react";
 import { useLocalStorage } from "../utils/hooks";
 import { Contract } from "ethers"
 
 import ERC20Abi from "../abis/erc20.abi.json"
 import { AccountsContext } from "./AccountsContext";
+import { IIDO } from "../abis/contracts";
 
 interface ContractsContextInterface {
   contractsList: string[]
   setContractsList: React.Dispatch<React.SetStateAction<string[]>>
   ERC20Contracts: Map<string, Contract>
+  IDOList: string[]
+  setIDOList: React.Dispatch<React.SetStateAction<string[]>>
+  IDOContracts: Map<string, Contract>
 }
 
 const defaultContracts = [
@@ -20,13 +24,16 @@ const defaultContracts = [
 export const ContractsContext = React.createContext<ContractsContextInterface>({
   contractsList: defaultContracts,
   setContractsList: () => { },
-  ERC20Contracts: new Map()
+  ERC20Contracts: new Map(),
+  IDOList: [],
+  setIDOList: () => { },
+  IDOContracts: new Map()
 });
 
 export const ContractsContextProvider: React.FunctionComponent = ({ children }) => {
   const { selectedSigner } = useContext(AccountsContext)
   const [contractsList, setContractsList] = useLocalStorage<string[]>("ERC20Contracts", defaultContracts)
-
+  const [IDOList, setIDOList] = useLocalStorage<string[]>("IDOContracts", [])
   let ERC20Contracts = useMemo(
     () => {
       let map = new Map<string, Contract>()
@@ -35,11 +42,23 @@ export const ContractsContextProvider: React.FunctionComponent = ({ children }) 
     },
     [contractsList, selectedSigner]
   )
+
+  let IDOContracts = useMemo(
+    () => {
+      let map = new Map<string, Contract>()
+      IDOList.forEach(addr => map.set(addr, IIDO(addr).connect(selectedSigner?.signer as any)))
+      return map
+    },
+    [IDOList, selectedSigner]
+  )
   return <ContractsContext.Provider value={
     {
       contractsList,
       setContractsList,
-      ERC20Contracts
+      ERC20Contracts,
+      IDOList,
+      setIDOList,
+      IDOContracts
     }} >
     {children}
   </ContractsContext.Provider >
