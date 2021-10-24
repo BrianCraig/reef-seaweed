@@ -10,7 +10,6 @@ import stckMockSol from "../abis/stacking.mock.solidity.abi.json";
 let contract = new Contract('0x4B148C4588560a26cd440aa55C8A88A5e88854e6', stckMockSol.abi);
 
 export const StakingControlsComponent: React.FunctionComponent = () => {
-  console.log(contract)
   const { setTx } = useContext(TxContext)
   const { selectedSigner } = useContext(AccountsContext)
   let stack = () => setTx({ args: { contract: contract.connect(selectedSigner?.signer as any) }, type: StakeTX })

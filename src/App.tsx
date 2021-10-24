@@ -10,6 +10,7 @@ import { ContractsContext } from './contexts/ContractsContext';
 import { TokenInformationComponent } from './components/TokenInformationComponent';
 import { ContractDeployerComponent } from './components/ContractDeployerComponent';
 import { StakingControlsComponent } from './components/StakingControlsComponent';
+import { ContractListEditorComponent } from './components/ListEditorComponent';
 
 function App() {
   const { selectedSigner } = useContext(AccountsContext);
@@ -39,6 +40,8 @@ function App() {
         <ContractDeployerComponent />
         <Heading is="h2" size={700}>Stacking Controls</Heading>
         <StakingControlsComponent />
+        <Heading is="h2" size={700}>Contract addresses</Heading>
+        <ContractListEditorComponent />
       </Pane>
       <TxCallerComponent />
     </Pane>

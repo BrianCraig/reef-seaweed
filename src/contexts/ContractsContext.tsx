@@ -7,6 +7,8 @@ import ERC20Abi from "../abis/erc20.abi.json"
 import { AccountsContext } from "./AccountsContext";
 
 interface ContractsContextInterface {
+  contractsList: string[]
+  setContractsList: React.Dispatch<React.SetStateAction<string[]>>
   ERC20Contracts: Map<string, Contract>
 }
 
@@ -16,20 +18,14 @@ const defaultContracts = [
 ]
 
 export const ContractsContext = React.createContext<ContractsContextInterface>({
+  contractsList: defaultContracts,
+  setContractsList: () => { },
   ERC20Contracts: new Map()
 });
 
 export const ContractsContextProvider: React.FunctionComponent = ({ children }) => {
   const { selectedSigner } = useContext(AccountsContext)
-  const [contractsList, setContractsList] = useLocalStorage<string[]>("ERC20Contracts", [])
-  useEffect(() => {
-    const load = async (): Promise<void> => {
-      if (contractsList.length < 1) {
-        setContractsList(defaultContracts);
-      }
-    }
-    load()
-  }, [contractsList, setContractsList])
+  const [contractsList, setContractsList] = useLocalStorage<string[]>("ERC20Contracts", defaultContracts)
 
   let ERC20Contracts = useMemo(
     () => {
@@ -41,6 +37,8 @@ export const ContractsContextProvider: React.FunctionComponent = ({ children }) 
   )
   return <ContractsContext.Provider value={
     {
+      contractsList,
+      setContractsList,
       ERC20Contracts
     }} >
     {children}
