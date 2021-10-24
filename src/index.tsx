@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import { Layout } from './App';
 import reportWebVitals from './reportWebVitals';
 import { NetworkContextProvider } from './contexts/NetworkContext';
 import { AccountsContextProvider } from './contexts/AccountsContext';
@@ -15,7 +15,7 @@ ReactDOM.render(
         <SignerStatusContextProvider>
           <TxContextProvider>
             <ContractsContextProvider>
-              <App />
+              <Layout />
             </ContractsContextProvider>
           </TxContextProvider>
         </SignerStatusContextProvider>
