@@ -144,6 +144,43 @@ export const ContractERC20TX: TxType = {
   }
 }
 
+/*
+  address tokenAddress,
+  uint32 multiplier,
+  uint32 divider,
+  uint256 ipfs,
+  uint256 startTimestamp,
+  uint256 endTimestamp,
+  uint256 maxSoldBaseAmount
+*/
+
+export const ContractBasicIDOTX: TxType = {
+  title: "Deploy Basic IDO Contract",
+  fields: [
+    {
+      name: "tokenAddress",
+      type: FieldType.Address
+    },
+    {
+      name: "start",
+      type: FieldType.Amount
+    },
+    {
+      name: "end",
+      type: FieldType.Amount
+    },
+    {
+      name: "baseAmount",
+      type: FieldType.Amount
+    }
+  ],
+  action: async ({ params: { tokenAddress, start, end, baseAmount }, args: { contract, onSuccess } }) => {
+    let timestampNow = Math.floor(Date.now() / 1000);
+    let { address } = await contract.deploy(tokenAddress, start, "1", "1", timestampNow + start, timestampNow + end, baseAmount);
+    onSuccess(address);
+  }
+}
+
 export const StakeTX: TxType = {
   title: "Stack",
   fields: [
