@@ -7,20 +7,24 @@ import { AccountsContextProvider } from './contexts/AccountsContext';
 import { SignerStatusContextProvider } from './contexts/SignerStatusContext';
 import { TxContextProvider } from './contexts/TxContext';
 import { ContractsContextProvider } from './contexts/ContractsContext';
+import { ChakraProvider } from '@chakra-ui/react';
+import { appTheme } from './utils/chakraTheme';
 
 ReactDOM.render(
   <React.StrictMode>
-    <NetworkContextProvider>
-      <AccountsContextProvider>
-        <SignerStatusContextProvider>
-          <TxContextProvider>
-            <ContractsContextProvider>
-              <Layout />
-            </ContractsContextProvider>
-          </TxContextProvider>
-        </SignerStatusContextProvider>
-      </AccountsContextProvider>
-    </NetworkContextProvider>
+    <ChakraProvider theme={appTheme}>
+      <NetworkContextProvider>
+        <AccountsContextProvider>
+          <SignerStatusContextProvider>
+            <TxContextProvider>
+              <ContractsContextProvider>
+                <Layout />
+              </ContractsContextProvider>
+            </TxContextProvider>
+          </SignerStatusContextProvider>
+        </AccountsContextProvider>
+      </NetworkContextProvider>
+    </ChakraProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
