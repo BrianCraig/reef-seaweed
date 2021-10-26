@@ -3,6 +3,7 @@ import { BN } from '@polkadot/util';
 import { IIDO } from '../abis/contracts';
 import { useAsync } from '../utils/hooks';
 import { AccountsContext } from './AccountsContext';
+import { TokenContextProvider } from './TokenContext';
 
 export enum IDOStatus {
   Pending,
@@ -43,7 +44,7 @@ export const IDOContextProvider: React.FunctionComponent<{ address: string }> = 
   const [update, setUpdate] = useState<number>(0);
   const { selectedSigner } = useContext(AccountsContext);
   let contract = selectedSigner ? IIDO(address).connect(selectedSigner.signer as any) : undefined;
-  const { execute: informationExecute, status: informationStatus, value: information } = useAsync(() => contract!.information(), false);
+  const { execute: informationExecute, status: informationStatus, value: information } = useAsync<any>(() => contract!.information(), false);
 
   useEffect(() => {
     if (selectedSigner && informationStatus === "idle") {
@@ -65,7 +66,7 @@ export const IDOContextProvider: React.FunctionComponent<{ address: string }> = 
     status
   }), [information, status])
 
-  return <IDOContext.Provider value={value} >
-    {children}
+  return <IDOContext.Provider value={value}>
+    {information?.tokenAddress ? <TokenContextProvider address={information.tokenAddress} children={children} /> : children}
   </IDOContext.Provider >
 }

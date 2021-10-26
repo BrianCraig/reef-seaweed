@@ -60,6 +60,7 @@ export const useAsync = <T, E = string>(
         setStatus("success");
       })
       .catch((error: any) => {
+        console.log(error);
         setError(error);
         setStatus("error");
       });

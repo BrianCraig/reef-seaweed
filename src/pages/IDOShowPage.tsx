@@ -1,8 +1,9 @@
-import { Heading, Text, Stack, Tag, TagLabel, TagRightIcon, Box, Button, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Tab, TabList, TabPanel, TabPanels, Tabs, Stat, StatHelpText, StatLabel, StatNumber } from "@chakra-ui/react";
-import { ArrowRightIcon, CheckIcon, InfoOutlineIcon } from "@chakra-ui/icons";
+import { Heading, Text, Stack, Tag, TagLabel, TagRightIcon, Box, Button, Stat, StatLabel, StatNumber, Input, InputGroup, InputLeftAddon } from "@chakra-ui/react";
+import { CheckIcon, InfoOutlineIcon } from "@chakra-ui/icons";
 import { FunctionComponent, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { IDOContext, IDOContextProvider, IDOStatus } from "../contexts/IDOContext";
+import { TokenContext } from "../contexts/TokenContext";
 
 let lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis rutrum magna ac faucibus interdum. Ut mollis diam quis urna pretium, at facilisis mauris lobortis. Nam ultrices iaculis commodo. Phasellus non augue dui. Aenean dictum sem sed diam commodo ultricies. Praesent elit lorem, tristique a aliquam dictum, tristique fringilla tortor. Sed mollis sapien quis dignissim malesuada. Cras vulputate felis ipsum, non aliquam nunc pulvinar ut. Duis ac ultrices sapien, et tristique ipsum. Integer odio massa, tempor in lobortis eget, ultrices pretium erat. Donec eu eros luctus, mollis purus sed, finibus neque. In ultrices, arcu ut posuere vestibulum, urna lectus pellentesque est, vel scelerisque justo dui in elit. Vivamus pulvinar, justo vel elementum gravida, elit mauris pharetra ipsum, in finibus eros massa et sapien. Aenean bibendum condimentum est at efficitur."
 
@@ -17,9 +18,10 @@ export const IDOShowPage: FunctionComponent = () => {
 
 const IDOInformation: FunctionComponent = () => {
   const { information, status } = useContext(IDOContext);
+  const { symbol, name } = useContext(TokenContext);
   return <Stack spacing={4}>
     <Stack direction={"row"} spacing={2}>
-      <Heading>XRand Online Game</Heading>
+      <Heading>XRand Online Game({name})</Heading>
       <Text>{status !== undefined && IDOStatus[status]}</Text>
       <Tag alignSelf={"flex-start"} size="sm" variant="outline" colorScheme="blue">
         <TagLabel>Can Buy</TagLabel>
@@ -40,24 +42,23 @@ const IDOInformation: FunctionComponent = () => {
         </Stack>
         <Stat alignSelf={"center"}>
           <StatLabel>Bought</StatLabel>
-          <StatNumber>0 XCR</StatNumber>
+          <StatNumber>0 {symbol}</StatNumber>
         </Stat>
         <Stack direction={"row"} alignItems={"center"}>
-          <NumberInput defaultValue={15} precision={3} step={1}>
-            <NumberInputField />
-            <NumberInputStepper>
-              <NumberIncrementStepper />
-              <NumberDecrementStepper />
-            </NumberInputStepper>
-          </NumberInput>
-          <Text flexShrink={0}>REEF <ArrowRightIcon /> XCM</Text>
-          <NumberInput defaultValue={15} precision={3} step={1}>
-            <NumberInputField />
-            <NumberInputStepper>
-              <NumberIncrementStepper />
-              <NumberDecrementStepper />
-            </NumberInputStepper>
-          </NumberInput>
+          <InputGroup>
+            <InputLeftAddon children={"REEF"} />
+            <Input
+              type={"number"}
+              placeholder={"REEF"}
+            />
+          </InputGroup>
+          <InputGroup>
+            <InputLeftAddon children={symbol} />
+            <Input
+              type={"number"}
+              placeholder={symbol}
+            />
+          </InputGroup>
         </Stack>
         <Button bg={"reef.lighter"}>Buy</Button>
         <Button bg={"reef.lighter"} disabled>Opens in 53s</Button>
