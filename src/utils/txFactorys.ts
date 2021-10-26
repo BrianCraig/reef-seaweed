@@ -176,7 +176,7 @@ export const ContractBasicIDOTX: TxType = {
   ],
   action: async ({ params: { tokenAddress, start, end, baseAmount }, args: { contract, onSuccess } }) => {
     let timestampNow = Math.floor(Date.now() / 1000);
-    let { address } = await contract.deploy(tokenAddress, start, "1", "1", timestampNow + parseInt(start), timestampNow + parseInt(end), baseAmount);
+    let { address } = await contract.deploy(tokenAddress, start, "1", "1", timestampNow + parseInt(start), timestampNow + parseInt(end), utils.parseEther(baseAmount));
     onSuccess(address);
   }
 }
@@ -204,5 +204,13 @@ export const WithdrawTX: TxType = {
   ],
   action: async ({ params: { quantity }, args: { contract } }) => {
     console.log(await contract.leaveStaking(utils.parseEther(quantity)));
+  }
+}
+
+export const FulfillTX: TxType = {
+  title: "FulFill IDO",
+  fields: [],
+  action: async ({ args: { contract } }) => {
+    console.log(await contract.fulfill());
   }
 }
