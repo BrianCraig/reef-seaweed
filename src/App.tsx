@@ -1,4 +1,4 @@
-import { Pane, Text, majorScale } from 'evergreen-ui'
+import { Box, Stack } from "@chakra-ui/react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { ActualReefComponent, ConnectionStatusComponent, SelectAccountComponent } from './components/SmallComponents';
 import { TxCallerComponent } from './components/TxCallerComponent';
@@ -10,25 +10,26 @@ import "./app.css"
 export const Layout = () => {
   return (
     <Router>
-      <Pane display="flex" flexDirection={"column"} height="100vh" width="100vw" alignItems="center">
-        <Pane display="flex" alignItems="center" justifyContent={"flex-end"} padding={majorScale(1)} gap={majorScale(1)} background="tint1" width="100%">
-          <Text flexGrow={10} background="linear-gradient(to bottom, #121FCF 0%, #00a911 65%)" className={"clipText"}>SeaWeed</Text>
+      <Stack height="100vh" width="100vw" position={"absolute"} top={0} left={0} bottom={0} right={0} gap={0}>
+        <Stack direction={"row"} alignItems="center" justifyContent={"flex-end"} padding={2} gap={2} bg="blackAlpha.200" width="100%" flexGrow={0} flexShrink={0}>
           <ActualReefComponent />
           <SelectAccountComponent />
           <ConnectionStatusComponent />
-        </Pane>
-        <Pane display="flex" flexDirection={"column"} padding={majorScale(2)} width={1080} gap={majorScale(1)} flexGrow={0} flexShrink={1}>
-          <Switch>
-            <Route exact path="/">
-              <ToolsPage />
-            </Route>
-            <Route path="/ido/:tx">
-              <IDOShowPage />
-            </Route>
-          </Switch>
-        </Pane>
+        </Stack>
+        <Box flexGrow={1} flexShrink={0} height={"calc(100vh - 56px)"} overflowY={"auto"} >
+          <Box maxWidth={1200} overflowY={"auto"} marginX={"auto"}>
+            <Switch>
+              <Route exact path="/">
+                <ToolsPage />
+              </Route>
+              <Route path="/ido/:tx">
+                <IDOShowPage />
+              </Route>
+            </Switch>
+          </Box>
+        </Box>
         <TxCallerComponent />
-      </Pane>
-    </Router>
+      </Stack>
+    </Router >
   );
 }

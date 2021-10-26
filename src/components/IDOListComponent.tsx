@@ -10,7 +10,7 @@ export const IDOListcomponent: FunctionComponent = () => {
   const contractList = Array.from(IDOContracts.entries())
   let { push } = useHistory();
 
-  return <Pane display={"flex"} alignItems="center" gap={majorScale(1)}>
+  return <Pane display={"flex"} alignItems="center" gap={majorScale(1)} flexWrap={"wrap"}>
     {contractList.map(([address]) => <Button key={address} onClick={() => { push(`/ido/${address}`) }}>{address}</Button>)}
   </Pane>
 }
