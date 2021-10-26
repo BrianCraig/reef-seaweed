@@ -1,7 +1,8 @@
 import { Heading, Text, Stack, Tag, TagLabel, TagRightIcon, Box, Button, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Tab, TabList, TabPanel, TabPanels, Tabs, Stat, StatHelpText, StatLabel, StatNumber } from "@chakra-ui/react";
 import { ArrowRightIcon, CheckIcon, InfoOutlineIcon } from "@chakra-ui/icons";
-import { FunctionComponent } from "react";
+import { FunctionComponent, useContext } from "react";
 import { useParams } from "react-router-dom";
+import { IDOContext, IDOContextProvider, IDOStatus } from "../contexts/IDOContext";
 
 let lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis rutrum magna ac faucibus interdum. Ut mollis diam quis urna pretium, at facilisis mauris lobortis. Nam ultrices iaculis commodo. Phasellus non augue dui. Aenean dictum sem sed diam commodo ultricies. Praesent elit lorem, tristique a aliquam dictum, tristique fringilla tortor. Sed mollis sapien quis dignissim malesuada. Cras vulputate felis ipsum, non aliquam nunc pulvinar ut. Duis ac ultrices sapien, et tristique ipsum. Integer odio massa, tempor in lobortis eget, ultrices pretium erat. Donec eu eros luctus, mollis purus sed, finibus neque. In ultrices, arcu ut posuere vestibulum, urna lectus pellentesque est, vel scelerisque justo dui in elit. Vivamus pulvinar, justo vel elementum gravida, elit mauris pharetra ipsum, in finibus eros massa et sapien. Aenean bibendum condimentum est at efficitur."
 
@@ -9,10 +10,17 @@ let maecenas = "Maecenas dignissim, felis non ultrices iaculis, mi mauris finibu
 
 export const IDOShowPage: FunctionComponent = () => {
   let { tx } = useParams<{ tx: string }>();
+  return <IDOContextProvider address={tx}>
+    <IDOInformation />
+  </IDOContextProvider>
+}
+
+const IDOInformation: FunctionComponent = () => {
+  const { information, status } = useContext(IDOContext);
   return <Stack spacing={4}>
     <Stack direction={"row"} spacing={2}>
       <Heading>XRand Online Game</Heading>
-      <Text>Opening in 3 hours</Text>
+      <Text>{status !== undefined && IDOStatus[status]}</Text>
       <Tag alignSelf={"flex-start"} size="sm" variant="outline" colorScheme="blue">
         <TagLabel>Can Buy</TagLabel>
         <TagRightIcon as={CheckIcon} />
@@ -22,7 +30,6 @@ export const IDOShowPage: FunctionComponent = () => {
         <TagRightIcon as={InfoOutlineIcon} />
       </Tag>
     </Stack>
-    <Text>{tx}</Text>
     <Text>{lorem}</Text>
     <Text>{maecenas}</Text>
     <Box borderRadius="md" borderColor={"reef.dark"} borderWidth={"2px"} w={480} alignSelf={"center"} display={"flex"} flexDirection={"column"} padding={2} boxSizing={"border-box"}>

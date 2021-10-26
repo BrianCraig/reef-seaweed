@@ -176,7 +176,7 @@ export const ContractBasicIDOTX: TxType = {
   ],
   action: async ({ params: { tokenAddress, start, end, baseAmount }, args: { contract, onSuccess } }) => {
     let timestampNow = Math.floor(Date.now() / 1000);
-    let { address } = await contract.deploy(tokenAddress, start, "1", "1", timestampNow + start, timestampNow + end, baseAmount);
+    let { address } = await contract.deploy(tokenAddress, start, "1", "1", timestampNow + parseInt(start), timestampNow + parseInt(end), baseAmount);
     onSuccess(address);
   }
 }

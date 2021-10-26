@@ -27,6 +27,11 @@ contract BasicIdo is IIDO {
         uint256 endTimestamp,
         uint256 maxSoldBaseAmount
     ) {
+        require(block.timestamp < endTimestamp, "would already ended");
+        require(
+            startTimestamp < endTimestamp,
+            "start time should be before end time"
+        );
         _tokenAddress = IERC20(tokenAddress);
         _multiplier = multiplier;
         _divider = divider;
@@ -51,8 +56,6 @@ contract BasicIdo is IIDO {
             bool fulfilled
         )
     {
-        require(_endTimestamp < block.timestamp);
-        require(_startTimestamp < _endTimestamp);
         return (
             address(_tokenAddress),
             _multiplier,

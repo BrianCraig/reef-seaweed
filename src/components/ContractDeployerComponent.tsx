@@ -16,11 +16,11 @@ const stckMockSolContract = ContractFactory.fromSolidity(stckMockSol);
 export const ContractDeployerComponent: React.FunctionComponent = () => {
   const { setTx } = useContext(TxContext)
   const { selectedSigner } = useContext(AccountsContext)
-  const { setContractsList } = useContext(ContractsContext)
+  const { setIDOList } = useContext(ContractsContext)
 
   let erc20 = () => setTx({ args: { contract: erc20SolContract.connect(selectedSigner?.signer as any) }, type: ContractERC20TX })
   let stkMock = () => setTx({ args: { contract: stckMockSolContract.connect(selectedSigner?.signer as any) }, type: ContractStackingMockTX })
-  let onSuccess = (address: string) => { setContractsList(list => [...list, address]) };
+  let onSuccess = (address: string) => { setIDOList(list => [...list, address]) };
   let basicIDO = () => setTx({ args: { contract: BasicIDO.connect(selectedSigner?.signer as any), onSuccess }, type: ContractBasicIDOTX })
 
   return <Pane display={"flex"} alignItems="center" gap={majorScale(1)}>
