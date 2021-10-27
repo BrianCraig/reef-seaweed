@@ -1,3 +1,4 @@
+import { BN } from "@polkadot/util";
 import { useState, useCallback } from "react";
 
 export const ensure = (condition: boolean, message: string): void => {
@@ -36,3 +37,4 @@ export const ratioToMulDiv = (n: number): [number, number] => {
   return [integral * denominator + numerator, denominator]
 }
 
+export const timestampToDate = (timestamp: BN) => new Date(timestamp.toNumber() * 1000)

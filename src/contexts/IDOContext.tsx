@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { BN } from '@polkadot/util';
 import { IIDO } from '../abis/contracts';
-import { useAsync } from '../utils/hooks';
+import { useAsync, useIntervalUpdate } from '../utils/hooks';
 import { AccountsContext } from './AccountsContext';
 import { TokenContextProvider } from './TokenContext';
 
@@ -11,7 +11,7 @@ export enum IDOStatus {
   Ended
 }
 
-interface InformationInterface {
+export interface InformationInterface {
   tokenAddress: string
   multiplier: number
   divider: number
@@ -40,8 +40,6 @@ export const IDOContext = React.createContext<IDOContextInterface>({
 });
 
 export const IDOContextProvider: React.FunctionComponent<{ address: string }> = ({ children, address }) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [update, setUpdate] = useState<number>(0);
   const { selectedSigner } = useContext(AccountsContext);
   let contract = selectedSigner ? IIDO(address).connect(selectedSigner.signer as any) : undefined;
   const { execute: informationExecute, status: informationStatus, value: information } = useAsync<any>(() => contract!.information(), false);
@@ -52,12 +50,7 @@ export const IDOContextProvider: React.FunctionComponent<{ address: string }> = 
     }
   }, [informationStatus, selectedSigner, informationExecute])
 
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      setUpdate(Math.random());
-    }, 1000)
-    return () => clearInterval(intervalId);
-  }, [])
+  useIntervalUpdate();
 
   const status = information ? timestampToStatus((information as InformationInterface)) : undefined;
 
