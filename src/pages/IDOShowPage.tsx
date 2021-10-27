@@ -1,9 +1,10 @@
-import { Heading, Text, Stack, Tag, TagLabel, TagRightIcon, Box, Button, Stat, StatLabel, StatNumber, Input, InputGroup, InputLeftAddon } from "@chakra-ui/react";
+import { Heading, Text, Stack, Tag, TagLabel, TagRightIcon } from "@chakra-ui/react";
 import { CheckIcon, InfoOutlineIcon } from "@chakra-ui/icons";
 import { FunctionComponent, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { IDOContext, IDOContextProvider, IDOStatus } from "../contexts/IDOContext";
 import { TokenContext } from "../contexts/TokenContext";
+import { IDOInteractComponent } from "../components/IDOInteractComponent";
 
 let lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis rutrum magna ac faucibus interdum. Ut mollis diam quis urna pretium, at facilisis mauris lobortis. Nam ultrices iaculis commodo. Phasellus non augue dui. Aenean dictum sem sed diam commodo ultricies. Praesent elit lorem, tristique a aliquam dictum, tristique fringilla tortor. Sed mollis sapien quis dignissim malesuada. Cras vulputate felis ipsum, non aliquam nunc pulvinar ut. Duis ac ultrices sapien, et tristique ipsum. Integer odio massa, tempor in lobortis eget, ultrices pretium erat. Donec eu eros luctus, mollis purus sed, finibus neque. In ultrices, arcu ut posuere vestibulum, urna lectus pellentesque est, vel scelerisque justo dui in elit. Vivamus pulvinar, justo vel elementum gravida, elit mauris pharetra ipsum, in finibus eros massa et sapien. Aenean bibendum condimentum est at efficitur."
 
@@ -34,35 +35,6 @@ const IDOInformation: FunctionComponent = () => {
     </Stack>
     <Text>{lorem}</Text>
     <Text>{maecenas}</Text>
-    <Box borderRadius="md" borderColor={"reef.dark"} borderWidth={"2px"} w={480} alignSelf={"center"} display={"flex"} flexDirection={"column"} padding={2} boxSizing={"border-box"}>
-      <Stack spacing={2} >
-        <Stack direction={"row"}>
-          <Button bg={"reef.lighter"} width={"50%"} selected>Buy</Button>
-          <Button bg={"reef.lighter"} width={"50%"} disabled>Withdraw</Button>
-        </Stack>
-        <Stat alignSelf={"center"}>
-          <StatLabel>Bought</StatLabel>
-          <StatNumber>0 {symbol}</StatNumber>
-        </Stat>
-        <Stack direction={"row"} alignItems={"center"}>
-          <InputGroup>
-            <InputLeftAddon children={"REEF"} />
-            <Input
-              type={"number"}
-              placeholder={"REEF"}
-            />
-          </InputGroup>
-          <InputGroup>
-            <InputLeftAddon children={symbol} />
-            <Input
-              type={"number"}
-              placeholder={symbol}
-            />
-          </InputGroup>
-        </Stack>
-        <Button bg={"reef.lighter"}>Buy</Button>
-        <Button bg={"reef.lighter"} disabled>Opens in 53s</Button>
-      </Stack>
-    </Box >
+    <IDOInteractComponent />
   </Stack >
 }
