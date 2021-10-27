@@ -18,8 +18,8 @@ export const IDOShowPage: FunctionComponent = () => {
 }
 
 const IDOInformation: FunctionComponent = () => {
-  const { information, status } = useContext(IDOContext);
-  const { symbol, name } = useContext(TokenContext);
+  const { status } = useContext(IDOContext);
+  const { name } = useContext(TokenContext);
   return <Stack spacing={4}>
     <Stack direction={"row"} spacing={2}>
       <Heading>XRand Online Game({name})</Heading>

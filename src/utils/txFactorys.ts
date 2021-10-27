@@ -1,7 +1,7 @@
 
 import { Provider } from '@reef-defi/evm-provider';
 import { AccountSigner } from '../utils/types';
-import { ensure } from './utils';
+import { ensure, ratioToMulDiv } from './utils';
 import BN from "bn.js"
 import { utils } from "ethers";
 
@@ -162,6 +162,10 @@ export const ContractBasicIDOTX: TxType = {
       type: FieldType.Address
     },
     {
+      name: "ratio",
+      type: FieldType.Amount
+    },
+    {
       name: "start",
       type: FieldType.Amount
     },
@@ -174,9 +178,10 @@ export const ContractBasicIDOTX: TxType = {
       type: FieldType.Amount
     }
   ],
-  action: async ({ params: { tokenAddress, start, end, baseAmount }, args: { contract, onSuccess } }) => {
+  action: async ({ params: { tokenAddress, ratio, start, end, baseAmount }, args: { contract, onSuccess } }) => {
+    let [mul, div] = ratioToMulDiv(parseFloat(ratio));
     let timestampNow = Math.floor(Date.now() / 1000);
-    let { address } = await contract.deploy(tokenAddress, start, "1", "1", timestampNow + parseInt(start), timestampNow + parseInt(end), utils.parseEther(baseAmount));
+    let { address } = await contract.deploy(tokenAddress, mul, div, 1, timestampNow + parseInt(start), timestampNow + parseInt(end), utils.parseEther(baseAmount));
     onSuccess(address);
   }
 }

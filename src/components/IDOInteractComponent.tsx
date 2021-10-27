@@ -10,20 +10,19 @@ import { timestampToDate } from "../utils/utils";
 
 const { parseEther, formatEther } = utils;
 
-const useWeiConversion = (defaultValue: BigNumber, multiplier: BigNumber, divisor: BigNumber) => {
-  const [from, setFrom] = useState<BigNumber>(defaultValue);
-  const [to, setTo] = useState<BigNumber>(defaultValue.mul(multiplier).div(divisor));
+const useWeiConversion = (value: BigNumber, setWei: React.Dispatch<React.SetStateAction<BigNumber>>, multiplier: BigNumber, divisor: BigNumber) => {
+  const [to, setTo] = useState<BigNumber>(value.mul(multiplier).div(divisor));
   const setFromString = useCallback((value: string) => {
     let wei = parseEther(value);
-    setFrom(wei);
+    setWei(wei);
     setTo(wei.mul(multiplier).div(divisor))
-  }, [divisor, multiplier])
+  }, [setWei, divisor, multiplier])
   const setToString = useCallback((value: string) => {
     let wei = parseEther(value);
     setTo(wei);
-    setFrom(wei.div(multiplier).mul(divisor))
-  }, [divisor, multiplier])
-  return [from, formatEther(from), formatEther(to), setFromString, setToString] as const
+    setWei(wei.div(multiplier).mul(divisor))
+  }, [setWei, divisor, multiplier])
+  return [formatEther(value), formatEther(to), setFromString, setToString] as const
 }
 
 const BuyingButtonComponent: FunctionComponent<{ info: InformationInterface, onBuy: () => any, status: IDOStatus }> = ({ info, onBuy, status }) => {
@@ -36,17 +35,19 @@ const BuyingButtonComponent: FunctionComponent<{ info: InformationInterface, onB
   if (status === IDOStatus.Ended)
     text = "IDO has already ended";
   useIntervalUpdate();
-  return <Button bg={"reef.lighter"} disabled={disabled}>{text}</Button>
+  return <Button bg={"reef.lighter"} disabled={disabled} onClick={onBuy}>{text}</Button>
 }
 
-const BuyConversorComponent: FunctionComponent<{ info: InformationInterface, symbol: string }> = ({ info, symbol }) => {
-  const [wei, from, to, setFrom, setTo] = useWeiConversion(BigNumber.from(0), info.multiplier, info.divider)
+const BuyConversorComponent: FunctionComponent = () => {
+  const { information, wei, setWei } = useContext(IDOContext);
+  const { symbol } = useContext(TokenContext);
+  const [from, to, setFrom, setTo] = useWeiConversion(wei, setWei, information!.multiplier, information!.divider)
   return <Stack direction={"row"} alignItems={"center"}>
     <InputGroup>
       <InputLeftAddon children={"REEF"} />
       <Input
         value={from}
-        onChange={ev => setFrom(ev.target.value)}
+        onChange={e => setFrom(e.target.value)}
         placeholder={"REEF"}
       />
     </InputGroup>
@@ -62,7 +63,7 @@ const BuyConversorComponent: FunctionComponent<{ info: InformationInterface, sym
 }
 
 export const IDOInteractComponent = () => {
-  const { information, status } = useContext(IDOContext);
+  const { information, status, onBuy } = useContext(IDOContext);
   const { symbol, name } = useContext(TokenContext);
   const [buying, toggleBuying, setBuying, setWithdrawing] = useToggle(true);
 
@@ -77,10 +78,10 @@ export const IDOInteractComponent = () => {
         <StatLabel>Bought</StatLabel>
         <StatNumber>0 {symbol}</StatNumber>
       </Stat>
-      <BuyConversorComponent info={information} symbol={symbol} />
+      <BuyConversorComponent />
       <BuyingButtonComponent
         info={information}
-        onBuy={() => { }}
+        onBuy={onBuy}
         status={status}
       />
     </Stack>

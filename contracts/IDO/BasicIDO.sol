@@ -85,7 +85,7 @@ contract BasicIdo is IIDO {
     }
 
     function _availableToBuy() private view returns (uint256 quantity) {
-        return _boughtCounter - _maxSoldBaseAmount;
+        return _maxSoldBaseAmount - _boughtCounter;
     }
 
     /**
@@ -94,7 +94,7 @@ contract BasicIdo is IIDO {
     function buy(uint256 amount) public payable override {
         require(msg.value == amount, "Non matching gwei");
         require(canBuy(msg.sender), "Can't buy");
-        require(amount >= _availableToBuy(), "Not enough available to buy");
+        require(amount <= _availableToBuy(), "Not enough available to buy");
         _bought[msg.sender] += amount;
         _boughtCounter += amount;
         emit Bought(msg.sender, amount);
@@ -124,7 +124,7 @@ contract BasicIdo is IIDO {
         uint256 amount = _bought[otherAddress];
         require(amount > 0, "Nothing to pay");
         require(block.timestamp >= _endTimestamp, "IDO still open");
-        _tokenAddress.transfer(otherAddress, amount);
+        _tokenAddress.transfer(otherAddress, (amount * _multiplier) % _divider);
         _bought[otherAddress] = 0;
     }
 
@@ -139,10 +139,12 @@ contract BasicIdo is IIDO {
      * @dev Fulfills the contract, Fails on unsuccessful tx.
      */
     function fulfill() public override {
+        require(!_fulfilled, "Already fulfilled");
         _tokenAddress.transferFrom(
             msg.sender,
             address(this),
-            _maxSoldBaseAmount
+            (_maxSoldBaseAmount * _multiplier) % _divider
         );
+        _fulfilled = true;
     }
 }
