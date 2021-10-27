@@ -12,8 +12,6 @@ import { TxContext } from "../contexts/TxContext";
 import { ClaimEvmTx } from "../utils/txFactorys";
 import { IDOListcomponent } from "../components/IDOListComponent";
 
-
-
 export const ToolsPage: FunctionComponent = () => {
   const { selectedSigner } = useContext(AccountsContext);
   const { setTx } = useContext(TxContext)

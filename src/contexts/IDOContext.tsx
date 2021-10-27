@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { BN } from '@polkadot/util';
+import React, { useContext, useEffect, useMemo } from 'react';
+import { BigNumber } from '@ethersproject/bignumber';
 import { IIDO } from '../abis/contracts';
 import { useAsync, useIntervalUpdate } from '../utils/hooks';
 import { AccountsContext } from './AccountsContext';
@@ -13,13 +13,13 @@ export enum IDOStatus {
 
 export interface InformationInterface {
   tokenAddress: string
-  multiplier: number
-  divider: number
-  ipfs: BN
-  startingTimestamp: BN
-  endTimestamp: BN
+  multiplier: BigNumber
+  divider: BigNumber
+  ipfs: BigNumber
+  startingTimestamp: BigNumber
+  endTimestamp: BigNumber
   fulfilled: boolean
-  maxSoldBaseAmount: BN
+  maxSoldBaseAmount: BigNumber
 }
 
 interface IDOContextInterface {
@@ -53,7 +53,6 @@ export const IDOContextProvider: React.FunctionComponent<{ address: string }> = 
   useIntervalUpdate();
 
   const status = information ? timestampToStatus((information as InformationInterface)) : undefined;
-
   const value = useMemo(() => ({
     information: (information as InformationInterface),
     status
