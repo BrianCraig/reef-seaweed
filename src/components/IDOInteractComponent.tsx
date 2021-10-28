@@ -25,17 +25,17 @@ const useWeiConversion = (value: BigNumber, setWei: React.Dispatch<React.SetStat
   return [formatEther(value), formatEther(to), setFromString, setToString] as const
 }
 
-const BuyingButtonComponent: FunctionComponent<{ info: InformationInterface, onBuy: () => any, status: IDOStatus }> = ({ info, onBuy, status }) => {
+const ActionButtonComponent: FunctionComponent<{ info: InformationInterface, action: () => any, actionName: string, status: IDOStatus }> = ({ info, action, actionName, status }) => {
   const disabled = status === IDOStatus.Pending || status === IDOStatus.Ended;
   let text = "";
   if (status === IDOStatus.Pending)
     text = `Opens in ${formatDistanceStrict(Date.now(), timestampToDate(info.startingTimestamp))}`;
   if (status === IDOStatus.Open)
-    text = "Buy";
+    text = actionName;
   if (status === IDOStatus.Ended)
     text = "IDO has already ended";
   useIntervalUpdate();
-  return <Button bg={"reef.lighter"} disabled={disabled} onClick={onBuy}>{text}</Button>
+  return <Button bg={"reef.lighter"} disabled={disabled} onClick={action}>{text}</Button>
 }
 
 const BuyConversorComponent: FunctionComponent = () => {
@@ -63,7 +63,7 @@ const BuyConversorComponent: FunctionComponent = () => {
 }
 
 export const IDOInteractComponent = () => {
-  const { information, status, onBuy } = useContext(IDOContext);
+  const { information, status, onBuy, onWithdraw, balance } = useContext(IDOContext);
   const { symbol, name } = useContext(TokenContext);
   const [buying, toggleBuying, setBuying, setWithdrawing] = useToggle(true);
 
@@ -76,12 +76,13 @@ export const IDOInteractComponent = () => {
       </Stack>
       <Stat alignSelf={"center"}>
         <StatLabel>Bought</StatLabel>
-        <StatNumber>0 {symbol}</StatNumber>
+        <StatNumber>{formatEther(balance.mul(information.multiplier).div(information.divider))} {symbol}</StatNumber>
       </Stat>
       <BuyConversorComponent />
-      <BuyingButtonComponent
+      <ActionButtonComponent
         info={information}
-        onBuy={onBuy}
+        action={buying ? onBuy : onWithdraw}
+        actionName={buying ? "Buy" : "Withdraw"}
         status={status}
       />
     </Stack>

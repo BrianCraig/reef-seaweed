@@ -96,3 +96,12 @@ export const useIntervalUpdate = (miliseconds: number = 1000) => {
     return () => clearInterval(intervalId);
   }, [setUpdate, miliseconds])
 }
+
+export const useCallbackAsync = (ex: (...params: any[]) => Promise<any>, execute: boolean, deps: React.DependencyList) => {
+  useEffect(() => {
+    if (execute) {
+      ex();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, deps);
+}

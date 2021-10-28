@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { BigNumber } from '@ethersproject/bignumber';
 import { IIDO } from '../abis/contracts';
-import { useAsync, useIntervalUpdate } from '../utils/hooks';
+import { useAsync, useCallbackAsync, useIntervalUpdate } from '../utils/hooks';
 import { AccountsContext } from './AccountsContext';
 import { TokenContextProvider } from './TokenContext';
 
@@ -27,7 +27,9 @@ interface IDOContextInterface {
   status?: IDOStatus,
   wei: BigNumber,
   setWei: React.Dispatch<React.SetStateAction<BigNumber>>
-  onBuy: () => any
+  onBuy: () => any,
+  onWithdraw: () => any,
+  balance: BigNumber
 }
 
 const timestampToStatus = ({ startingTimestamp, endTimestamp }: InformationInterface): IDOStatus => {
@@ -42,7 +44,9 @@ const timestampToStatus = ({ startingTimestamp, endTimestamp }: InformationInter
 export const IDOContext = React.createContext<IDOContextInterface>({
   wei: BigNumber.from(0),
   setWei: () => { },
-  onBuy: () => { }
+  onBuy: () => { },
+  onWithdraw: () => { },
+  balance: BigNumber.from(0)
 });
 
 export const IDOContextProvider: React.FunctionComponent<{ address: string }> = ({ children, address }) => {
@@ -50,6 +54,7 @@ export const IDOContextProvider: React.FunctionComponent<{ address: string }> = 
   const [wei, setWei] = useState<BigNumber>(BigNumber.from(0));
   let contract = selectedSigner ? IIDO(address).connect(selectedSigner.signer as any) : undefined;
   const { execute: informationExecute, status: informationStatus, value: information } = useAsync<any>(() => contract!.information(), false);
+  const { execute: balanceExecute, status: balanceStatus, value: balanceValue } = useAsync<any>(() => contract!.balanceOf(selectedSigner!.evmAddress), false);
 
   useEffect(() => {
     if (selectedSigner && informationStatus === "idle") {
@@ -57,12 +62,23 @@ export const IDOContextProvider: React.FunctionComponent<{ address: string }> = 
     }
   }, [informationStatus, selectedSigner, informationExecute])
 
-  let onBuy = useCallback(() => {
-    console.log(contract)
-    contract!.buy(wei, { value: wei, gasLimit: 300000, gasPrice: 0 })
+  let onBuy = useCallback(async () => {
+    await contract!.buy(wei, { value: wei })
+    balanceExecute();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contract, wei])
 
+  let onWithdraw = useCallback(async () => {
+    await contract!.withdraw(wei);
+    balanceExecute();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [contract, wei])
+
+  useEffect(() => {
+    if (selectedSigner && balanceStatus === "idle") {
+      balanceExecute();
+    }
+  }, [selectedSigner, balanceStatus, balanceExecute])
   useIntervalUpdate();
 
   const status = information ? timestampToStatus((information as InformationInterface)) : undefined;
@@ -71,9 +87,11 @@ export const IDOContextProvider: React.FunctionComponent<{ address: string }> = 
     status,
     wei,
     setWei,
-    onBuy
+    onBuy,
+    onWithdraw,
+    balance: balanceValue || BigNumber.from(0)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }), [information, status, wei, setWei])
+  }), [information, status, wei, setWei, balanceValue])
 
   return <IDOContext.Provider value={value}>
     {information?.tokenAddress ? <TokenContextProvider address={information.tokenAddress} children={children} /> : children}

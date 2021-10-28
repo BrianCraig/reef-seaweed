@@ -89,10 +89,10 @@ contract BasicIdo is IIDO {
     }
 
     /**
-     * @dev Buys the base amount in gwei, Fails on unsuccessful tx.
+     * @dev Buys the base amount in wei, Fails on unsuccessful tx.
      */
     function buy(uint256 amount) public payable override {
-        require(msg.value == amount, "Non matching gwei");
+        require(msg.value == amount, "Non matching wei");
         require(canBuy(msg.sender), "Can't buy");
         require(amount <= _availableToBuy(), "Not enough available to buy");
         _bought[msg.sender] += amount;
@@ -107,6 +107,7 @@ contract BasicIdo is IIDO {
         require(_bought[msg.sender] >= amount, "Not enough bought");
         _bought[msg.sender] -= amount;
         _boughtCounter -= amount;
+        payable(msg.sender).transfer(amount);
         emit Withdrawn(msg.sender, amount);
     }
 
