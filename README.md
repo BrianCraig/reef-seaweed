@@ -32,6 +32,13 @@ extends:
   - [ERC20Burnable](https://docs.openzeppelin.com/contracts/4.x/api/token/erc20#ERC20Burnable)
   - [ERC20OwnerMint](#erc20ownermint)
 
+### WhitelistPublicStrategy
+
+This is a whitelist strategy which always permits the buying.
+
+implements: 
+  - [IWhitelistStrategy](#iwhiteliststrategy)
+
 ## Solidity extensions
 
 ### ApprovedEnnumerableCrowdsale
@@ -41,3 +48,9 @@ Maintains a list of approved Crowdsale contracts. Anyone can `publish` but only 
 ### ERC20OwnerMint
 
 Makes the `owner` able to mint tokens.
+
+## Solidity interfaces
+
+### IWhitelistStrategy
+
+Defines an algorithm for defining if an address is whitelisted.
