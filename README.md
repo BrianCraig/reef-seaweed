@@ -1,46 +1,43 @@
-# Getting Started with Create React App
+# SeaWeed
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Open Source IDO Launcher for the REEF Platform.
 
-## Available Scripts
+## Try
 
-In the project directory, you can run:
+run `yarn compile && yarn start`
 
-### `yarn start`
+## Build
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+run `yarn build`
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Contracts
 
-### `yarn test`
+The following are the Contracts that are used in the project and their intended needs.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### SeaweedAdmin
 
-### `yarn build`
+The role of this contract is to manage the approved Crowdsales to show on this platform. This doesn't interact with the IDO's, but ensures a curated list of them are available. This instance may be unique to the platform.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+extends: 
+  - [Ownable](https://docs.openzeppelin.com/contracts/4.x/api/access#Ownable)
+  - [AccessControl](https://docs.openzeppelin.com/contracts/4.x/api/access#AccessControl)
+  - [ApprovedEnnumerableCrowdsale](#approvedennumerablecrowdsale)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### ERC20Entangled
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+This is a [ERC20](https://docs.openzeppelin.com/contracts/4.x/api/token/erc20) Token, which only the owner can mint tokens, it's intended to be Owned solely by the Crowdsale contract.
 
-### `yarn eject`
+extends: 
+  - [Ownable](https://docs.openzeppelin.com/contracts/4.x/api/access#Ownable)
+  - [ERC20Burnable](https://docs.openzeppelin.com/contracts/4.x/api/token/erc20#ERC20Burnable)
+  - [ERC20OwnerMint](#erc20ownermint)
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Solidity extensions
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### ApprovedEnnumerableCrowdsale
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+Maintains a list of approved Crowdsale contracts. Anyone can `publish` but only `APPROVER` role can modify `approved` public list.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### ERC20OwnerMint
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+Makes the `owner` able to mint tokens.
