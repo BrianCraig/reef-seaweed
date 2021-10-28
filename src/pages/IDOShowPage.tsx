@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import { IDOContext, IDOContextProvider, IDOStatus } from "../contexts/IDOContext";
 import { TokenContext } from "../contexts/TokenContext";
 import { IDOInteractComponent } from "../components/IDOInteractComponent";
+import { CrowdsaleInformationComponent } from "../components/CrowdsaleInformationComponent";
 
 let lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis rutrum magna ac faucibus interdum. Ut mollis diam quis urna pretium, at facilisis mauris lobortis. Nam ultrices iaculis commodo. Phasellus non augue dui. Aenean dictum sem sed diam commodo ultricies. Praesent elit lorem, tristique a aliquam dictum, tristique fringilla tortor. Sed mollis sapien quis dignissim malesuada. Cras vulputate felis ipsum, non aliquam nunc pulvinar ut. Duis ac ultrices sapien, et tristique ipsum. Integer odio massa, tempor in lobortis eget, ultrices pretium erat. Donec eu eros luctus, mollis purus sed, finibus neque. In ultrices, arcu ut posuere vestibulum, urna lectus pellentesque est, vel scelerisque justo dui in elit. Vivamus pulvinar, justo vel elementum gravida, elit mauris pharetra ipsum, in finibus eros massa et sapien. Aenean bibendum condimentum est at efficitur."
 
@@ -20,7 +21,7 @@ export const IDOShowPage: FunctionComponent = () => {
 const IDOInformation: FunctionComponent = () => {
   const { status } = useContext(IDOContext);
   const { name } = useContext(TokenContext);
-  return <Stack spacing={4}>
+  return <Stack spacing={8}>
     <Stack direction={"row"} spacing={2}>
       <Heading>XRand Online Game({name})</Heading>
       <Text>{status !== undefined && IDOStatus[status]}</Text>
@@ -35,6 +36,7 @@ const IDOInformation: FunctionComponent = () => {
     </Stack>
     <Text>{lorem}</Text>
     <Text>{maecenas}</Text>
+    <CrowdsaleInformationComponent />
     <IDOInteractComponent />
   </Stack >
 }
