@@ -10,7 +10,7 @@ import { timestampToDate } from "../utils/utils";
 
 const { parseEther, formatEther } = utils;
 
-const useWeiConversion = (value: BigNumber, setWei: React.Dispatch<React.SetStateAction<BigNumber>>, multiplier: BigNumber, divisor: BigNumber) => {
+const useWeiConversion = (value: BigNumber, setWei: React.Dispatch<React.SetStateAction<BigNumber>>, multiplier: number, divisor: number) => {
   const [to, setTo] = useState<BigNumber>(value.mul(multiplier).div(divisor));
   const setFromString = useCallback((value: string) => {
     let wei = parseEther(value);

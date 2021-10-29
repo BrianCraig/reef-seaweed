@@ -13,8 +13,8 @@ export enum IDOStatus {
 
 export interface InformationInterface {
   tokenAddress: string
-  multiplier: BigNumber
-  divider: BigNumber
+  multiplier: number
+  divider: number
   ipfs: BigNumber
   startingTimestamp: BigNumber
   endTimestamp: BigNumber

@@ -1,8 +1,18 @@
 import { Box } from "@chakra-ui/react"
 import { Table, TableCaption, Thead, Tr, Th, Tbody, Td } from "@chakra-ui/table"
 import { format } from 'date-fns'
+import { useContext } from "react"
+import { utils } from "ethers"
+import { IDOContext } from "../contexts/IDOContext"
+import { TokenContext } from "../contexts/TokenContext"
+import { timestampToDate } from "../utils/utils"
 
 export const CrowdsaleInformationComponent = () => {
+  const { information } = useContext(IDOContext);
+  const { symbol, name } = useContext(TokenContext);
+  if (!information) return null;
+  let multiplier = information.multiplier / information.divider;
+  let reefBase = parseFloat(utils.formatEther(information.maxSoldBaseAmount))
   return <Box border={"1px"} borderColor={"app.400"} borderRadius={8}>
     <Table variant="simple">
       <TableCaption>This rules are immutable</TableCaption>
@@ -15,23 +25,23 @@ export const CrowdsaleInformationComponent = () => {
       <Tbody>
         <Tr>
           <Td>Token Address</Td>
-          <Td isNumeric><a href="https://testnet.reefscan.com/token/0xBC1771A363769edb78034F779360254758E872Da">0xBC1771A363769edb78034F779360254758E872Da</a></Td>
+          <Td isNumeric><a href={`https://testnet.reefscan.com/token/${information.tokenAddress}`}>{information.tokenAddress}</a></Td>
         </Tr>
         <Tr>
           <Td>Token Name</Td>
-          <Td isNumeric>Kool Real Feel</Td>
+          <Td isNumeric>{name}</Td>
         </Tr>
         <Tr>
           <Td>Maximum Token Crowdsale</Td>
-          <Td isNumeric>300,000.00 KRF</Td>
+          <Td isNumeric>{(reefBase * multiplier).toFixed(0)} {symbol}</Td>
         </Tr>
         <Tr>
           <Td>Maximum per investor</Td>
-          <Td isNumeric>1,000.00 KRF</Td>
+          <Td isNumeric>1,000.00 {symbol}</Td>
         </Tr>
         <Tr>
           <Td>KRF by each REEF multiplier</Td>
-          <Td isNumeric>15.00</Td>
+          <Td isNumeric>{multiplier.toFixed(2)}</Td>
         </Tr>
         <Tr>
           <Td>Crowdsale total supply percentage</Td>
@@ -39,7 +49,11 @@ export const CrowdsaleInformationComponent = () => {
         </Tr>
         <Tr>
           <Td>Estimated REEF for Stakeholders</Td>
-          <Td isNumeric>20,000.00 REEF - 640.34 U$D</Td>
+          <Td isNumeric>{reefBase} REEF - {reefBase * 0.03} U$D</Td>
+        </Tr>
+        <Tr>
+          <Td>Open range</Td>
+          <Td isNumeric>{format(timestampToDate(information.startingTimestamp), "PPpp")} to {format(timestampToDate(information.endTimestamp), "PPpp")}, local time</Td>
         </Tr>
         <Tr>
           <Td>Is refundable?</Td>
@@ -51,7 +65,7 @@ export const CrowdsaleInformationComponent = () => {
         </Tr>
         <Tr>
           <Td>Refund range</Td>
-          <Td isNumeric>{format(new Date(), "PPpp")} to {format(new Date(), "PPpp")}, local time</Td>
+          <Td isNumeric>{format(timestampToDate(information.startingTimestamp), "PPpp")} to {format(timestampToDate(information.endTimestamp), "PPpp")}, local time</Td>
         </Tr>
       </Tbody>
     </Table>
