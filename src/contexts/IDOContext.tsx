@@ -54,7 +54,7 @@ export const IDOContextProvider: React.FunctionComponent<{ address: string }> = 
   const [wei, setWei] = useState<BigNumber>(BigNumber.from(0));
   let contract = selectedSigner ? IIDO(address).connect(selectedSigner.signer as any) : undefined;
   const { execute: informationExecute, status: informationStatus, value: information } = useAsync<any>(() => contract!.information(), false);
-  const { execute: balanceExecute, status: balanceStatus, value: balanceValue } = useAsync<any>(() => contract!.balanceOf(selectedSigner!.evmAddress), false);
+  const { execute: balanceExecute, status: balanceStatus, value: balanceValue } = useAsync<any>(() => contract!.boughtAmount(selectedSigner!.evmAddress), false);
 
   useEffect(() => {
     if (selectedSigner && informationStatus === "idle") {

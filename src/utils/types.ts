@@ -38,3 +38,12 @@ export interface AccountSigner {
   evmAddress: string;
   isEvmClaimed: boolean;
 }
+
+export interface PublishValues {
+  tokenName: string;
+  tokenSymbol: string;
+  reefAmount: number;
+  reefMultiplier: number;
+  start: string;
+  end: string;
+}

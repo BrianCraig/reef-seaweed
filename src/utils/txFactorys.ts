@@ -1,6 +1,6 @@
 
 import { Provider } from '@reef-defi/evm-provider';
-import { AccountSigner } from '../utils/types';
+import { AccountSigner, PublishValues } from '../utils/types';
 import { ensure, ratioToMulDiv } from './utils';
 import BN from "bn.js"
 import { utils } from "ethers";
@@ -218,4 +218,12 @@ export const FulfillTX: TxType = {
   action: async ({ args: { contract } }) => {
     console.log(await contract.fulfill());
   }
+}
+
+let timestampFromDate = (date: Date) => Math.floor(date.valueOf() / 1000);
+
+export const ContractBasicIDOAction = async (contract: any, { tokenName, tokenSymbol, reefAmount, reefMultiplier, start, end }: PublishValues) => {
+  let [mul, div] = ratioToMulDiv(reefMultiplier);
+  let { address } = await contract.deploy(tokenName, tokenSymbol, mul, div, timestampFromDate(new Date(start)), timestampFromDate(new Date(end)), utils.parseEther(reefAmount.toString()));
+  return address;
 }

@@ -1,7 +1,13 @@
-import { Button, FormControl, FormErrorMessage, FormHelperText, FormLabel, Heading, Input, Stack } from "@chakra-ui/react"
+import { Button, FormControl, FormErrorMessage, FormHelperText, FormLabel, Heading, Input, Stack, useToast } from "@chakra-ui/react"
 import { Field, Form, Formik, FormikProps } from 'formik';
-import { FunctionComponent } from "react";
+import { FunctionComponent, useContext } from "react";
 import * as Yup from 'yup';
+import { BasicIDO } from "../abis/contracts";
+import { AccountsContext } from "../contexts/AccountsContext";
+import { ContractsContext } from "../contexts/ContractsContext";
+import { IDOContext } from "../contexts/IDOContext";
+import { ContractBasicIDOAction } from "../utils/txFactorys";
+import { PublishValues } from "../utils/types";
 
 const validationSchema = Yup.object().shape({
   tokenName: Yup.string()
@@ -10,14 +16,6 @@ const validationSchema = Yup.object().shape({
     .required('Required'),
 });
 
-interface PublishValues {
-  tokenName: string;
-  tokenSymbol: string;
-  reefAmount: number;
-  reefMultiplier: number;
-  start: string;
-  end: string;
-}
 
 const initialValues: PublishValues = {
   tokenName: "",
@@ -88,16 +86,25 @@ const FormikFormComponent: FunctionComponent<FormikProps<PublishValues>> = ({ is
 }
 
 export const PublishPage = () => {
+  const toast = useToast();
+  let { selectedSigner } = useContext(AccountsContext)
+  let { setIDOList } = useContext(ContractsContext)
   return <Stack spacing={2}>
     <Heading>Publish</Heading>
     <Formik<PublishValues>
       initialValues={initialValues}
       validationSchema={validationSchema}
-      onSubmit={(values, actions) => {
-        setTimeout(() => {
-          alert(JSON.stringify(values, null, 2))
-          actions.setSubmitting(false)
-        }, 1000)
+      onSubmit={async (values, actions) => {
+        let address = await ContractBasicIDOAction(BasicIDO.connect(selectedSigner!.signer as any), values);
+        toast({
+          title: "IDO Contract deployed.",
+          description: "Hooray 🥳! Your Crowdsale Contract has been deployed successfully.",
+          status: "success",
+          duration: 9000,
+          isClosable: true,
+          position: "top"
+        })
+        setIDOList((or) => [...or, address]);
       }}
     >
       {FormikFormComponent}
