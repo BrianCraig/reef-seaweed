@@ -3,7 +3,7 @@ import { Table, TableCaption, Thead, Tr, Th, Tbody, Td } from "@chakra-ui/table"
 import { format } from 'date-fns'
 
 export const CrowdsaleInformationComponent = () => {
-  return <Box border={"1px"} borderColor={"app.100"} borderRadius={8}>
+  return <Box border={"1px"} borderColor={"app.400"} borderRadius={8}>
     <Table variant="simple">
       <TableCaption>This rules are immutable</TableCaption>
       <Thead>

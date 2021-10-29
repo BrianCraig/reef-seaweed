@@ -68,11 +68,11 @@ export const IDOInteractComponent = () => {
   const [buying, toggleBuying, setBuying, setWithdrawing] = useToggle(true);
 
   if (information === undefined || status === undefined) return null;
-  return <Box borderRadius="md" borderColor={"app.600"} borderWidth={"1px"} w={480} alignSelf={"center"} display={"flex"} flexDirection={"column"} padding={2} boxSizing={"border-box"}>
+  return <Box borderRadius="md" borderColor={"app.400"} borderWidth={"1px"} w={480} alignSelf={"center"} display={"flex"} flexDirection={"column"} padding={2} boxSizing={"border-box"}>
     <Stack spacing={2} >
       <Stack direction={"row"}>
         <Button width={"50%"} variant={buying ? "outline" : "ghost"} onClick={setBuying}>Buy</Button>
-        <Button width={"50%"} variant={buying ? "ghost" : "online"} onClick={setWithdrawing}>Withdraw</Button>
+        <Button width={"50%"} variant={buying ? "ghost" : "outline"} onClick={setWithdrawing}>Withdraw</Button>
       </Stack>
       <Stat alignSelf={"center"}>
         <StatLabel>Bought</StatLabel>

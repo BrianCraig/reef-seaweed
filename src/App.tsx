@@ -1,4 +1,4 @@
-import { Box, Button, Stack } from "@chakra-ui/react";
+import { Box, Stack } from "@chakra-ui/react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { ActualReefComponent, ConnectionStatusComponent, SelectAccountComponent } from './components/SmallComponents';
 import { TxCallerComponent } from './components/TxCallerComponent';
@@ -6,18 +6,19 @@ import { ToolsPage } from './pages/ToolsPage';
 import { IDOShowPage } from './pages/IDOShowPage';
 
 import "./app.css"
+import { MenuComponent } from "./components/MenuComponent";
+import { HomePage } from "./pages/HomePage";
+import { ProjectsPage } from "./pages/ProjectsPage";
+import { DocumentationPage } from "./pages/DocumentationPage";
+import { MyAccountPage } from "./pages/MyAccountPage";
+import { PublishPage } from "./pages/PublishPage";
 
 export const Layout = () => {
   return (
     <Router>
       <Stack height="100vh" width="100vw" position={"absolute"} top={0} left={0} bottom={0} right={0} spacing={0}>
-        <Stack direction={"row"} alignItems="center" justifyContent={"flex-end"} padding={2} spacing={2} borderBottom={"1px solid #ddd"} width="100%" flexGrow={0} flexShrink={0}>
-          <Button variant="outline">Home</Button>
-          <Button variant="ghost">Projects</Button>
-          <Button variant="ghost">Documentation</Button>
-          <Button variant="ghost">Publish</Button>
-          <Button variant="ghost">Manage</Button>
-          <Button variant="ghost">Settings</Button>
+        <Stack direction={"row"} alignItems="center" justifyContent={"flex-end"} padding={2} spacing={2} borderBottom={"1px"} borderColor={"app.400"} width="100%" flexGrow={0} flexShrink={0}>
+          <MenuComponent />
           <Box flexGrow={1} />
           <ActualReefComponent />
           <SelectAccountComponent />
@@ -27,10 +28,25 @@ export const Layout = () => {
           <Box maxWidth={1200} overflowY={"auto"} marginX={"auto"} marginY={8}>
             <Switch>
               <Route exact path="/">
-                <ToolsPage />
+                <HomePage />
+              </Route>
+              <Route exact path="/projects">
+                <ProjectsPage />
               </Route>
               <Route path="/ido/:tx">
                 <IDOShowPage />
+              </Route>
+              <Route exact path="/my-account">
+                <MyAccountPage />
+              </Route>
+              <Route exact path="/docs">
+                <DocumentationPage />
+              </Route>
+              <Route exact path="/publish">
+                <PublishPage />
+              </Route>
+              <Route exact path="/settings">
+                <ToolsPage />
               </Route>
             </Switch>
           </Box>
