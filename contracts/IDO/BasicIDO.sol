@@ -3,15 +3,14 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "../erc20/ERC20Entangled.sol";
 import "./IIDO.sol";
 
 contract BasicIdo is IIDO {
-    bool private _fulfilled = false;
-    IERC20 private _tokenAddress;
+    ERC20Entangled private _tokenAddress;
     uint32 private _multiplier;
     uint32 private _divider;
-    uint256 private _ipfs;
+    uint256 private _ipfs = 0;
     uint256 private _startTimestamp;
     uint256 private _endTimestamp;
     uint256 private _maxSoldBaseAmount;
@@ -19,10 +18,10 @@ contract BasicIdo is IIDO {
     mapping(address => uint256) private _bought;
 
     constructor(
-        address tokenAddress,
+        string memory tokenName,
+        string memory tokenSymbol,
         uint32 multiplier,
         uint32 divider,
-        uint256 ipfs,
         uint256 startTimestamp,
         uint256 endTimestamp,
         uint256 maxSoldBaseAmount
@@ -32,10 +31,9 @@ contract BasicIdo is IIDO {
             startTimestamp < endTimestamp,
             "start time should be before end time"
         );
-        _tokenAddress = IERC20(tokenAddress);
+        _tokenAddress = new ERC20Entangled(tokenName, tokenSymbol);
         _multiplier = multiplier;
         _divider = divider;
-        _ipfs = ipfs;
         _startTimestamp = startTimestamp;
         _endTimestamp = endTimestamp;
         _maxSoldBaseAmount = maxSoldBaseAmount;
@@ -52,8 +50,7 @@ contract BasicIdo is IIDO {
             uint256 ipfs,
             uint256 startingTimestamp,
             uint256 endTimestamp,
-            uint256 maxSoldBaseAmount,
-            bool fulfilled
+            uint256 maxSoldBaseAmount
         )
     {
         return (
@@ -63,8 +60,7 @@ contract BasicIdo is IIDO {
             _ipfs,
             _startTimestamp,
             _endTimestamp,
-            _maxSoldBaseAmount,
-            _fulfilled
+            _maxSoldBaseAmount
         );
     }
 
@@ -78,7 +74,6 @@ contract BasicIdo is IIDO {
         returns (bool status)
     {
         return
-            _fulfilled &&
             (block.timestamp >= _startTimestamp) &&
             (block.timestamp < _endTimestamp) &&
             (_boughtCounter < _maxSoldBaseAmount);
@@ -125,27 +120,19 @@ contract BasicIdo is IIDO {
         uint256 amount = _bought[otherAddress];
         require(amount > 0, "Nothing to pay");
         require(block.timestamp >= _endTimestamp, "IDO still open");
-        _tokenAddress.transfer(otherAddress, (amount * _multiplier) % _divider);
+        _tokenAddress.mint(otherAddress, (amount * _multiplier) % _divider);
         _bought[otherAddress] = 0;
     }
 
     /**
      * @dev Returns the amount of tokens owned by `account`.
      */
-    function balanceOf(address account) public view override returns (uint256) {
+    function boughtAmount(address account)
+        public
+        view
+        override
+        returns (uint256)
+    {
         return _bought[account];
-    }
-
-    /**
-     * @dev Fulfills the contract, Fails on unsuccessful tx.
-     */
-    function fulfill() public override {
-        require(!_fulfilled, "Already fulfilled");
-        _tokenAddress.transferFrom(
-            msg.sender,
-            address(this),
-            (_maxSoldBaseAmount * _multiplier) % _divider
-        );
-        _fulfilled = true;
     }
 }
