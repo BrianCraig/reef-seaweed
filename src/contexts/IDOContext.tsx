@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { BigNumber } from '@ethersproject/bignumber';
 import { IIDO } from '../abis/contracts';
-import { useAsync, useCallbackAsync, useIntervalUpdate } from '../utils/hooks';
+import { useAsync, useIntervalUpdate } from '../utils/hooks';
 import { AccountsContext } from './AccountsContext';
 import { TokenContextProvider } from './TokenContext';
 

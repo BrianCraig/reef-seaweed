@@ -64,7 +64,7 @@ const BuyConversorComponent: FunctionComponent = () => {
 
 export const IDOInteractComponent = () => {
   const { information, status, onBuy, onWithdraw, balance } = useContext(IDOContext);
-  const { symbol, name } = useContext(TokenContext);
+  const { symbol } = useContext(TokenContext);
   const [buying, toggleBuying, setBuying, setWithdrawing] = useToggle(true);
 
   if (information === undefined || status === undefined) return null;
