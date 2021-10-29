@@ -1,7 +1,7 @@
-import { Avatar, Heading, SimpleGrid, Stack, Text } from "@chakra-ui/react"
+import { Avatar, Box, Heading, SimpleGrid, Stack, Text } from "@chakra-ui/react"
 
 const IDOSummary = () => {
-  return <Stack border={"1px"} borderColor={"app.400"} borderRadius={8} bg="app.50" spacing={2} padding={4}>
+  return <Stack border={"1px"} borderColor={"app.400"} borderRadius={8} bg="app.50" spacing={4} padding={4}>
     <Stack direction={"row"} spacing={4}>
       <Avatar size={"md"} name="Y K" />
       <Stack justifyContent={"space-between"} spacing={0}>
@@ -9,6 +9,9 @@ const IDOSummary = () => {
         <Text>Project subtitle</Text>
       </Stack>
     </Stack>
+    <Box border={"1px"} borderColor={"app.600"} borderRadius={8} bg={"app.100"}>
+      <Box width={"33%"} bg={"app.600"} height={2} />
+    </Box>
   </Stack >
 }
 
