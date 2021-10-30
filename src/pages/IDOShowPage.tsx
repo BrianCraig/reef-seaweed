@@ -2,10 +2,11 @@ import { Heading, Text, Stack, Tag, TagLabel, TagRightIcon } from "@chakra-ui/re
 import { CheckIcon, InfoOutlineIcon } from "@chakra-ui/icons";
 import { FunctionComponent, useContext } from "react";
 import { useParams } from "react-router-dom";
-import { IDOContext, IDOContextProvider, IDOStatus } from "../contexts/IDOContext";
+import { IDOContext, IDOContextProvider } from "../contexts/IDOContext";
 import { TokenContext } from "../contexts/TokenContext";
 import { IDOInteractComponent } from "../components/IDOInteractComponent";
 import { CrowdsaleInformationComponent } from "../components/CrowdsaleInformationComponent";
+import { IDOStatus } from "../utils/types";
 
 let lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis rutrum magna ac faucibus interdum. Ut mollis diam quis urna pretium, at facilisis mauris lobortis. Nam ultrices iaculis commodo. Phasellus non augue dui. Aenean dictum sem sed diam commodo ultricies. Praesent elit lorem, tristique a aliquam dictum, tristique fringilla tortor. Sed mollis sapien quis dignissim malesuada. Cras vulputate felis ipsum, non aliquam nunc pulvinar ut. Duis ac ultrices sapien, et tristique ipsum. Integer odio massa, tempor in lobortis eget, ultrices pretium erat. Donec eu eros luctus, mollis purus sed, finibus neque. In ultrices, arcu ut posuere vestibulum, urna lectus pellentesque est, vel scelerisque justo dui in elit. Vivamus pulvinar, justo vel elementum gravida, elit mauris pharetra ipsum, in finibus eros massa et sapien. Aenean bibendum condimentum est at efficitur."
 

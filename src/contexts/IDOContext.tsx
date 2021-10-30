@@ -4,23 +4,8 @@ import { IIDO } from '../abis/contracts';
 import { useAsync, useIntervalUpdate } from '../utils/hooks';
 import { AccountsContext } from './AccountsContext';
 import { TokenContextProvider } from './TokenContext';
-
-export enum IDOStatus {
-  Pending,
-  Open,
-  Ended
-}
-
-export interface InformationInterface {
-  tokenAddress: string
-  multiplier: number
-  divider: number
-  ipfs: BigNumber
-  startingTimestamp: BigNumber
-  endTimestamp: BigNumber
-  fulfilled: boolean
-  maxSoldBaseAmount: BigNumber
-}
+import { IDOStatus, InformationInterface } from '../utils/types';
+import { timestampToStatus } from '../utils/utils';
 
 interface IDOContextInterface {
   information?: InformationInterface
@@ -32,15 +17,6 @@ interface IDOContextInterface {
   onGetPayout: () => any,
   balance: BigNumber,
   paid: boolean
-}
-
-const timestampToStatus = ({ startingTimestamp, endTimestamp }: InformationInterface): IDOStatus => {
-  let start = startingTimestamp.toNumber();
-  let end = endTimestamp.toNumber();
-  let timestampNow = Math.floor(Date.now() / 1000);
-  if (timestampNow < start) return IDOStatus.Pending;
-  if (timestampNow < end) return IDOStatus.Open;
-  return IDOStatus.Ended;
 }
 
 export const IDOContext = React.createContext<IDOContextInterface>({

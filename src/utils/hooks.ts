@@ -44,16 +44,16 @@ export const useAsync = <T, E = string>(
   const [status, setStatus] = useState<
     "idle" | "pending" | "success" | "error"
   >("idle");
-  const [value, setValue] = useState<T | null>(null);
-  const [error, setError] = useState<E | null>(null);
+  const [value, setValue] = useState<T | undefined>(undefined);
+  const [error, setError] = useState<E | undefined>(undefined);
   // The execute function wraps asyncFunction and
   // handles setting state for pending, value, and error.
   // useCallback ensures the below useEffect is not called
   // on every render, but only if asyncFunction changes.
   const execute = useCallback(() => {
     setStatus("pending");
-    setValue(null);
-    setError(null);
+    setValue(undefined);
+    setError(undefined);
     return asyncFunction()
       .then((response: any) => {
         setValue(response);

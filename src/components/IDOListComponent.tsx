@@ -9,8 +9,6 @@ export const IDOListcomponent: FunctionComponent = () => {
   let { push } = useHistory();
 
   return <Pane display={"flex"} alignItems="center" gap={majorScale(1)} flexWrap={"wrap"}>
-    {contractList.map(([address]) => (<>
-      <Button key={address} onClick={() => { push(`/ido/${address}`) }}>{address}</Button>
-    </>))}
+    {contractList.map(([address]) => <Button key={address} onClick={() => { push(`/ido/${address}`) }}>{address}</Button>)}
   </Pane>
 }

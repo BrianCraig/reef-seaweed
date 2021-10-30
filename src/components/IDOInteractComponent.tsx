@@ -3,10 +3,11 @@ import { FunctionComponent, useCallback, useContext, useState } from "react";
 import { utils, BigNumber } from "ethers";
 import { formatDistanceStrict } from "date-fns";
 import { Stat, StatLabel, StatNumber, Box, Stack, InputGroup, InputLeftAddon, Input, Button } from "@chakra-ui/react"
-import { IDOContext, IDOStatus, InformationInterface } from "../contexts/IDOContext";
+import { IDOContext } from "../contexts/IDOContext";
 import { TokenContext } from "../contexts/TokenContext";
 import { useToggle, useIntervalUpdate } from "../utils/hooks";
 import { timestampToDate } from "../utils/utils";
+import { IDOStatus, InformationInterface } from "../utils/types";
 
 const { parseEther, formatEther } = utils;
 
@@ -108,7 +109,7 @@ export const IDOInteractComponent = () => {
           <StatNumber>{participated ? (paid ? "Yes" : "No") : "Didn't participate"}</StatNumber>
         </Stat>
       </Stack>
-      <Button disabled={!participated && !paid} onClick={onGetPayout}>{participated ? (paid ? "Already paid" : "Get Payout") : "Didn't participate"}</Button>
+      <Button disabled={!participated || paid} onClick={onGetPayout}>{participated ? (paid ? "Already paid" : "Get Payout") : "Didn't participate"}</Button>
     </Stack>
   </Box >
 }

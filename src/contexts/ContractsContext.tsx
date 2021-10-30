@@ -1,11 +1,13 @@
 
-import React, { useContext, useMemo } from "react";
-import { useLocalStorage } from "../utils/hooks";
+import React, { useContext, useEffect, useMemo } from "react";
+import { useAsync, useLocalStorage } from "../utils/hooks";
 import { Contract } from "ethers"
 
 import ERC20Abi from "../abis/erc20.abi.json"
 import { AccountsContext } from "./AccountsContext";
 import { IIDO } from "../abis/contracts";
+import { NetworkContext } from "./NetworkContext";
+import { FullIDOInfo, InformationInterface } from "../utils/types";
 
 interface ContractsContextInterface {
   contractsList: string[]
@@ -13,7 +15,9 @@ interface ContractsContextInterface {
   ERC20Contracts: Map<string, Contract>
   IDOList: string[]
   setIDOList: React.Dispatch<React.SetStateAction<string[]>>
-  IDOContracts: Map<string, Contract>
+  IDOContracts: Map<string, Contract>,
+  IDOInfoMap?: FullIDOInfo[],
+  IDOInfoMapLoading: boolean
 }
 
 const defaultContracts = [
@@ -27,13 +31,21 @@ export const ContractsContext = React.createContext<ContractsContextInterface>({
   ERC20Contracts: new Map(),
   IDOList: [],
   setIDOList: () => { },
-  IDOContracts: new Map()
+  IDOContracts: new Map(),
+  IDOInfoMapLoading: true
 });
 
 export const ContractsContextProvider: React.FunctionComponent = ({ children }) => {
+  const { provider } = useContext(NetworkContext);
   const { selectedSigner } = useContext(AccountsContext)
   const [contractsList, setContractsList] = useLocalStorage<string[]>("ERC20Contracts", defaultContracts)
   const [IDOList, setIDOList] = useLocalStorage<string[]>("IDOContracts", [])
+  const { execute, value: IDOInfoMap, status } = useAsync<FullIDOInfo[]>(async () => {
+    let addressToInfoPromise = (address: string): Promise<InformationInterface> => IIDO(address, provider).information()
+    let info = await Promise.all(IDOList.map(addressToInfoPromise))
+    return IDOList.map((address, i) => ({ address, info: info[i] }))
+  }, false)
+
   let ERC20Contracts = useMemo(
     () => {
       let map = new Map<string, Contract>()
@@ -51,6 +63,14 @@ export const ContractsContextProvider: React.FunctionComponent = ({ children }) 
     },
     [IDOList, selectedSigner]
   )
+
+  useEffect(() => {
+    if (provider) {
+      execute();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [provider])
+
   return <ContractsContext.Provider value={
     {
       contractsList,
@@ -58,7 +78,9 @@ export const ContractsContextProvider: React.FunctionComponent = ({ children }) 
       ERC20Contracts,
       IDOList,
       setIDOList,
-      IDOContracts
+      IDOContracts,
+      IDOInfoMap,
+      IDOInfoMapLoading: status !== "success"
     }} >
     {children}
   </ContractsContext.Provider >

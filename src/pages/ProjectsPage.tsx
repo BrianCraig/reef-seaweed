@@ -1,8 +1,15 @@
 import { CheckIcon } from "@chakra-ui/icons"
-import { Avatar, Box, Heading, SimpleGrid, Stack, Tag, TagLabel, TagRightIcon, Text } from "@chakra-ui/react"
+import { Avatar, Box, CircularProgress, Heading, SimpleGrid, Stack, Tag, TagLabel, TagRightIcon, Text } from "@chakra-ui/react"
+import { utils } from "ethers";
+import { FunctionComponent, useContext } from "react"
+import { useHistory } from "react-router";
+import { ContractsContext } from "../contexts/ContractsContext"
+import { FullIDOInfo, IDOStatus } from "../utils/types"
+import { timestampToStatus } from "../utils/utils"
 
-const IDOSummary = () => {
-  return <Stack border={"1px"} borderColor={"app.400"} borderRadius={8} spacing={4} padding={4}>
+const IDOSummary: FunctionComponent<{ info: FullIDOInfo }> = ({ info: { info, address } }) => {
+  let { push } = useHistory();
+  return <Stack border={"1px"} borderColor={"app.400"} borderRadius={8} spacing={4} padding={4} onClick={() => push(`/ido/${address}`)}>
     <Stack direction={"row"} spacing={4}>
       <Avatar size={"md"} name="Y K" />
       <Stack justifyContent={"space-between"} spacing={0}>
@@ -20,7 +27,7 @@ const IDOSummary = () => {
     </Box>
     <Stack direction={"row"} justifyContent={"space-between"}>
       <Text>Raise goal</Text>
-      <Text>500,000 REEF</Text>
+      <Text>{utils.formatEther(info.maxSoldBaseAmount)} REEF</Text>
     </Stack>
     <Stack direction={"row"} justifyContent={"space-between"}>
       <Text>Max allocation</Text>
@@ -33,14 +40,29 @@ const IDOSummary = () => {
 }
 
 export const ProjectsPage = () => {
+  let { IDOInfoMap, IDOInfoMapLoading } = useContext(ContractsContext);
+
+  if (IDOInfoMapLoading || IDOInfoMap === undefined) return <Stack spacing={8} alignItems={"center"} overflow={"hidden"}>
+    <Heading>Loading Projects</Heading>
+    <CircularProgress isIndeterminate color={"app.400"} />
+  </Stack>
+
+  let pendingProjects = IDOInfoMap.filter(e => timestampToStatus(e.info) === IDOStatus.Pending)
+  let openProjects = IDOInfoMap.filter(e => timestampToStatus(e.info) === IDOStatus.Open)
+  let endedProjects = IDOInfoMap.filter(e => timestampToStatus(e.info) === IDOStatus.Ended)
+
   return <Stack spacing={8}>
     <Heading>Open projects</Heading>
     <SimpleGrid columns={3} spacing={8}>
-      <IDOSummary />
-      <IDOSummary />
-      <IDOSummary />
-      <IDOSummary />
-      <IDOSummary />
+      {openProjects.map(info => <IDOSummary key={info.address} info={info} />)}
+    </SimpleGrid>
+    <Heading>Upcoming projects</Heading>
+    <SimpleGrid columns={3} spacing={8}>
+      {pendingProjects.map(info => <IDOSummary key={info.address} info={info} />)}
+    </SimpleGrid>
+    <Heading>Finalized projects</Heading>
+    <SimpleGrid columns={3} spacing={8}>
+      {endedProjects.map(info => <IDOSummary key={info.address} info={info} />)}
     </SimpleGrid>
   </Stack>
 }
