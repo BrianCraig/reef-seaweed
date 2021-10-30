@@ -65,26 +65,50 @@ const BuyConversorComponent: FunctionComponent = () => {
 export const IDOInteractComponent = () => {
   const { information, status, onBuy, onWithdraw, balance } = useContext(IDOContext);
   const { symbol } = useContext(TokenContext);
-  const [buying, toggleBuying, setBuying, setWithdrawing] = useToggle(true);
+  const [buying, setBuying, setWithdrawing] = useToggle(true);
 
-  if (information === undefined || status === undefined) return null;
-  return <Box borderRadius="md" borderColor={"app.400"} borderWidth={"1px"} w={480} alignSelf={"center"} display={"flex"} flexDirection={"column"} padding={2} boxSizing={"border-box"}>
+  if (information === undefined || status === undefined) return <Box width={480} flexShrink={0} />;
+  if (status !== IDOStatus.Ended)
+    return <Box borderRadius="md" borderColor={"app.400"} borderWidth={"1px"} w={480} alignSelf={"flex-start"} display={"flex"} flexDirection={"column"} padding={2} boxSizing={"border-box"} flexShrink={0}>
+      <Stack spacing={2} >
+        <Stack direction={"row"}>
+          <Button width={"50%"} variant={buying ? "outline" : "ghost"} onClick={setBuying}>Buy</Button>
+          <Button width={"50%"} variant={buying ? "ghost" : "outline"} onClick={setWithdrawing}>Withdraw</Button>
+        </Stack>
+        <Stack direction={"row"}>
+          <Stat>
+            <StatLabel>Spended</StatLabel>
+            <StatNumber>{formatEther(balance)} REEF</StatNumber>
+          </Stat>
+          <Stat>
+            <StatLabel>Bought</StatLabel>
+            <StatNumber>{formatEther(balance.mul(information.multiplier).div(information.divider))} {symbol}</StatNumber>
+          </Stat>
+        </Stack>
+        <BuyConversorComponent />
+        <ActionButtonComponent
+          info={information}
+          action={buying ? onBuy : onWithdraw}
+          actionName={buying ? "Buy" : "Withdraw"}
+          status={status}
+        />
+      </Stack>
+    </Box >
+
+  const participated = balance.lt(0);
+  return <Box borderRadius="md" borderColor={"app.400"} borderWidth={"1px"} w={480} alignSelf={"flex-start"} display={"flex"} flexDirection={"column"} padding={2} boxSizing={"border-box"} flexShrink={0}>
     <Stack spacing={2} >
       <Stack direction={"row"}>
-        <Button width={"50%"} variant={buying ? "outline" : "ghost"} onClick={setBuying}>Buy</Button>
-        <Button width={"50%"} variant={buying ? "ghost" : "outline"} onClick={setWithdrawing}>Withdraw</Button>
+        <Stat>
+          <StatLabel>Bought</StatLabel>
+          <StatNumber>{formatEther(balance.mul(information.multiplier).div(information.divider))} {symbol}</StatNumber>
+        </Stat>
+        <Stat>
+          <StatLabel>Withdrawn</StatLabel>
+          <StatNumber>{participated ? "No" : "Didn't participate"}</StatNumber>
+        </Stat>
       </Stack>
-      <Stat alignSelf={"center"}>
-        <StatLabel>Bought</StatLabel>
-        <StatNumber>{formatEther(balance.mul(information.multiplier).div(information.divider))} {symbol}</StatNumber>
-      </Stat>
-      <BuyConversorComponent />
-      <ActionButtonComponent
-        info={information}
-        action={buying ? onBuy : onWithdraw}
-        actionName={buying ? "Buy" : "Withdraw"}
-        status={status}
-      />
+      <Button disabled={!participated}>{participated ? "Withdraw" : "Didn't participate"}</Button>
     </Stack>
   </Box >
 }

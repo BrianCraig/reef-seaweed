@@ -23,7 +23,7 @@ const IDOInformation: FunctionComponent = () => {
   const { name } = useContext(TokenContext);
   return <Stack spacing={8}>
     <Stack direction={"row"} spacing={2}>
-      <Heading>XRand Online Game({name})</Heading>
+      <Heading>XRand Online Game</Heading>
       <Text>{status !== undefined && IDOStatus[status]}</Text>
       <Tag alignSelf={"flex-start"} size="sm" variant="outline" colorScheme="blue">
         <TagLabel>Can Buy</TagLabel>
@@ -34,9 +34,14 @@ const IDOInformation: FunctionComponent = () => {
         <TagRightIcon as={InfoOutlineIcon} />
       </Tag>
     </Stack>
-    <Text>{lorem}</Text>
-    <Text>{maecenas}</Text>
-    <CrowdsaleInformationComponent />
-    <IDOInteractComponent />
+    <Stack direction={"row"} spacing={8}>
+      <Stack spacing={8}>
+        <Text>{lorem}</Text>
+        <Text>{maecenas}</Text>
+        <CrowdsaleInformationComponent />
+      </Stack>
+      <IDOInteractComponent />
+    </Stack>
+
   </Stack >
 }

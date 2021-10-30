@@ -15,7 +15,7 @@ export const CrowdsaleInformationComponent = () => {
   let reefBase = parseFloat(utils.formatEther(information.maxSoldBaseAmount))
   return <Box border={"1px"} borderColor={"app.400"} borderRadius={8}>
     <Table variant="simple">
-      <TableCaption>This rules are immutable</TableCaption>
+      <TableCaption>This rules are immutable, all times are in local time</TableCaption>
       <Thead>
         <Tr>
           <Th>crowdsale Rule</Th>
@@ -40,20 +40,20 @@ export const CrowdsaleInformationComponent = () => {
           <Td isNumeric>1,000.00 {symbol}</Td>
         </Tr>
         <Tr>
-          <Td>KRF by each REEF multiplier</Td>
+          <Td>{symbol} multiplier</Td>
           <Td isNumeric>{multiplier.toFixed(2)}</Td>
         </Tr>
         <Tr>
-          <Td>Crowdsale total supply percentage</Td>
+          <Td>IDO mint percentage</Td>
           <Td isNumeric>75.23%</Td>
         </Tr>
         <Tr>
-          <Td>Estimated REEF for Stakeholders</Td>
+          <Td>Raise goal</Td>
           <Td isNumeric>{reefBase} REEF - {reefBase * 0.03} U$D</Td>
         </Tr>
         <Tr>
           <Td>Open range</Td>
-          <Td isNumeric>{format(timestampToDate(information.startingTimestamp), "PPpp")} to {format(timestampToDate(information.endTimestamp), "PPpp")}, local time</Td>
+          <Td isNumeric>{format(timestampToDate(information.startingTimestamp), "PPpp")} to {format(timestampToDate(information.endTimestamp), "PPpp")}</Td>
         </Tr>
         <Tr>
           <Td>Is refundable?</Td>
@@ -65,7 +65,7 @@ export const CrowdsaleInformationComponent = () => {
         </Tr>
         <Tr>
           <Td>Refund range</Td>
-          <Td isNumeric>{format(timestampToDate(information.startingTimestamp), "PPpp")} to {format(timestampToDate(information.endTimestamp), "PPpp")}, local time</Td>
+          <Td isNumeric>{format(timestampToDate(information.startingTimestamp), "PPpp")} to {format(timestampToDate(information.endTimestamp), "PPpp")}</Td>
         </Tr>
       </Tbody>
     </Table>
