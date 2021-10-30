@@ -29,7 +29,9 @@ interface IDOContextInterface {
   setWei: React.Dispatch<React.SetStateAction<BigNumber>>
   onBuy: () => any,
   onWithdraw: () => any,
-  balance: BigNumber
+  onGetPayout: () => any,
+  balance: BigNumber,
+  paid: boolean
 }
 
 const timestampToStatus = ({ startingTimestamp, endTimestamp }: InformationInterface): IDOStatus => {
@@ -46,7 +48,9 @@ export const IDOContext = React.createContext<IDOContextInterface>({
   setWei: () => { },
   onBuy: () => { },
   onWithdraw: () => { },
-  balance: BigNumber.from(0)
+  onGetPayout: () => { },
+  balance: BigNumber.from(0),
+  paid: false
 });
 
 export const IDOContextProvider: React.FunctionComponent<{ address: string }> = ({ children, address }) => {
@@ -55,6 +59,7 @@ export const IDOContextProvider: React.FunctionComponent<{ address: string }> = 
   let contract = selectedSigner ? IIDO(address).connect(selectedSigner.signer as any) : undefined;
   const { execute: informationExecute, status: informationStatus, value: information } = useAsync<any>(() => contract!.information(), false);
   const { execute: balanceExecute, status: balanceStatus, value: balanceValue } = useAsync<any>(() => contract!.boughtAmount(selectedSigner!.evmAddress), false);
+  const { execute: paidExecute, status: paidStatus, value: paidValue } = useAsync<boolean>(() => contract!.beenPaid(selectedSigner!.evmAddress), false);
 
   useEffect(() => {
     if (selectedSigner && informationStatus === "idle") {
@@ -74,11 +79,24 @@ export const IDOContextProvider: React.FunctionComponent<{ address: string }> = 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contract, wei])
 
+  let onGetPayout = useCallback(async () => {
+    await contract!.getPayout();
+    paidExecute();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [contract, wei])
+
   useEffect(() => {
     if (selectedSigner && balanceStatus === "idle") {
       balanceExecute();
     }
   }, [selectedSigner, balanceStatus, balanceExecute])
+
+  useEffect(() => {
+    if (selectedSigner && paidStatus === "idle") {
+      paidExecute();
+    }
+  }, [selectedSigner, paidStatus, paidExecute])
+
   useIntervalUpdate();
 
   const status = information ? timestampToStatus((information as InformationInterface)) : undefined;
@@ -89,9 +107,11 @@ export const IDOContextProvider: React.FunctionComponent<{ address: string }> = 
     setWei,
     onBuy,
     onWithdraw,
+    onGetPayout,
+    paid: !!paidValue,
     balance: balanceValue || BigNumber.from(0)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }), [information, status, wei, setWei, balanceValue])
+  }), [information, status, wei, setWei, balanceValue, paidValue])
 
   return <IDOContext.Provider value={value}>
     {information?.tokenAddress ? <TokenContextProvider address={information.tokenAddress} children={children} /> : children}

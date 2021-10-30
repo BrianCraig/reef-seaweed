@@ -212,14 +212,6 @@ export const WithdrawTX: TxType = {
   }
 }
 
-export const FulfillTX: TxType = {
-  title: "FulFill IDO",
-  fields: [],
-  action: async ({ args: { contract } }) => {
-    console.log(await contract.fulfill());
-  }
-}
-
 let timestampFromDate = (date: Date) => Math.floor(date.valueOf() / 1000);
 
 export const ContractBasicIDOAction = async (contract: any, { tokenName, tokenSymbol, reefAmount, reefMultiplier, start, end }: PublishValues) => {

@@ -54,6 +54,13 @@ interface IIDO {
     function boughtAmount(address account) external view returns (uint256);
 
     /**
+     * @dev Get's the payout, but in a specific address.
+     */
+    function beenPaid(address otherAddress) external view returns (bool paid);
+
+    function getRaised() external;
+
+    /**
      * @dev Emitted when a user buys
      */
     event Bought(address owner, uint256 quantity);

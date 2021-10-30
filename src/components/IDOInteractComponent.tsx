@@ -63,7 +63,7 @@ const BuyConversorComponent: FunctionComponent = () => {
 }
 
 export const IDOInteractComponent = () => {
-  const { information, status, onBuy, onWithdraw, balance } = useContext(IDOContext);
+  const { information, status, onBuy, onWithdraw, balance, paid, onGetPayout } = useContext(IDOContext);
   const { symbol } = useContext(TokenContext);
   const [buying, setBuying, setWithdrawing] = useToggle(true);
 
@@ -95,7 +95,7 @@ export const IDOInteractComponent = () => {
       </Stack>
     </Box >
 
-  const participated = balance.lt(0);
+  const participated = balance.gt(0);
   return <Box borderRadius="md" borderColor={"app.400"} borderWidth={"1px"} w={480} alignSelf={"flex-start"} display={"flex"} flexDirection={"column"} padding={2} boxSizing={"border-box"} flexShrink={0}>
     <Stack spacing={2} >
       <Stack direction={"row"}>
@@ -104,11 +104,11 @@ export const IDOInteractComponent = () => {
           <StatNumber>{formatEther(balance.mul(information.multiplier).div(information.divider))} {symbol}</StatNumber>
         </Stat>
         <Stat>
-          <StatLabel>Withdrawn</StatLabel>
-          <StatNumber>{participated ? "No" : "Didn't participate"}</StatNumber>
+          <StatLabel>Paid</StatLabel>
+          <StatNumber>{participated ? (paid ? "Yes" : "No") : "Didn't participate"}</StatNumber>
         </Stat>
       </Stack>
-      <Button disabled={!participated}>{participated ? "Withdraw" : "Didn't participate"}</Button>
+      <Button disabled={!participated && !paid} onClick={onGetPayout}>{participated ? (paid ? "Already paid" : "Get Payout") : "Didn't participate"}</Button>
     </Stack>
   </Box >
 }

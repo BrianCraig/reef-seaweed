@@ -4,9 +4,10 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "../erc20/ERC20Entangled.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "./IIDO.sol";
 
-contract BasicIdo is IIDO {
+contract BasicIdo is IIDO, Ownable {
     ERC20Entangled private _tokenAddress;
     uint32 private _multiplier;
     uint32 private _divider;
@@ -16,6 +17,7 @@ contract BasicIdo is IIDO {
     uint256 private _maxSoldBaseAmount;
     uint256 private _boughtCounter = 0;
     mapping(address => uint256) private _bought;
+    mapping(address => bool) private _beenPaid;
 
     constructor(
         string memory tokenName,
@@ -117,11 +119,31 @@ contract BasicIdo is IIDO {
      * @dev Get's the payout, but in a specific address.
      */
     function getPayoutOn(address otherAddress) public override {
-        uint256 amount = _bought[otherAddress];
+        uint256 amount = _bought[msg.sender];
         require(amount > 0, "Nothing to pay");
-        require(block.timestamp >= _endTimestamp, "IDO still open");
-        _tokenAddress.mint(otherAddress, (amount * _multiplier) % _divider);
-        _bought[otherAddress] = 0;
+        require(!_beenPaid[msg.sender], "Already paid");
+        require(block.timestamp >= _endTimestamp, "Crowdsale still open");
+        _tokenAddress.mint(otherAddress, (amount * _multiplier) / _divider);
+        _beenPaid[msg.sender] = true;
+    }
+
+    /**
+     * @dev Get's the payout, but in a specific address.
+     */
+    function beenPaid(address otherAddress)
+        public
+        view
+        override
+        returns (bool paid)
+    {
+        return _beenPaid[msg.sender];
+    }
+
+    /**
+     * @dev Empties the contract wei and sends it to the owner
+     */
+    function getRaised() public override onlyOwner {
+        payable(msg.sender).transfer(address(this).balance);
     }
 
     /**
