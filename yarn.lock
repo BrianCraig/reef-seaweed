@@ -5505,7 +5505,7 @@ browserslist@^4.14.7, browserslist@^4.16.6, browserslist@^4.17.3:
     node-releases "^2.0.0"
     picocolors "^1.0.0"
 
-bs58@^4.0.0:
+bs58@^4.0.0, bs58@^4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/bs58/-/bs58-4.0.1.tgz#be161e76c354f6f788ae4071f63f34e8c4f0a42a"
   integrity sha1-vhYedsNU9veIrkBx9j806MTwpCo=
@@ -9905,6 +9905,12 @@ ipaddr.js@1.9.1, ipaddr.js@^1.9.0:
   version "1.9.1"
   resolved "https://registry.yarnpkg.com/ipaddr.js/-/ipaddr.js-1.9.1.tgz#bff38543eeb8984825079ff3a2a8e6cbd46781b3"
   integrity sha512-0KI/607xoxSToH7GjN1FfSbLoU0+btTicjsQSWQlh/hZykN8KpmMf7uYwPW3R+akZ6R/w18ZlXSHBYXiYUPO3g==
+
+"ipfs-multihash-on-solidity@https://github.com/saurfang/ipfs-multihash-on-solidity":
+  version "0.0.1"
+  resolved "https://github.com/saurfang/ipfs-multihash-on-solidity#55ef3ffcf9ff0c16e24735d0d653412442e39006"
+  dependencies:
+    bs58 "^4.0.1"
 
 is-absolute-url@^2.0.0:
   version "2.1.0"

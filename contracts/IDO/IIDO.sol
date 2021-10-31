@@ -17,10 +17,23 @@ interface IIDO {
             address tokenAddress,
             uint32 multiplier,
             uint32 divider,
-            uint256 ipfs,
             uint256 startingTimestamp,
             uint256 endTimestamp,
-            uint256 maxSoldBaseAmount
+            uint256 maxSoldBaseAmount,
+            bytes32 ipfsDigest,
+            uint8 ipfsHashFunction,
+            uint8 ipfsSize
+        );
+
+    /**
+     * @dev Change IPFS hash
+     */
+    function setIPFS()
+        external
+        returns (
+            bytes32 ipfsDigest,
+            uint8 ipfsHashFunction,
+            uint8 ipfsSize
         );
 
     /**

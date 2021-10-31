@@ -3,15 +3,21 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "../erc20/ERC20Entangled.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "../erc20/ERC20Entangled.sol";
 import "./IIDO.sol";
+import "./IPFSMultihash.sol";
 
 contract BasicIdo is IIDO, Ownable {
     ERC20Entangled private _tokenAddress;
     uint32 private _multiplier;
     uint32 private _divider;
-    uint256 private _ipfs = 0;
+    IPFSMultihash private _ipfs =
+        IPFSMultihash(
+            0x65b57eb7111c51b539ee694a5dd5f893e3f1ae4f7d47b6c31fb5903c9c8e7141,
+            18,
+            32
+        );
     uint256 private _startTimestamp;
     uint256 private _endTimestamp;
     uint256 private _maxSoldBaseAmount;
@@ -49,21 +55,42 @@ contract BasicIdo is IIDO, Ownable {
             address tokenAddress,
             uint32 multiplier,
             uint32 divider,
-            uint256 ipfs,
             uint256 startingTimestamp,
             uint256 endTimestamp,
-            uint256 maxSoldBaseAmount
+            uint256 maxSoldBaseAmount,
+            bytes32 ipfsDigest,
+            uint8 ipfsHashFunction,
+            uint8 ipfsSize
         )
     {
         return (
             address(_tokenAddress),
             _multiplier,
             _divider,
-            _ipfs,
             _startTimestamp,
             _endTimestamp,
-            _maxSoldBaseAmount
+            _maxSoldBaseAmount,
+            _ipfs.digest,
+            _ipfs.hashFunction,
+            _ipfs.size
         );
+    }
+
+    /**
+     * @dev Change IPFS hash
+     */
+    function setIPFS()
+        external
+        override
+        onlyOwner
+        returns (
+            bytes32 ipfsDigest,
+            uint8 ipfsHashFunction,
+            uint8 ipfsSize
+        )
+    {
+        require(block.timestamp <= _startTimestamp, "IDO not on pre-sale");
+        _ipfs = IPFSMultihash(ipfsDigest, ipfsHashFunction, ipfsSize);
     }
 
     /**
