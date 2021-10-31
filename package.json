@@ -24,6 +24,7 @@
     "evergreen-ui": "^6.5.1",
     "formik": "^2.2.9",
     "framer-motion": "^4",
+    "ipfs-http-client": "^53.0.1",
     "ipfs-multihash-on-solidity": "https://github.com/saurfang/ipfs-multihash-on-solidity",
     "normalize.css": "^8.0.1",
     "react": "^17.0.2",
