@@ -3,6 +3,7 @@ import { Field, Form, Formik, FormikProps } from 'formik';
 import { FunctionComponent, useContext } from "react";
 import * as Yup from 'yup';
 import { BasicIDO } from "../abis/contracts";
+import { FieldRenderer } from "../components/FieldRenderer";
 import { AccountsContext } from "../contexts/AccountsContext";
 import { ContractsContext } from "../contexts/ContractsContext";
 import { IDOContext } from "../contexts/IDOContext";
@@ -16,7 +17,6 @@ const validationSchema = Yup.object().shape({
     .required('Required'),
 });
 
-
 const initialValues: PublishValues = {
   tokenName: "",
   tokenSymbol: "",
@@ -24,23 +24,6 @@ const initialValues: PublishValues = {
   reefMultiplier: 5,
   start: "",
   end: ""
-}
-
-const FieldRenderer: FunctionComponent<{ title: string, name: string, type?: string, placeholder?: string, helper?: string }> = ({ title, name, placeholder, type, helper }) => {
-  return <Field name={name}>
-    {
-      ({ field, meta }: any) => (
-        <FormControl isRequired id={field.id} isInvalid={meta.touched && meta.error}>
-          <FormLabel htmlFor={field.id}>{title}</FormLabel>
-          <Input {...field} type={type} placeholder={placeholder} />
-          {meta.touched && meta.error && (
-            <FormErrorMessage>{meta.error}</FormErrorMessage>
-          )}
-          <FormHelperText>{helper}</FormHelperText>
-        </FormControl>
-      )
-    }
-  </Field >
 }
 
 const FormikFormComponent: FunctionComponent<FormikProps<PublishValues>> = ({ isSubmitting }) => {
