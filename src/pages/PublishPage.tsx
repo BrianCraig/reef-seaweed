@@ -1,12 +1,11 @@
-import { Button, FormControl, FormErrorMessage, FormHelperText, FormLabel, Heading, Input, Stack, useToast } from "@chakra-ui/react"
-import { Field, Form, Formik, FormikProps } from 'formik';
+import { Button, Heading, Stack, useToast } from "@chakra-ui/react"
+import { Form, Formik, FormikProps } from 'formik';
 import { FunctionComponent, useContext } from "react";
 import * as Yup from 'yup';
 import { BasicIDO } from "../abis/contracts";
 import { FieldRenderer } from "../components/FieldRenderer";
 import { AccountsContext } from "../contexts/AccountsContext";
 import { ContractsContext } from "../contexts/ContractsContext";
-import { IDOContext } from "../contexts/IDOContext";
 import { ContractBasicIDOAction } from "../utils/txFactorys";
 import { PublishValues } from "../utils/types";
 

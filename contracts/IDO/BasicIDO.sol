@@ -157,13 +157,13 @@ contract BasicIdo is IIDO, Ownable {
     /**
      * @dev Get's the payout, but in a specific address.
      */
-    function beenPaid(address otherAddress)
+    function beenPaid(address account)
         public
         view
         override
         returns (bool paid)
     {
-        return _beenPaid[msg.sender];
+        return _beenPaid[account];
     }
 
     /**

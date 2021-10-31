@@ -4,7 +4,7 @@ import { IIDO } from '../abis/contracts';
 import { useAsync, useIntervalUpdate } from '../utils/hooks';
 import { AccountsContext } from './AccountsContext';
 import { TokenContextProvider } from './TokenContext';
-import { IDOStatus, InformationInterface } from '../utils/types';
+import { IDOStatus, InformationInterface, IPFSIDO } from '../utils/types';
 import { timestampToStatus } from '../utils/utils';
 
 interface IDOContextInterface {
@@ -16,7 +16,8 @@ interface IDOContextInterface {
   onWithdraw: () => any,
   onGetPayout: () => any,
   balance: BigNumber,
-  paid: boolean
+  paid: boolean,
+  ipfs?: IPFSIDO
 }
 
 export const IDOContext = React.createContext<IDOContextInterface>({
@@ -29,6 +30,21 @@ export const IDOContext = React.createContext<IDOContextInterface>({
   paid: false
 });
 
+const errorFetching: IPFSIDO = {
+  title: "Title unreachable",
+  subtitle: "",
+  description: ""
+}
+
+const IPFSFetch = async (id: string): Promise<IPFSIDO> => {
+  try {
+    let page = await fetch(`https://ipfs.infura.io/ipfs/${id}`)
+    return await page.json()
+  } catch {
+    return errorFetching
+  }
+}
+
 export const IDOContextProvider: React.FunctionComponent<{ address: string }> = ({ children, address }) => {
   const { selectedSigner } = useContext(AccountsContext);
   const [wei, setWei] = useState<BigNumber>(BigNumber.from(0));
@@ -36,6 +52,13 @@ export const IDOContextProvider: React.FunctionComponent<{ address: string }> = 
   const { execute: informationExecute, status: informationStatus, value: information } = useAsync<any>(() => contract!.information(), false);
   const { execute: balanceExecute, status: balanceStatus, value: balanceValue } = useAsync<any>(() => contract!.boughtAmount(selectedSigner!.evmAddress), false);
   const { execute: paidExecute, status: paidStatus, value: paidValue } = useAsync<boolean>(() => contract!.beenPaid(selectedSigner!.evmAddress), false);
+  const { execute: ipfsExecute, status: ipfsStatus, value: ipfsValue } = useAsync<IPFSIDO>(() => IPFSFetch("QmVBgQGtnsgm7UpuZQJnuY8K2tzHfqAKcEthQfrezLVfqS"), false);
+
+  useEffect(() => {
+    if (information && ipfsStatus === "idle") {
+      ipfsExecute();
+    }
+  }, [information, ipfsStatus, ipfsExecute])
 
   useEffect(() => {
     if (selectedSigner && informationStatus === "idle") {
@@ -85,9 +108,10 @@ export const IDOContextProvider: React.FunctionComponent<{ address: string }> = 
     onWithdraw,
     onGetPayout,
     paid: !!paidValue,
-    balance: balanceValue || BigNumber.from(0)
+    balance: balanceValue || BigNumber.from(0),
+    ipfs: ipfsValue
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }), [information, status, wei, setWei, balanceValue, paidValue])
+  }), [information, status, wei, setWei, balanceValue, paidValue, ipfsValue])
 
   return <IDOContext.Provider value={value}>
     {information?.tokenAddress ? <TokenContextProvider address={information.tokenAddress} children={children} /> : children}
