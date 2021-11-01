@@ -7,7 +7,8 @@ import { IDOInteractContext } from "../contexts/IDOInteractContext";
 import { TokenContext } from "../contexts/TokenContext";
 import { useToggle, useIntervalUpdate } from "../utils/hooks";
 import { timestampToDate } from "../utils/utils";
-import { IDOStatus, InformationInterface } from "../utils/types";
+import { IDOStatus } from "../utils/types";
+import { IDOContext } from "../contexts/IDOContext";
 
 const { parseEther, formatEther } = utils;
 
@@ -26,11 +27,13 @@ const useWeiConversion = (value: BigNumber, setWei: React.Dispatch<React.SetStat
   return [formatEther(value), formatEther(to), setFromString, setToString] as const
 }
 
-const ActionButtonComponent: FunctionComponent<{ info: InformationInterface, action: () => any, actionName: string, status: IDOStatus }> = ({ info, action, actionName, status }) => {
+const ActionButtonComponent: FunctionComponent<{ action: () => any, actionName: string }> = ({ action, actionName }) => {
+  const { IDO: { params: { open: { start } } } } = useContext(IDOContext);
+  const { status } = useContext(IDOInteractContext);
   const disabled = status === IDOStatus.Pending || status === IDOStatus.Ended;
   let text = "";
   if (status === IDOStatus.Pending)
-    text = `Opens in ${formatDistanceStrict(Date.now(), timestampToDate(info.startingTimestamp))}`;
+    text = `Opens in ${formatDistanceStrict(Date.now(), timestampToDate(start))}`;
   if (status === IDOStatus.Open)
     text = actionName;
   if (status === IDOStatus.Ended)
@@ -40,9 +43,10 @@ const ActionButtonComponent: FunctionComponent<{ info: InformationInterface, act
 }
 
 const BuyConversorComponent: FunctionComponent = () => {
-  const { information, wei, setWei } = useContext(IDOInteractContext);
+  const { IDO: { params: { multiplier } } } = useContext(IDOContext);
+  const { wei, setWei } = useContext(IDOInteractContext);
   const { symbol } = useContext(TokenContext);
-  const [from, to, setFrom, setTo] = useWeiConversion(wei, setWei, information!.multiplier, information!.divider)
+  const [from, to, setFrom, setTo] = useWeiConversion(wei, setWei, multiplier.multiplier, multiplier.divider)
   return <Stack direction={"row"} alignItems={"center"}>
     <InputGroup>
       <InputLeftAddon children={"REEF"} />
@@ -64,11 +68,11 @@ const BuyConversorComponent: FunctionComponent = () => {
 }
 
 export const IDOInteractComponent = () => {
-  const { information, status, onBuy, onWithdraw, balance, paid, onGetPayout } = useContext(IDOInteractContext);
+  const { IDO: { params: { multiplier } } } = useContext(IDOContext);
+  const { status, onBuy, onWithdraw, balance, paid, onGetPayout } = useContext(IDOInteractContext);
   const { symbol } = useContext(TokenContext);
   const [buying, setBuying, setWithdrawing] = useToggle(true);
 
-  if (information === undefined || status === undefined) return <Box width={480} flexShrink={0} />;
   if (status !== IDOStatus.Ended)
     return <Box borderRadius="md" borderColor={"app.400"} borderWidth={"1px"} w={480} alignSelf={"flex-start"} display={"flex"} flexDirection={"column"} padding={2} boxSizing={"border-box"} flexShrink={0}>
       <Stack spacing={2} >
@@ -83,15 +87,13 @@ export const IDOInteractComponent = () => {
           </Stat>
           <Stat>
             <StatLabel>Bought</StatLabel>
-            <StatNumber>{formatEther(balance.mul(information.multiplier).div(information.divider))} {symbol}</StatNumber>
+            <StatNumber>{formatEther(balance.mul(multiplier.multiplier).div(multiplier.divider))} {symbol}</StatNumber>
           </Stat>
         </Stack>
         <BuyConversorComponent />
         <ActionButtonComponent
-          info={information}
           action={buying ? onBuy : onWithdraw}
           actionName={buying ? "Buy" : "Withdraw"}
-          status={status}
         />
       </Stack>
     </Box >
@@ -102,7 +104,7 @@ export const IDOInteractComponent = () => {
       <Stack direction={"row"}>
         <Stat>
           <StatLabel>Bought</StatLabel>
-          <StatNumber>{formatEther(balance.mul(information.multiplier).div(information.divider))} {symbol}</StatNumber>
+          <StatNumber>{formatEther(balance.mul(multiplier.multiplier).div(multiplier.divider))} {symbol}</StatNumber>
         </Stat>
         <Stat>
           <StatLabel>Paid</StatLabel>

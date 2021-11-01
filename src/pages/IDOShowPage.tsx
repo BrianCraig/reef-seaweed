@@ -1,4 +1,4 @@
-import { Heading, Text, Stack, Tag, TagLabel, TagRightIcon } from "@chakra-ui/react";
+import { Heading, Text, Stack, Tag, TagLabel, TagRightIcon, CircularProgress } from "@chakra-ui/react";
 import { CheckIcon, InfoOutlineIcon } from "@chakra-ui/icons";
 import { FunctionComponent, useContext } from "react";
 import { useParams } from "react-router-dom";
@@ -6,12 +6,20 @@ import { IDOInteractContext, IDOInteractContextProvider } from "../contexts/IDOI
 import { IDOInteractComponent } from "../components/IDOInteractComponent";
 import { CrowdsaleInformationComponent } from "../components/CrowdsaleInformationComponent";
 import { IDOStatus } from "../utils/types";
+import { IDOContextProvider } from "../contexts/IDOContext";
+
+const onLoading = <Stack spacing={8} alignItems={"center"} overflow={"hidden"}>
+  <Heading>Loading IDO</Heading>
+  <CircularProgress isIndeterminate color={"app.400"} />
+</Stack>
 
 export const IDOShowPage: FunctionComponent = () => {
   let { tx } = useParams<{ tx: string }>();
-  return <IDOInteractContextProvider address={tx}>
-    <IDOInformation />
-  </IDOInteractContextProvider>
+  return <IDOContextProvider id={parseInt(tx, 10)} onLoading={onLoading}>
+    <IDOInteractContextProvider>
+      <IDOInformation />
+    </IDOInteractContextProvider>
+  </IDOContextProvider>
 }
 
 const IDOInformation: FunctionComponent = () => {

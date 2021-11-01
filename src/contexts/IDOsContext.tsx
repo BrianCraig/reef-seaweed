@@ -11,10 +11,13 @@ import { NetworkContext } from './NetworkContext';
 import { IDO } from '../utils/contractTypes';
 
 interface IDOsContextInterface {
-  IDOs?: IDO[]
+  IDOs?: IDO[],
+  address: string
 }
 
-export const IDOsContext = React.createContext<IDOsContextInterface>({});
+export const IDOsContext = React.createContext<IDOsContextInterface>({
+  address: ""
+});
 
 const errorFetching: IPFSIDO = {
   title: "Title unreachable",
@@ -54,6 +57,7 @@ export const IDOsContextProvider: React.FunctionComponent<{ address: string }> =
   }, [provider, connected])
 
   return <IDOsContext.Provider value={{
-    IDOs
+    IDOs,
+    address
   }} children={children} />
 }
