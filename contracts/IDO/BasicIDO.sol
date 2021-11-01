@@ -6,182 +6,223 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "../erc20/ERC20Entangled.sol";
 import "./IIDO.sol";
-import "./IPFSMultihash.sol";
 
-contract BasicIdo is IIDO, Ownable {
-    ERC20Entangled private _tokenAddress;
-    uint32 private _multiplier;
-    uint32 private _divider;
-    IPFSMultihash private _ipfs =
-        IPFSMultihash(
-            0x65b57eb7111c51b539ee694a5dd5f893e3f1ae4f7d47b6c31fb5903c9c8e7141,
-            18,
-            32
-        );
-    uint256 private _startTimestamp;
-    uint256 private _endTimestamp;
-    uint256 private _maxSoldBaseAmount;
-    uint256 private _boughtCounter = 0;
-    mapping(address => uint256) private _bought;
-    mapping(address => bool) private _beenPaid;
+struct IPFSMultihash {
+    bytes32 digest;
+    uint8 hashFunction;
+    uint8 size;
+}
 
-    constructor(
-        string memory tokenName,
-        string memory tokenSymbol,
-        uint32 multiplier,
-        uint32 divider,
-        uint256 startTimestamp,
-        uint256 endTimestamp,
-        uint256 maxSoldBaseAmount
-    ) {
-        require(block.timestamp < endTimestamp, "would already ended");
-        require(
-            startTimestamp < endTimestamp,
-            "start time should be before end time"
+struct Range {
+    uint256 start;
+    uint256 end;
+}
+
+struct Multiplier {
+    uint32 multiplier;
+    uint32 divider;
+}
+
+struct IDOParams {
+    bool approved;
+    ERC20Entangled token;
+    Multiplier multiplier;
+    IPFSMultihash ipfs;
+    Range open;
+    uint256 baseAmount;
+    uint256 totalBought;
+}
+
+struct IDO {
+    IDOParams params;
+    address owner;
+}
+
+function _isValidMultiplier(Multiplier memory multiplier) pure returns (bool) {
+    return multiplier.multiplier > 0 && multiplier.divider > 0;
+}
+
+contract BasicIdo is Ownable {
+    IDO[] public idos;
+    mapping(uint256 => mapping(address => uint256)) bought;
+    mapping(uint256 => mapping(address => bool)) _beenPaid;
+
+    constructor() {
+        publish(
+            "X coin",
+            "X",
+            IDOParams(
+                true,
+                ERC20Entangled(address(0)),
+                Multiplier(1, 1),
+                IPFSMultihash(0, 0, 0),
+                Range(2**36, 2**37),
+                10,
+                0
+            )
         );
-        _tokenAddress = new ERC20Entangled(tokenName, tokenSymbol);
-        _multiplier = multiplier;
-        _divider = divider;
-        _startTimestamp = startTimestamp;
-        _endTimestamp = endTimestamp;
-        _maxSoldBaseAmount = maxSoldBaseAmount;
     }
 
-    function information()
-        public
-        view
-        override
-        returns (
-            address tokenAddress,
-            uint32 multiplier,
-            uint32 divider,
-            uint256 startingTimestamp,
-            uint256 endTimestamp,
-            uint256 maxSoldBaseAmount,
-            bytes32 ipfsDigest,
-            uint8 ipfsHashFunction,
-            uint8 ipfsSize
-        )
-    {
-        return (
-            address(_tokenAddress),
-            _multiplier,
-            _divider,
-            _startTimestamp,
-            _endTimestamp,
-            _maxSoldBaseAmount,
-            _ipfs.digest,
-            _ipfs.hashFunction,
-            _ipfs.size
+    function getId(uint256 id) internal view returns (IDO storage ido) {
+        require(idos.length > id, "IDO id non-existant");
+        return idos[id];
+    }
+
+    function publish(
+        string memory tokenName,
+        string memory tokenSymbol,
+        IDOParams memory params
+    ) public {
+        require(block.timestamp < params.open.end, "would already ended");
+        require(
+            params.open.start < params.open.end,
+            "start time should be before end time"
         );
+        require(
+            _isValidMultiplier(params.multiplier),
+            "Multiplier isn't valid"
+        );
+        ERC20Entangled token = new ERC20Entangled(tokenName, tokenSymbol);
+        uint256 id = idos.length;
+        idos.push(IDO(params, msg.sender));
+        IDO storage ido = idos[id];
+        ido.params.token = token;
+        if (ido.params.ipfs.digest == 0) {
+            ido.params.ipfs = IPFSMultihash(
+                0x65b57eb7111c51b539ee694a5dd5f893e3f1ae4f7d47b6c31fb5903c9c8e7141,
+                18,
+                32
+            );
+        }
+        ido.params.totalBought = 0;
+    }
+
+    function information(uint256 id) public view returns (IDOParams memory) {
+        return idos[id].params;
     }
 
     /**
      * @dev Change IPFS hash
      */
-    function setIPFS()
+    function setIPFS(uint256 id, IPFSMultihash calldata ipfs)
         external
-        override
         onlyOwner
-        returns (
-            bytes32 ipfsDigest,
-            uint8 ipfsHashFunction,
-            uint8 ipfsSize
-        )
     {
-        require(block.timestamp <= _startTimestamp, "IDO not on pre-sale");
-        _ipfs = IPFSMultihash(ipfsDigest, ipfsHashFunction, ipfsSize);
+        IDO storage ido = getId(id);
+        require(
+            block.timestamp <= ido.params.open.start,
+            "IDO not on pre-sale"
+        );
+        ido.params.ipfs = ipfs;
     }
 
     /**
      * @dev Returns if the selected address can buy.
      */
-    function canBuy(address account)
+    function canBuy(uint256 id, address account)
         public
         view
-        override
         returns (bool status)
     {
+        IDO storage ido = idos[id];
         return
-            (block.timestamp >= _startTimestamp) &&
-            (block.timestamp < _endTimestamp) &&
-            (_boughtCounter < _maxSoldBaseAmount);
+            (block.timestamp >= ido.params.open.start) &&
+            (block.timestamp < ido.params.open.end);
     }
 
-    function _availableToBuy() private view returns (uint256 quantity) {
-        return _maxSoldBaseAmount - _boughtCounter;
+    function _availableToBuy(IDO storage ido)
+        private
+        view
+        returns (uint256 quantity)
+    {
+        return ido.params.baseAmount - ido.params.totalBought;
     }
 
     /**
      * @dev Buys the base amount in wei, Fails on unsuccessful tx.
      */
-    function buy(uint256 amount) public payable override {
+    function buy(uint256 id, uint256 amount) public payable {
+        IDO storage ido = getId(id);
         require(msg.value == amount, "Non matching wei");
-        require(canBuy(msg.sender), "Can't buy");
-        require(amount <= _availableToBuy(), "Not enough available to buy");
-        _bought[msg.sender] += amount;
-        _boughtCounter += amount;
-        emit Bought(msg.sender, amount);
+        require(canBuy(id, msg.sender), "Can't buy");
+        require(amount <= _availableToBuy(ido), "Not enough available to buy");
+        bought[id][msg.sender] += amount;
+        ido.params.totalBought += amount;
+        emit Bought(id, msg.sender, amount);
     }
 
     /**
      * @dev Withdraws the amount, Fails on unsuccessful tx.
      */
-    function withdraw(uint256 amount) public override {
-        require(_bought[msg.sender] >= amount, "Not enough bought");
-        _bought[msg.sender] -= amount;
-        _boughtCounter -= amount;
+    function withdraw(uint256 id, uint256 amount) public {
+        IDO storage ido = getId(id);
+        require(bought[id][msg.sender] >= amount, "Not enough bought");
+        bought[id][msg.sender] -= amount;
+        ido.params.totalBought -= amount;
         payable(msg.sender).transfer(amount);
-        emit Withdrawn(msg.sender, amount);
+        emit Withdrawn(id, msg.sender, amount);
     }
 
     /**
      * @dev Get's the payout, Fails on unsuccessful tx.
      */
-    function getPayout() public override {
-        getPayoutOn(msg.sender);
+    function getPayout(uint256 id) public {
+        getPayoutOn(id, msg.sender);
     }
 
     /**
      * @dev Get's the payout, but in a specific address.
      */
-    function getPayoutOn(address otherAddress) public override {
-        uint256 amount = _bought[msg.sender];
+    function getPayoutOn(uint256 id, address otherAddress) public {
+        IDO storage ido = getId(id);
+        uint256 amount = bought[id][msg.sender];
         require(amount > 0, "Nothing to pay");
-        require(!_beenPaid[msg.sender], "Already paid");
-        require(block.timestamp >= _endTimestamp, "Crowdsale still open");
-        _tokenAddress.mint(otherAddress, (amount * _multiplier) / _divider);
-        _beenPaid[msg.sender] = true;
+        require(!_beenPaid[id][msg.sender], "Already paid");
+        require(block.timestamp >= ido.params.open.end, "Crowdsale still open");
+        ido.params.token.mint(
+            otherAddress,
+            (amount * ido.params.multiplier.multiplier) /
+                ido.params.multiplier.divider
+        );
+        _beenPaid[id][msg.sender] = true;
     }
 
     /**
      * @dev Get's the payout, but in a specific address.
      */
-    function beenPaid(address account)
+    function beenPaid(uint256 id, address account)
         public
         view
-        override
         returns (bool paid)
     {
-        return _beenPaid[account];
+        return _beenPaid[id][account];
     }
 
     /**
      * @dev Empties the contract wei and sends it to the owner
      */
-    function getRaised() public override onlyOwner {
+    function getRaised() public onlyOwner {
         payable(msg.sender).transfer(address(this).balance);
     }
 
     /**
      * @dev Returns the amount of tokens owned by `account`.
      */
-    function boughtAmount(address account)
+    function boughtAmount(uint256 id, address account)
         public
         view
-        override
         returns (uint256)
     {
-        return _bought[account];
+        return bought[id][account];
     }
+
+    /**
+     * @dev Emitted when a user buys
+     */
+    event Bought(uint256 id, address owner, uint256 quantity);
+
+    /**
+     * @dev Emitted when a user withdraws
+     */
+    event Withdrawn(uint256 id, address owner, uint256 quantity);
 }
