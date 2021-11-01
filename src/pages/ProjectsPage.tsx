@@ -3,13 +3,14 @@ import { Avatar, Box, CircularProgress, Heading, SimpleGrid, Stack, Tag, TagLabe
 import { utils } from "ethers";
 import { FunctionComponent, useContext } from "react"
 import { useHistory } from "react-router";
-import { ContractsContext } from "../contexts/ContractsContext"
-import { FullIDOInfo, IDOStatus } from "../utils/types"
-import { timestampToStatus } from "../utils/utils"
+import { IDOsContext } from "../contexts/IDOsContext";
+import { IDO } from "../utils/contractTypes";
+import { IDOStatus } from "../utils/types"
+import { rangeToStatus } from "../utils/utils"
 
-const IDOSummary: FunctionComponent<{ info: FullIDOInfo }> = ({ info: { info, address } }) => {
+const IDOSummary: FunctionComponent<{ ido: IDO }> = ({ ido: { params: { baseAmount, totalBought }, id } }) => {
   let { push } = useHistory();
-  return <Stack border={"1px"} borderColor={"app.400"} borderRadius={8} spacing={4} padding={4} onClick={() => push(`/ido/${address}`)}>
+  return <Stack border={"1px"} borderColor={"app.400"} borderRadius={8} spacing={4} padding={4} onClick={() => push(`/ido/${id}`)}>
     <Stack direction={"row"} spacing={4}>
       <Avatar size={"md"} name="Y K" />
       <Stack justifyContent={"space-between"} spacing={0}>
@@ -27,42 +28,42 @@ const IDOSummary: FunctionComponent<{ info: FullIDOInfo }> = ({ info: { info, ad
     </Box>
     <Stack direction={"row"} justifyContent={"space-between"}>
       <Text>Raise goal</Text>
-      <Text>{utils.formatEther(info.maxSoldBaseAmount)} REEF</Text>
+      <Text>{utils.formatEther(baseAmount)} REEF</Text>
     </Stack>
     <Stack direction={"row"} justifyContent={"space-between"}>
       <Text>Max allocation</Text>
       <Text>1,000 REEF</Text>
     </Stack>
     <Box border={"1px"} borderColor={"app.600"} borderRadius={8} bg={"app.100"}>
-      <Box width={"33%"} bg={"app.600"} height={2} />
+      <Box width={`${totalBought.mul(10000).div(baseAmount).toNumber() / 100}%`} bg={"app.600"} height={2} />
     </Box>
   </Stack >
 }
 
 export const ProjectsPage = () => {
-  let { IDOInfoMap, IDOInfoMapLoading } = useContext(ContractsContext);
+  let { IDOs } = useContext(IDOsContext);
 
-  if (IDOInfoMapLoading || IDOInfoMap === undefined) return <Stack spacing={8} alignItems={"center"} overflow={"hidden"}>
+  if (IDOs === undefined) return <Stack spacing={8} alignItems={"center"} overflow={"hidden"}>
     <Heading>Loading Projects</Heading>
     <CircularProgress isIndeterminate color={"app.400"} />
   </Stack>
 
-  let pendingProjects = IDOInfoMap.filter(e => timestampToStatus(e.info) === IDOStatus.Pending)
-  let openProjects = IDOInfoMap.filter(e => timestampToStatus(e.info) === IDOStatus.Open)
-  let endedProjects = IDOInfoMap.filter(e => timestampToStatus(e.info) === IDOStatus.Ended)
+  let pendingProjects = IDOs.filter(ido => rangeToStatus(ido.params.open) === IDOStatus.Pending)
+  let openProjects = IDOs.filter(ido => rangeToStatus(ido.params.open) === IDOStatus.Open)
+  let endedProjects = IDOs.filter(ido => rangeToStatus(ido.params.open) === IDOStatus.Ended)
 
   return <Stack spacing={8}>
     <Heading>Open projects</Heading>
     <SimpleGrid columns={3} spacing={8}>
-      {openProjects.map(info => <IDOSummary key={info.address} info={info} />)}
+      {openProjects.map(ido => <IDOSummary key={ido.params.token} ido={ido} />)}
     </SimpleGrid>
     <Heading>Upcoming projects</Heading>
     <SimpleGrid columns={3} spacing={8}>
-      {pendingProjects.map(info => <IDOSummary key={info.address} info={info} />)}
+      {pendingProjects.map(ido => <IDOSummary key={ido.params.token} ido={ido} />)}
     </SimpleGrid>
     <Heading>Finalized projects</Heading>
     <SimpleGrid columns={3} spacing={8}>
-      {endedProjects.map(info => <IDOSummary key={info.address} info={info} />)}
+      {endedProjects.map(ido => <IDOSummary key={ido.params.token} ido={ido} />)}
     </SimpleGrid>
   </Stack>
 }

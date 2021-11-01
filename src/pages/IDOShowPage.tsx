@@ -2,20 +2,20 @@ import { Heading, Text, Stack, Tag, TagLabel, TagRightIcon } from "@chakra-ui/re
 import { CheckIcon, InfoOutlineIcon } from "@chakra-ui/icons";
 import { FunctionComponent, useContext } from "react";
 import { useParams } from "react-router-dom";
-import { IDOContext, IDOContextProvider } from "../contexts/IDOContext";
+import { IDOInteractContext, IDOInteractContextProvider } from "../contexts/IDOInteractContext";
 import { IDOInteractComponent } from "../components/IDOInteractComponent";
 import { CrowdsaleInformationComponent } from "../components/CrowdsaleInformationComponent";
 import { IDOStatus } from "../utils/types";
 
 export const IDOShowPage: FunctionComponent = () => {
   let { tx } = useParams<{ tx: string }>();
-  return <IDOContextProvider address={tx}>
+  return <IDOInteractContextProvider address={tx}>
     <IDOInformation />
-  </IDOContextProvider>
+  </IDOInteractContextProvider>
 }
 
 const IDOInformation: FunctionComponent = () => {
-  const { status, ipfs } = useContext(IDOContext);
+  const { status, ipfs } = useContext(IDOInteractContext);
 
   return <Stack spacing={8}>
     <Stack>

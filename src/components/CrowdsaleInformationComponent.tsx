@@ -3,12 +3,12 @@ import { Table, TableCaption, Thead, Tr, Th, Tbody, Td } from "@chakra-ui/table"
 import { format } from 'date-fns'
 import { useContext } from "react"
 import { utils } from "ethers"
-import { IDOContext } from "../contexts/IDOContext"
+import { IDOInteractContext } from "../contexts/IDOInteractContext"
 import { TokenContext } from "../contexts/TokenContext"
 import { timestampToDate } from "../utils/utils"
 
 export const CrowdsaleInformationComponent = () => {
-  const { information } = useContext(IDOContext);
+  const { information } = useContext(IDOInteractContext);
   const { symbol, name } = useContext(TokenContext);
   if (!information) return null;
   let multiplier = information.multiplier / information.divider;

@@ -3,7 +3,7 @@ import { FunctionComponent, useCallback, useContext, useState } from "react";
 import { utils, BigNumber } from "ethers";
 import { formatDistanceStrict } from "date-fns";
 import { Stat, StatLabel, StatNumber, Box, Stack, InputGroup, InputLeftAddon, Input, Button } from "@chakra-ui/react"
-import { IDOContext } from "../contexts/IDOContext";
+import { IDOInteractContext } from "../contexts/IDOInteractContext";
 import { TokenContext } from "../contexts/TokenContext";
 import { useToggle, useIntervalUpdate } from "../utils/hooks";
 import { timestampToDate } from "../utils/utils";
@@ -40,7 +40,7 @@ const ActionButtonComponent: FunctionComponent<{ info: InformationInterface, act
 }
 
 const BuyConversorComponent: FunctionComponent = () => {
-  const { information, wei, setWei } = useContext(IDOContext);
+  const { information, wei, setWei } = useContext(IDOInteractContext);
   const { symbol } = useContext(TokenContext);
   const [from, to, setFrom, setTo] = useWeiConversion(wei, setWei, information!.multiplier, information!.divider)
   return <Stack direction={"row"} alignItems={"center"}>
@@ -64,7 +64,7 @@ const BuyConversorComponent: FunctionComponent = () => {
 }
 
 export const IDOInteractComponent = () => {
-  const { information, status, onBuy, onWithdraw, balance, paid, onGetPayout } = useContext(IDOContext);
+  const { information, status, onBuy, onWithdraw, balance, paid, onGetPayout } = useContext(IDOInteractContext);
   const { symbol } = useContext(TokenContext);
   const [buying, setBuying, setWithdrawing] = useToggle(true);
 

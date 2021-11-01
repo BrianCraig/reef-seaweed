@@ -45,6 +45,9 @@ export const Layout = () => {
               <Route exact path="/publish">
                 <PublishPage />
               </Route>
+              <Route exact path="/publish/:tx/ipfs">
+                <PublishPage />
+              </Route>
               <Route exact path="/settings">
                 <ToolsPage />
               </Route>

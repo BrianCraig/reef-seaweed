@@ -1,5 +1,6 @@
 import { BigNumber } from "ethers";
 import { useState, useCallback } from "react";
+import { IDORange } from "./contractTypes";
 import { InformationInterface, IDOStatus } from "./types";
 
 export const ensure = (condition: boolean, message: string): void => {
@@ -46,5 +47,12 @@ export const timestampToStatus = ({ startingTimestamp, endTimestamp }: Informati
   let timestampNow = Math.floor(Date.now() / 1000);
   if (timestampNow < start) return IDOStatus.Pending;
   if (timestampNow < end) return IDOStatus.Open;
+  return IDOStatus.Ended;
+}
+
+export const rangeToStatus = ({ start, end }: IDORange): IDOStatus => {
+  let timestampNow = Math.floor(Date.now() / 1000);
+  if (timestampNow < start.toNumber()) return IDOStatus.Pending;
+  if (timestampNow < end.toNumber()) return IDOStatus.Open;
   return IDOStatus.Ended;
 }

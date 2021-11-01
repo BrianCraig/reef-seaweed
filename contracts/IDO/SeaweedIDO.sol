@@ -44,7 +44,7 @@ function _isValidMultiplier(Multiplier memory multiplier) pure returns (bool) {
 }
 
 contract SeaweedIDO is Ownable {
-    IDO[] public idos;
+    IDO[] private idos;
     mapping(uint256 => mapping(address => uint256)) bought;
     mapping(uint256 => mapping(address => bool)) _beenPaid;
 
@@ -102,8 +102,8 @@ contract SeaweedIDO is Ownable {
         ido.params.totalBought = 0;
     }
 
-    function information(uint256 id) public view returns (IDOParams memory) {
-        return idos[id].params;
+    function information(uint256 id) public view returns (IDO memory) {
+        return idos[id];
     }
 
     /**

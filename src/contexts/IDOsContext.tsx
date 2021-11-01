@@ -8,14 +8,13 @@ import { IDOStatus, InformationInterface, IPFSIDO } from '../utils/types';
 import { timestampToStatus } from '../utils/utils';
 import { getMultihashFromBytes32 } from "ipfs-multihash-on-solidity";
 import { NetworkContext } from './NetworkContext';
+import { IDO } from '../utils/contractTypes';
 
 interface IDOsContextInterface {
-
+  IDOs?: IDO[]
 }
 
-export const IDOsContext = React.createContext<IDOsContextInterface>({
-
-});
+export const IDOsContext = React.createContext<IDOsContextInterface>({});
 
 const errorFetching: IPFSIDO = {
   title: "Title unreachable",
@@ -39,11 +38,11 @@ const IPFSFetch = async (info: InformationInterface): Promise<IPFSIDO> => {
 
 export const IDOsContextProvider: React.FunctionComponent<{ address: string }> = ({ children, address }) => {
   const { provider, connected } = useContext(NetworkContext);
-  const { execute, status, value } = useAsync<any>(async () => {
+  const { execute, value: IDOs } = useAsync<IDO[]>(async () => {
     const contract = IIDO(address).connect(provider as any);
     let length = ((await contract.idosLength()) as BigNumber).toNumber();
-    let IDOsInfo = await Promise.all(Array.from(Array(length).keys()).map((id) => contract.information(id)))
-    console.log(IDOsInfo);
+    let IDOsInfo = await Promise.all(Array.from(Array(length).keys()).map((id): Promise<IDO> => contract.information(id)))
+    IDOsInfo = IDOsInfo.map((ori, id) => ({ ...ori, id }))
     return IDOsInfo;
   }, false);
 
@@ -54,5 +53,7 @@ export const IDOsContextProvider: React.FunctionComponent<{ address: string }> =
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [provider, connected])
 
-  return <IDOsContext.Provider value={{}} children={children} />
+  return <IDOsContext.Provider value={{
+    IDOs
+  }} children={children} />
 }

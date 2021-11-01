@@ -27,4 +27,3 @@ export const appTheme = extendTheme({
 },
   withDefaultColorScheme({ colorScheme: "app" })
 )
-console.log(appTheme);
