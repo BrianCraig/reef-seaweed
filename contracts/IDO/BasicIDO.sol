@@ -36,6 +36,7 @@ struct IDOParams {
 struct IDO {
     IDOParams params;
     address owner;
+    uint256 paidToOwner;
 }
 
 function _isValidMultiplier(Multiplier memory multiplier) pure returns (bool) {
@@ -84,7 +85,7 @@ contract BasicIdo is Ownable {
         );
         ERC20Entangled token = new ERC20Entangled(tokenName, tokenSymbol);
         uint256 id = idos.length;
-        idos.push(IDO(params, msg.sender));
+        idos.push(IDO(params, msg.sender, 0));
         IDO storage ido = idos[id];
         ido.params.token = token;
         if (ido.params.ipfs.digest == 0) {
@@ -104,11 +105,9 @@ contract BasicIdo is Ownable {
     /**
      * @dev Change IPFS hash
      */
-    function setIPFS(uint256 id, IPFSMultihash calldata ipfs)
-        external
-        onlyOwner
-    {
+    function setIPFS(uint256 id, IPFSMultihash calldata ipfs) external {
         IDO storage ido = getId(id);
+        require(ido.owner == msg.sender, "must be owner");
         require(
             block.timestamp <= ido.params.open.start,
             "IDO not on pre-sale"
@@ -201,8 +200,13 @@ contract BasicIdo is Ownable {
     /**
      * @dev Empties the contract wei and sends it to the owner
      */
-    function getRaised() public onlyOwner {
-        payable(msg.sender).transfer(address(this).balance);
+    function getRaised(uint256 id) public {
+        IDO storage ido = getId(id);
+        require(ido.owner == msg.sender, "must be owner");
+        require(ido.params.open.end <= block.timestamp, "ido must be ended");
+        uint256 payout = ido.params.totalBought - ido.paidToOwner;
+        payable(msg.sender).transfer(payout);
+        ido.paidToOwner = ido.params.totalBought;
     }
 
     /**
