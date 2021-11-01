@@ -2,7 +2,7 @@ import { Button, Heading, Stack, useToast } from "@chakra-ui/react"
 import { Form, Formik, FormikProps } from 'formik';
 import { FunctionComponent, useContext } from "react";
 import * as Yup from 'yup';
-import { BasicIDO } from "../abis/contracts";
+import { SeaweedIDO } from "../abis/contracts";
 import { FieldRenderer } from "../components/FieldRenderer";
 import { AccountsContext } from "../contexts/AccountsContext";
 import { ContractsContext } from "../contexts/ContractsContext";
@@ -77,7 +77,7 @@ export const PublishPage = () => {
       initialValues={initialValues}
       validationSchema={validationSchema}
       onSubmit={async (values, actions) => {
-        let address = await ContractBasicIDOAction(BasicIDO.connect(selectedSigner!.signer as any), values);
+        let address = await ContractBasicIDOAction(SeaweedIDO.connect(selectedSigner!.signer as any), values);
         toast({
           title: "IDO Contract deployed.",
           description: "Hooray 🥳! Your Crowdsale Contract has been deployed successfully.",

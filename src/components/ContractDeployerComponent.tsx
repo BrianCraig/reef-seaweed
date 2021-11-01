@@ -4,7 +4,7 @@ import { useContext } from "react"
 import { AccountsContext } from "../contexts/AccountsContext"
 import { TxContext } from "../contexts/TxContext"
 import { ContractBasicIDOTX, ContractERC20TX, ContractStackingMockTX } from "../utils/txFactorys"
-import { BasicIDO } from "../abis/contracts"
+import { SeaweedIDO } from "../abis/contracts"
 
 import erc20Sol from "../abis/erc20.solidity.abi.json";
 import stckMockSol from "../abis/stacking.mock.solidity.abi.json";
@@ -21,7 +21,7 @@ export const ContractDeployerComponent: React.FunctionComponent = () => {
   let erc20 = () => setTx({ args: { contract: erc20SolContract.connect(selectedSigner?.signer as any) }, type: ContractERC20TX })
   let stkMock = () => setTx({ args: { contract: stckMockSolContract.connect(selectedSigner?.signer as any) }, type: ContractStackingMockTX })
   let onSuccess = (address: string) => { setIDOList(list => [...list, address]) };
-  let basicIDO = () => setTx({ args: { contract: BasicIDO.connect(selectedSigner?.signer as any), onSuccess }, type: ContractBasicIDOTX })
+  let basicIDO = () => setTx({ args: { contract: SeaweedIDO.connect(selectedSigner?.signer as any), onSuccess }, type: ContractBasicIDOTX })
 
   return <Pane display={"flex"} alignItems="center" gap={majorScale(1)}>
     <Text>Click to Deploy</Text>

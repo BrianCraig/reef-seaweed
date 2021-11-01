@@ -6,6 +6,7 @@ import { AccountsContext } from './AccountsContext';
 import { TokenContextProvider } from './TokenContext';
 import { IDOStatus, InformationInterface, IPFSIDO } from '../utils/types';
 import { timestampToStatus } from '../utils/utils';
+import { getMultihashFromBytes32 } from "ipfs-multihash-on-solidity";
 
 interface IDOContextInterface {
   information?: InformationInterface
@@ -36,8 +37,13 @@ const errorFetching: IPFSIDO = {
   description: ""
 }
 
-const IPFSFetch = async (id: string): Promise<IPFSIDO> => {
+const IPFSFetch = async (info: InformationInterface): Promise<IPFSIDO> => {
   try {
+    let id = getMultihashFromBytes32({
+      size: info.ipfsSize,
+      digest: info.ipfsDigest,
+      hashFunction: info.ipfsHashFunction
+    })
     let page = await fetch(`https://ipfs.infura.io/ipfs/${id}`)
     return await page.json()
   } catch {
@@ -49,10 +55,10 @@ export const IDOContextProvider: React.FunctionComponent<{ address: string }> = 
   const { selectedSigner } = useContext(AccountsContext);
   const [wei, setWei] = useState<BigNumber>(BigNumber.from(0));
   let contract = selectedSigner ? IIDO(address).connect(selectedSigner.signer as any) : undefined;
-  const { execute: informationExecute, status: informationStatus, value: information } = useAsync<any>(() => contract!.information(), false);
+  const { execute: informationExecute, status: informationStatus, value: information } = useAsync<InformationInterface>(() => contract!.information(), false);
   const { execute: balanceExecute, status: balanceStatus, value: balanceValue } = useAsync<any>(() => contract!.boughtAmount(selectedSigner!.evmAddress), false);
   const { execute: paidExecute, status: paidStatus, value: paidValue } = useAsync<boolean>(() => contract!.beenPaid(selectedSigner!.evmAddress), false);
-  const { execute: ipfsExecute, status: ipfsStatus, value: ipfsValue } = useAsync<IPFSIDO>(() => IPFSFetch("QmVBgQGtnsgm7UpuZQJnuY8K2tzHfqAKcEthQfrezLVfqS"), false);
+  const { execute: ipfsExecute, status: ipfsStatus, value: ipfsValue } = useAsync<IPFSIDO>(() => IPFSFetch(information!), false);
 
   useEffect(() => {
     if (information && ipfsStatus === "idle") {

@@ -59,11 +59,13 @@ export interface InformationInterface {
   tokenAddress: string
   multiplier: number
   divider: number
-  ipfs: BigNumber
   startingTimestamp: BigNumber
   endTimestamp: BigNumber
   fulfilled: boolean
   maxSoldBaseAmount: BigNumber
+  ipfsDigest: string
+  ipfsHashFunction: number
+  ipfsSize: number
 }
 
 export interface FullIDOInfo { address: string, info: InformationInterface }
