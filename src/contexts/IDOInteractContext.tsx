@@ -50,44 +50,45 @@ const IPFSFetch = async (ido: IDO): Promise<IPFSIDO> => {
 }
 
 export const IDOInteractContextProvider: React.FunctionComponent = ({ children }) => {
-  const { address } = useContext(IDOsContext);
   const { IDO } = useContext(IDOContext);
   const { selectedSigner } = useContext(AccountsContext);
   const [wei, setWei] = useState<BigNumber>(BigNumber.from(0));
-  let contract = selectedSigner ? IIDO(address).connect(selectedSigner.signer as any) : undefined;
+  let contract = selectedSigner ? IIDO(selectedSigner.signer as any) : undefined;
   const { execute: balanceExecute, status: balanceStatus, value: balanceValue } = useAsync<any>(() => contract!.boughtAmount(IDO.id, selectedSigner!.evmAddress), false);
   const { execute: paidExecute, status: paidStatus, value: paidValue } = useAsync<boolean>(() => contract!.beenPaid(IDO.id, selectedSigner!.evmAddress), false);
   const { value: ipfsValue } = useAsync<IPFSIDO>(() => IPFSFetch(IDO), true);
 
   let onBuy = useCallback(async () => {
-    await contract!.buy(wei, { value: wei })
+    await contract!.buy(IDO.id, wei, { value: wei })
     balanceExecute();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contract, wei])
 
   let onWithdraw = useCallback(async () => {
-    await contract!.withdraw(wei);
+    await contract!.withdraw(IDO.id, wei);
     balanceExecute();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contract, wei])
 
   let onGetPayout = useCallback(async () => {
-    await contract!.getPayout();
+    await contract!.getPayout(IDO.id);
     paidExecute();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contract, wei])
 
   useEffect(() => {
-    if (selectedSigner && balanceStatus === "idle") {
+    if (selectedSigner) {
       balanceExecute();
     }
-  }, [selectedSigner, balanceStatus, balanceExecute])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedSigner])
 
   useEffect(() => {
-    if (selectedSigner && paidStatus === "idle") {
+    if (selectedSigner) {
       paidExecute();
     }
-  }, [selectedSigner, paidStatus, paidExecute])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedSigner])
 
   useIntervalUpdate();
 

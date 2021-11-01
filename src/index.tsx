@@ -17,7 +17,7 @@ ReactDOM.render(
       <NetworkContextProvider>
         <AccountsContextProvider>
           <SignerStatusContextProvider>
-            <IDOsContextProvider address={"0xc5f3584Fb6541Bd541D3326e89D82cD4FF4180A1"}>
+            <IDOsContextProvider>
               <TxContextProvider>
                 <ContractsContextProvider>
                   <Layout />

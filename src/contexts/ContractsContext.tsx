@@ -41,7 +41,7 @@ export const ContractsContextProvider: React.FunctionComponent = ({ children }) 
   const [contractsList, setContractsList] = useLocalStorage<string[]>("ERC20Contracts", defaultContracts)
   const [IDOList, setIDOList] = useLocalStorage<string[]>("IDOContracts", [])
   const { execute, value: IDOInfoMap, status } = useAsync<FullIDOInfo[]>(async () => {
-    let addressToInfoPromise = (address: string): Promise<InformationInterface> => IIDO(address, provider).information()
+    let addressToInfoPromise = (address: string): Promise<InformationInterface> => IIDO(provider).information()
     let info = await Promise.all(IDOList.map(addressToInfoPromise))
     return IDOList.map((address, i) => ({ address, info: info[i] }))
   }, false)
@@ -58,7 +58,7 @@ export const ContractsContextProvider: React.FunctionComponent = ({ children }) 
   let IDOContracts = useMemo(
     () => {
       let map = new Map<string, Contract>()
-      IDOList.forEach(addr => map.set(addr, IIDO(addr).connect(selectedSigner?.signer as any)))
+      IDOList.forEach(addr => map.set(addr, IIDO(selectedSigner?.signer as any)))
       return map
     },
     [IDOList, selectedSigner]

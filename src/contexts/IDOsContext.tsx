@@ -11,13 +11,10 @@ import { NetworkContext } from './NetworkContext';
 import { IDO } from '../utils/contractTypes';
 
 interface IDOsContextInterface {
-  IDOs?: IDO[],
-  address: string
+  IDOs?: IDO[]
 }
 
-export const IDOsContext = React.createContext<IDOsContextInterface>({
-  address: ""
-});
+export const IDOsContext = React.createContext<IDOsContextInterface>({});
 
 const errorFetching: IPFSIDO = {
   title: "Title unreachable",
@@ -39,10 +36,10 @@ const IPFSFetch = async (info: InformationInterface): Promise<IPFSIDO> => {
   }
 }
 
-export const IDOsContextProvider: React.FunctionComponent<{ address: string }> = ({ children, address }) => {
+export const IDOsContextProvider: React.FunctionComponent = ({ children }) => {
   const { provider, connected } = useContext(NetworkContext);
   const { execute, value: IDOs } = useAsync<IDO[]>(async () => {
-    const contract = IIDO(address).connect(provider as any);
+    const contract = IIDO(provider as any);
     let length = ((await contract.idosLength()) as BigNumber).toNumber();
     let IDOsInfo = await Promise.all(Array.from(Array(length).keys()).map((id): Promise<IDO> => contract.information(id)))
     IDOsInfo = IDOsInfo.map((ori, id) => ({ ...ori, id }))
@@ -57,7 +54,6 @@ export const IDOsContextProvider: React.FunctionComponent<{ address: string }> =
   }, [provider, connected])
 
   return <IDOsContext.Provider value={{
-    IDOs,
-    address
+    IDOs
   }} children={children} />
 }
