@@ -9,6 +9,7 @@ import { TxContextProvider } from './contexts/TxContext';
 import { ContractsContextProvider } from './contexts/ContractsContext';
 import { ChakraProvider } from '@chakra-ui/react';
 import { appTheme } from './utils/chakraTheme';
+import { IDOsContext, IDOsContextProvider } from './contexts/IDOsContext';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -16,11 +17,13 @@ ReactDOM.render(
       <NetworkContextProvider>
         <AccountsContextProvider>
           <SignerStatusContextProvider>
-            <TxContextProvider>
-              <ContractsContextProvider>
-                <Layout />
-              </ContractsContextProvider>
-            </TxContextProvider>
+            <IDOsContextProvider address={"0xc5f3584Fb6541Bd541D3326e89D82cD4FF4180A1"}>
+              <TxContextProvider>
+                <ContractsContextProvider>
+                  <Layout />
+                </ContractsContextProvider>
+              </TxContextProvider>
+            </IDOsContextProvider>
           </SignerStatusContextProvider>
         </AccountsContextProvider>
       </NetworkContextProvider>
