@@ -179,8 +179,6 @@ export const ContractBasicIDOTX: TxType = {
     }
   ],
   action: async ({ params: { tokenAddress, ratio, start, end, baseAmount }, args: { contract, onSuccess } }) => {
-    let [mul, div] = ratioToMulDiv(parseFloat(ratio));
-    let timestampNow = Math.floor(Date.now() / 1000);
     let { address } = await contract.deploy();
     onSuccess(address);
   }

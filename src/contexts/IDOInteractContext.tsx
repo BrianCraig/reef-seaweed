@@ -9,7 +9,6 @@ import { rangeToStatus } from '../utils/utils';
 import { getMultihashFromBytes32 } from "ipfs-multihash-on-solidity";
 import { IDOContext } from './IDOContext';
 import { IDO } from '../utils/contractTypes';
-import { IDOsContext } from './IDOsContext';
 
 interface IDOInteractContextInterface {
   status?: IDOStatus,
@@ -33,30 +32,14 @@ export const IDOInteractContext = React.createContext<IDOInteractContextInterfac
   paid: false
 });
 
-const errorFetching: IPFSIDO = {
-  title: "Title unreachable",
-  subtitle: "",
-  description: ""
-}
-
-const IPFSFetch = async (ido: IDO): Promise<IPFSIDO> => {
-  try {
-    let id = getMultihashFromBytes32(ido.params.ipfs);
-    let page = await fetch(`https://ipfs.infura.io/ipfs/${id}`)
-    return await page.json()
-  } catch {
-    return errorFetching
-  }
-}
 
 export const IDOInteractContextProvider: React.FunctionComponent = ({ children }) => {
-  const { IDO } = useContext(IDOContext);
+  const { IDO, ipfs } = useContext(IDOContext);
   const { selectedSigner } = useContext(AccountsContext);
   const [wei, setWei] = useState<BigNumber>(BigNumber.from(0));
   let contract = selectedSigner ? IIDO(selectedSigner.signer as any) : undefined;
-  const { execute: balanceExecute, status: balanceStatus, value: balanceValue } = useAsync<any>(() => contract!.boughtAmount(IDO.id, selectedSigner!.evmAddress), false);
-  const { execute: paidExecute, status: paidStatus, value: paidValue } = useAsync<boolean>(() => contract!.beenPaid(IDO.id, selectedSigner!.evmAddress), false);
-  const { value: ipfsValue } = useAsync<IPFSIDO>(() => IPFSFetch(IDO), true);
+  const { execute: balanceExecute, value: balanceValue } = useAsync<any>(() => contract!.boughtAmount(IDO.id, selectedSigner!.evmAddress), false);
+  const { execute: paidExecute, value: paidValue } = useAsync<boolean>(() => contract!.beenPaid(IDO.id, selectedSigner!.evmAddress), false);
 
   let onBuy = useCallback(async () => {
     await contract!.buy(IDO.id, wei, { value: wei })
@@ -102,9 +85,9 @@ export const IDOInteractContextProvider: React.FunctionComponent = ({ children }
     onGetPayout,
     paid: !!paidValue,
     balance: balanceValue || BigNumber.from(0),
-    ipfs: ipfsValue
+    ipfs
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }), [status, wei, setWei, balanceValue, paidValue, ipfsValue])
+  }), [status, wei, setWei, balanceValue, paidValue, ipfs])
 
   return <IDOInteractContext.Provider value={value}>
     <TokenContextProvider address={IDO.params.token} children={children} />

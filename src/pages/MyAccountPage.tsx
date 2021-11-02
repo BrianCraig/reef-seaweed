@@ -1,15 +1,16 @@
-import { CircularProgress, Divider, Heading, Stack, Text, Button, Tag, Alert, AlertIcon } from "@chakra-ui/react"
-import { FunctionComponent, useCallback, useContext, useMemo } from "react"
+import { CircularProgress, Heading, Stack, Button, Tag, Alert, AlertIcon } from "@chakra-ui/react"
+import { FunctionComponent, useContext, useMemo } from "react"
 import { AccountsContext } from "../contexts/AccountsContext"
+import { IDOContext, IDOContextProvider } from "../contexts/IDOContext"
 import { IDOsContext } from "../contexts/IDOsContext"
-import { IDO } from "../utils/contractTypes"
 import { IDOStatus } from "../utils/types"
 import { rangeToStatus } from "../utils/utils"
 
-const MyIDO: FunctionComponent<{ ido: IDO }> = ({ ido }) => {
-  const status = rangeToStatus(ido.params.open)
+const MyIDO: FunctionComponent = () => {
+  const { IDO, ipfs } = useContext(IDOContext);
+  const status = rangeToStatus(IDO.params.open)
   return <Stack direction={"row"} spacing={4}>
-    <Heading size={"md"} flexGrow={1}>Project Title</Heading>
+    <Heading size={"md"} flexGrow={1}>{ipfs.title}</Heading>
     <Tag size={"md"} variant="outline">{IDOStatus[status]}</Tag>
     <Button disabled={status !== IDOStatus.Pending}>Edit Description</Button>
     <Button disabled={status !== IDOStatus.Ended}>Get Raised REEF</Button>
@@ -46,7 +47,7 @@ export const MyAccountPage = () => {
   } else if (myIDOs.length === 0) {
     myIDOsElement = alertEmpty;
   } else {
-    myIDOsElement = myIDOs.map(ido => <MyIDO ido={ido} key={ido.id} />)
+    myIDOsElement = myIDOs.map(ido => <IDOContextProvider id={ido.id!} key={ido.id}><MyIDO /></IDOContextProvider>)
   }
 
   return <Stack spacing={8}>

@@ -2,7 +2,7 @@ import { Button, Heading, Stack, useToast } from "@chakra-ui/react"
 import { Form, Formik, FormikProps } from 'formik';
 import { FunctionComponent, useContext } from "react";
 import * as Yup from 'yup';
-import { IIDO, SeaweedIDO } from "../abis/contracts";
+import { IIDO } from "../abis/contracts";
 import { FieldRenderer } from "../components/FieldRenderer";
 import { AccountsContext } from "../contexts/AccountsContext";
 import { ContractsContext } from "../contexts/ContractsContext";

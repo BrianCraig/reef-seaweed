@@ -9,7 +9,7 @@ import { TxContextProvider } from './contexts/TxContext';
 import { ContractsContextProvider } from './contexts/ContractsContext';
 import { ChakraProvider } from '@chakra-ui/react';
 import { appTheme } from './utils/chakraTheme';
-import { IDOsContext, IDOsContextProvider } from './contexts/IDOsContext';
+import { IDOsContextProvider } from './contexts/IDOsContext';
 
 ReactDOM.render(
   <React.StrictMode>
