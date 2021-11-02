@@ -3,19 +3,20 @@ import { Alert, AlertIcon, Avatar, Box, CircularProgress, Heading, SimpleGrid, S
 import { utils } from "ethers";
 import { FunctionComponent, useContext } from "react"
 import { useHistory } from "react-router";
+import { IDOContext, IDOContextProvider } from "../contexts/IDOContext";
 import { IDOsContext } from "../contexts/IDOsContext";
-import { IDO } from "../utils/contractTypes";
 import { IDOStatus } from "../utils/types"
 import { rangeToStatus } from "../utils/utils"
 
-const IDOSummary: FunctionComponent<{ ido: IDO }> = ({ ido: { params: { baseAmount, totalBought }, id } }) => {
+const IDOSummary: FunctionComponent<{}> = () => {
   let { push } = useHistory();
+  let { IDO: { params: { baseAmount, totalBought }, id }, ipfs: { title, subtitle } } = useContext(IDOContext)
   return <Stack border={"1px"} borderColor={"app.400"} borderRadius={8} spacing={4} padding={4} onClick={() => push(`/ido/${id}`)}>
     <Stack direction={"row"} spacing={4}>
       <Avatar size={"md"} name="Y K" />
       <Stack justifyContent={"space-between"} spacing={0}>
-        <Heading size={"md"}>Project title</Heading>
-        <Text>Project subtitle</Text>
+        <Heading size={"md"}>{title}</Heading>
+        <Text>{subtitle}</Text>
       </Stack>
     </Stack>
     <Box borderTop={"1px"} borderBottom={"1px"} borderColor={"app.600"} bg={"app.100"}>
@@ -61,15 +62,15 @@ export const ProjectsPage = () => {
     <Heading>Open projects</Heading>
     <SimpleGrid columns={3} spacing={8}>
       {openProjects.length === 0 ? alert : null}
-      {openProjects.map(ido => <IDOSummary key={ido.params.token} ido={ido} />)}
+      {openProjects.map(ido => <IDOContextProvider id={ido.id!} key={ido.id}><IDOSummary /></IDOContextProvider>)}
     </SimpleGrid>
     <Heading>Upcoming projects</Heading>
     <SimpleGrid columns={3} spacing={8}>
-      {pendingProjects.map(ido => <IDOSummary key={ido.params.token} ido={ido} />)}
+      {pendingProjects.map(ido => <IDOContextProvider id={ido.id!} key={ido.id}><IDOSummary /></IDOContextProvider>)}
     </SimpleGrid>
     <Heading>Finalized projects</Heading>
     <SimpleGrid columns={3} spacing={8}>
-      {endedProjects.map(ido => <IDOSummary key={ido.params.token} ido={ido} />)}
+      {endedProjects.map(ido => <IDOContextProvider id={ido.id!} key={ido.id}><IDOSummary /></IDOContextProvider>)}
     </SimpleGrid>
   </Stack>
 }

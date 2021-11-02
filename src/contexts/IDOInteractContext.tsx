@@ -6,9 +6,7 @@ import { AccountsContext } from './AccountsContext';
 import { TokenContextProvider } from './TokenContext';
 import { IDOStatus, IPFSIDO } from '../utils/types';
 import { rangeToStatus } from '../utils/utils';
-import { getMultihashFromBytes32 } from "ipfs-multihash-on-solidity";
 import { IDOContext } from './IDOContext';
-import { IDO } from '../utils/contractTypes';
 
 interface IDOInteractContextInterface {
   status?: IDOStatus,
