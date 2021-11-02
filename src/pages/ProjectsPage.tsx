@@ -1,5 +1,5 @@
 import { CheckIcon } from "@chakra-ui/icons"
-import { Avatar, Box, CircularProgress, Heading, SimpleGrid, Stack, Tag, TagLabel, TagRightIcon, Text } from "@chakra-ui/react"
+import { Alert, AlertIcon, Avatar, Box, CircularProgress, Heading, SimpleGrid, Stack, Tag, TagLabel, TagRightIcon, Text } from "@chakra-ui/react"
 import { utils } from "ethers";
 import { FunctionComponent, useContext } from "react"
 import { useHistory } from "react-router";
@@ -40,6 +40,11 @@ const IDOSummary: FunctionComponent<{ ido: IDO }> = ({ ido: { params: { baseAmou
   </Stack >
 }
 
+let alert = <Alert status="info" variant="subtle">
+  <AlertIcon />
+  No projects for this category
+</Alert>
+
 export const ProjectsPage = () => {
   let { IDOs } = useContext(IDOsContext);
 
@@ -55,6 +60,7 @@ export const ProjectsPage = () => {
   return <Stack spacing={8}>
     <Heading>Open projects</Heading>
     <SimpleGrid columns={3} spacing={8}>
+      {openProjects.length === 0 ? alert : null}
       {openProjects.map(ido => <IDOSummary key={ido.params.token} ido={ido} />)}
     </SimpleGrid>
     <Heading>Upcoming projects</Heading>
