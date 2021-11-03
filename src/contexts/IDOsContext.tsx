@@ -1,6 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { useSubscription } from "@apollo/client"
+import gql from 'graphql-tag'
 import { BigNumber } from '@ethersproject/bignumber';
-import { IIDO } from '../abis/contracts';
+import { IIDO, SeaweedIDOAddress } from '../abis/contracts';
 import { useAsync } from '../utils/hooks';
 import { IPFSIDO } from '../utils/types';
 import { getMultihashFromBytes32 } from "ipfs-multihash-on-solidity";
@@ -33,6 +35,21 @@ const onlyUnique = (value: any, index: number, self: any[]): boolean => {
   return self.indexOf(value) === index;
 }
 
+const CONTRACT_EVENTS_GQL = gql`
+subscription event($contractId: String!) {
+  event(
+    limit: 100
+    order_by: { block_number: desc }
+    where: {
+      method: { _eq: "Log" }
+      data: { _like: $contractId }
+    }
+  ) {
+    data
+  }
+}
+`
+
 export const IDOsContextProvider: React.FunctionComponent = ({ children }) => {
   const { provider, connected } = useContext(NetworkContext);
   const [ipfsMap, setIPFS] = useState<{ [key: string]: IPFSIDO }>({})
@@ -49,6 +66,16 @@ export const IDOsContextProvider: React.FunctionComponent = ({ children }) => {
     )
     return IDOsInfo;
   }, false);
+
+  const { data, loading } = useSubscription(
+    CONTRACT_EVENTS_GQL,
+    {
+      variables: {
+        contractId: `[{"address":"${SeaweedIDOAddress.toLowerCase()}"%`,
+      }
+    }
+  );
+  console.log(data)
 
   useEffect(() => {
     if (provider && connected) {
