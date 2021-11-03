@@ -48,21 +48,7 @@ contract SeaweedIDO is Ownable {
     mapping(uint256 => mapping(address => uint256)) bought;
     mapping(uint256 => mapping(address => bool)) _beenPaid;
 
-    constructor() {
-        publish(
-            "X coin",
-            "X",
-            IDOParams(
-                true,
-                ERC20Entangled(address(0)),
-                Multiplier(1, 1),
-                IPFSMultihash(0, 0, 0),
-                Range(2**36, 2**37),
-                10,
-                0
-            )
-        );
-    }
+    constructor() {}
 
     function idosLength() public view returns (uint256) {
         return idos.length;
@@ -100,6 +86,7 @@ contract SeaweedIDO is Ownable {
             );
         }
         ido.params.totalBought = 0;
+        emit IDOPublished(ido);
     }
 
     function information(uint256 id) public view returns (IDO memory) {
@@ -117,6 +104,7 @@ contract SeaweedIDO is Ownable {
             "IDO not on pre-sale"
         );
         ido.params.ipfs = ipfs;
+        emit IPFSChange(id, ipfs);
     }
 
     /**
@@ -151,7 +139,7 @@ contract SeaweedIDO is Ownable {
         require(amount <= _availableToBuy(ido), "Not enough available to buy");
         bought[id][msg.sender] += amount;
         ido.params.totalBought += amount;
-        emit Bought(id, msg.sender, amount);
+        emit Bought(id, msg.sender, amount, ido.params.totalBought);
     }
 
     /**
@@ -163,7 +151,7 @@ contract SeaweedIDO is Ownable {
         bought[id][msg.sender] -= amount;
         ido.params.totalBought -= amount;
         payable(msg.sender).transfer(amount);
-        emit Withdrawn(id, msg.sender, amount);
+        emit Withdrawn(id, msg.sender, amount, ido.params.totalBought);
     }
 
     /**
@@ -225,12 +213,32 @@ contract SeaweedIDO is Ownable {
     }
 
     /**
+     * @dev Emitted when an IDO is published.
+     */
+    event IDOPublished(IDO ido);
+
+    /**
+     * @dev Emitted when an IDO changes his description.
+     */
+    event IPFSChange(uint256 id, IPFSMultihash ipfs);
+
+    /**
      * @dev Emitted when a user buys
      */
-    event Bought(uint256 id, address owner, uint256 quantity);
+    event Bought(
+        uint256 id,
+        address owner,
+        uint256 quantity,
+        uint256 totalBought
+    );
 
     /**
      * @dev Emitted when a user withdraws
      */
-    event Withdrawn(uint256 id, address owner, uint256 quantity);
+    event Withdrawn(
+        uint256 id,
+        address owner,
+        uint256 quantity,
+        uint256 totalBought
+    );
 }
