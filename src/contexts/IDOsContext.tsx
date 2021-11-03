@@ -1,8 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { utils } from "ethers";
 import { useSubscription } from "@apollo/client"
 import gql from 'graphql-tag'
 import { BigNumber } from '@ethersproject/bignumber';
-import { IIDO, SeaweedIDOAddress } from '../abis/contracts';
+import { IIDO, IIDOInterface, SeaweedIDOAddress } from '../abis/contracts';
 import { useAsync } from '../utils/hooks';
 import { IPFSIDO } from '../utils/types';
 import { getMultihashFromBytes32 } from "ipfs-multihash-on-solidity";
@@ -50,6 +51,21 @@ subscription event($contractId: String!) {
 }
 `
 
+const BOUGHT = 'Bought(uint256,address,uint256,uint256)';
+const WITHDRAWN = 'Withdrawn(uint256,address,uint256,uint256)';
+const IDO_PUBLISHED = 'IDOPublished(uint256,((bool,address,(uint32,uint32),(bytes32,uint8,uint8),(uint256,uint256),uint256,uint256),address,uint256))';
+const IPFS = 'IPFSChange(uint256,(bytes32,uint8,uint8))';
+
+
+let topicNames: string[] = [
+  BOUGHT,
+  WITHDRAWN,
+  IDO_PUBLISHED,
+  IPFS
+]
+
+let topicsMap = topicNames.map(name => ({ name, topic: utils.id(name) }))
+
 export const IDOsContextProvider: React.FunctionComponent = ({ children }) => {
   const { provider, connected } = useContext(NetworkContext);
   const [ipfsMap, setIPFS] = useState<{ [key: string]: IPFSIDO }>({})
@@ -77,7 +93,17 @@ export const IDOsContextProvider: React.FunctionComponent = ({ children }) => {
   );
 
   useEffect(() => {
-    console.log(data);
+    if (data && data.event[0]) {
+      let parse: [{ address: string, data: string, topics: string[] }] = JSON.parse(data.event[0].data);
+      if (parse[0]) {
+        const { data, topics } = parse[0];
+        const topic = topicsMap.find(t => t.topic === topics[0])
+        if (topic) {
+          let event = IIDOInterface.decodeEventLog(topic.name, data, topics);
+          console.log(event)
+        }
+      }
+    }
   }, [data])
 
   useEffect(() => {

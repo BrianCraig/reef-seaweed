@@ -86,7 +86,7 @@ contract SeaweedIDO is Ownable {
             );
         }
         ido.params.totalBought = 0;
-        emit IDOPublished(ido);
+        emit IDOPublished(id, ido);
     }
 
     function information(uint256 id) public view returns (IDO memory) {
@@ -215,7 +215,7 @@ contract SeaweedIDO is Ownable {
     /**
      * @dev Emitted when an IDO is published.
      */
-    event IDOPublished(IDO ido);
+    event IDOPublished(uint256 id, IDO ido);
 
     /**
      * @dev Emitted when an IDO changes his description.
