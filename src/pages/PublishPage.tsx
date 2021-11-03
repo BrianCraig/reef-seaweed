@@ -21,6 +21,7 @@ const initialValues: PublishValues = {
   tokenSymbol: "",
   reefAmount: 100000,
   reefMultiplier: 5,
+  reefMaxPerAddress: 100,
   start: "",
   end: ""
 }
@@ -50,6 +51,12 @@ const FormikFormComponent: FunctionComponent<FormikProps<PublishValues>> = ({ is
       type={"number"}
       placeholder={"5"}
       helper={"This means how many tokens will be mint per REEF"}
+    />
+    <FieldRenderer
+      title={"Max REEF spended per address"}
+      name={"reefMaxPerAddress"}
+      type={"number"}
+      placeholder={"100"}
     />
     <FieldRenderer
       title={"Crowdsale start"}

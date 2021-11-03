@@ -30,6 +30,7 @@ struct IDOParams {
     IPFSMultihash ipfs;
     Range open;
     uint256 baseAmount;
+    uint256 maxAmountPerAddress;
     uint256 totalBought;
 }
 
@@ -137,6 +138,10 @@ contract SeaweedIDO is Ownable {
         require(msg.value == amount, "Non matching wei");
         require(canBuy(id, msg.sender), "Can't buy");
         require(amount <= _availableToBuy(ido), "Not enough available to buy");
+        require(
+            bought[id][msg.sender] + amount <= ido.params.maxAmountPerAddress,
+            "Exceding max amount"
+        );
         bought[id][msg.sender] += amount;
         ido.params.totalBought += amount;
         emit Bought(id, msg.sender, amount, ido.params.totalBought);

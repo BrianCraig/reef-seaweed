@@ -23,6 +23,7 @@ export interface IDOParams {
   ipfs: IPFSMultihash;
   open: IDORange;
   baseAmount: BigNumber;
+  maxAmountPerAddress: BigNumber;
   totalBought: BigNumber;
 }
 

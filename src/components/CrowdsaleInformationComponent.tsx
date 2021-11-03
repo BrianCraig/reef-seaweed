@@ -8,7 +8,7 @@ import { timestampToDate } from "../utils/utils"
 import { IDOContext } from "../contexts/IDOContext"
 
 export const CrowdsaleInformationComponent = () => {
-  const { IDO: { params: { multiplier, token, baseAmount, open } } } = useContext(IDOContext);
+  const { IDO: { params: { multiplier, token, baseAmount, open, maxAmountPerAddress } } } = useContext(IDOContext);
   const { symbol, name } = useContext(TokenContext);
   let mul = multiplier.multiplier / multiplier.divider;
   let reefBase = parseFloat(utils.formatEther(baseAmount))
@@ -35,8 +35,8 @@ export const CrowdsaleInformationComponent = () => {
           <Td isNumeric>{(reefBase * mul).toFixed(0)} {symbol}</Td>
         </Tr>
         <Tr>
-          <Td>Maximum per investor</Td>
-          <Td isNumeric>1,000.00 {symbol}</Td>
+          <Td>Maximum REEF spent per investor</Td>
+          <Td isNumeric>{utils.formatEther(maxAmountPerAddress)} REEF</Td>
         </Tr>
         <Tr>
           <Td>{symbol} multiplier</Td>

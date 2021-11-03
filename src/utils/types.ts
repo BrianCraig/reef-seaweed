@@ -45,6 +45,7 @@ export interface PublishValues {
   tokenSymbol: string;
   reefAmount: number;
   reefMultiplier: number;
+  reefMaxPerAddress: number;
   start: string;
   end: string;
 }
