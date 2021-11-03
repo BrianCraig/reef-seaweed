@@ -1,13 +1,14 @@
-import { Button, Heading, Stack, useToast } from "@chakra-ui/react"
+import { Box, Button, Heading, Input, Stack, useToast } from "@chakra-ui/react"
 import { Form, Formik, FormikProps } from 'formik';
-import { FunctionComponent, useContext } from "react";
+import React, { FunctionComponent, useContext, useState } from "react";
 import * as Yup from 'yup';
-import { IIDO } from "../abis/contracts";
+import { IIDO, MAX_VESTING_OCURRENCES } from "../abis/contracts";
 import { FieldRenderer } from "../components/FieldRenderer";
+import { VestingFormComponent } from "../components/VestingFormComponent";
 import { AccountsContext } from "../contexts/AccountsContext";
 import { ContractsContext } from "../contexts/ContractsContext";
 import { ContractBasicIDOAction } from "../utils/txFactorys";
-import { PublishValues } from "../utils/types";
+import { PublishValues, VestingForm } from "../utils/types";
 
 const validationSchema = Yup.object().shape({
   tokenName: Yup.string()
@@ -26,64 +27,21 @@ const initialValues: PublishValues = {
   end: ""
 }
 
-const FormikFormComponent: FunctionComponent<FormikProps<PublishValues>> = ({ isSubmitting }) => {
-  return <Form>
-    <FieldRenderer
-      title={"Token name"}
-      name={"tokenName"}
-      placeholder={"My Token X"}
-    />
-    <FieldRenderer
-      title={"Token symbol"}
-      name={"tokenSymbol"}
-      placeholder={"MTX"}
-    />
-    <FieldRenderer
-      title={"Crowdsale REEF"}
-      name={"reefAmount"}
-      type={"number"}
-      placeholder={"100000"}
-      helper={"This is the max amount in REEF the contract owner will get"}
-    />
-    <FieldRenderer
-      title={"Tokens per REEF"}
-      name={"reefMultiplier"}
-      type={"number"}
-      placeholder={"5"}
-      helper={"This means how many tokens will be mint per REEF"}
-    />
-    <FieldRenderer
-      title={"Max REEF spended per address"}
-      name={"reefMaxPerAddress"}
-      type={"number"}
-      placeholder={"100"}
-    />
-    <FieldRenderer
-      title={"Crowdsale start"}
-      name={"start"}
-      type={"datetime-local"}
-      helper={"All times are in local time"}
-    />
-    <FieldRenderer
-      title={"Crowdsale start"}
-      name={"end"}
-      type={"datetime-local"}
-      helper={"All times are in local time"}
-    />
-    <Button type={"submit"} isFullWidth marginTop={"32px !important"} disabled={isSubmitting}>Publish Contract</Button>
-  </Form>
-}
-
 export const PublishPage = () => {
+  const [vesting, setVesting] = useState<VestingForm[]>([])
   const toast = useToast();
   let { selectedSigner } = useContext(AccountsContext)
+  const addVesting = () => {
+    if (vesting.length >= MAX_VESTING_OCURRENCES) return;
+    setVesting([...vesting, { beneficiary: "", amount: 0, timestamp: "" }])
+  }
   return <Stack spacing={2}>
     <Heading>Publish</Heading>
     <Formik<PublishValues>
       initialValues={initialValues}
       validationSchema={validationSchema}
       onSubmit={async (values, actions) => {
-        await ContractBasicIDOAction(IIDO(selectedSigner!.signer as any), values);
+        await ContractBasicIDOAction(IIDO(selectedSigner!.signer as any), values, vesting);
         toast({
           title: "IDO published.",
           description: "Hooray 🥳! Your IDO has been published successfully.",
@@ -94,7 +52,59 @@ export const PublishPage = () => {
         })
       }}
     >
-      {FormikFormComponent}
+      {({ isSubmitting }) => {
+        return <Form>
+          <Stack spacing={4}>
+            <FieldRenderer
+              title={"Token name"}
+              name={"tokenName"}
+              placeholder={"My Token X"}
+            />
+            <FieldRenderer
+              title={"Token symbol"}
+              name={"tokenSymbol"}
+              placeholder={"MTX"}
+            />
+            <FieldRenderer
+              title={"Crowdsale REEF"}
+              name={"reefAmount"}
+              type={"number"}
+              placeholder={"100000"}
+              helper={"This is the max amount in REEF the contract owner will get"}
+            />
+            <FieldRenderer
+              title={"Tokens per REEF"}
+              name={"reefMultiplier"}
+              type={"number"}
+              placeholder={"5"}
+              helper={"This means how many tokens will be mint per REEF"}
+            />
+            <FieldRenderer
+              title={"Max REEF spended per address"}
+              name={"reefMaxPerAddress"}
+              type={"number"}
+              placeholder={"100"}
+            />
+            <FieldRenderer
+              title={"Crowdsale start"}
+              name={"start"}
+              type={"datetime-local"}
+              helper={"All times are in local time"}
+            />
+            <FieldRenderer
+              title={"Crowdsale start"}
+              name={"end"}
+              type={"datetime-local"}
+              helper={"All times are in local time"}
+            />
+            <Stack direction={"row"} justifyContent={"space-between"} alignItems={"center"}>
+              <Heading size={"lg"}>Vesting</Heading><Button onClick={addVesting}>Add</Button>
+            </Stack>
+            {vesting.map((e, index) => <VestingFormComponent key={index} id={index} setVesting={setVesting} />)}
+            <Button type={"submit"} isFullWidth marginTop={"32px !important"} disabled={isSubmitting}>Publish Contract</Button>
+          </Stack>
+        </Form>
+      }}
     </Formik>
   </Stack>
 }

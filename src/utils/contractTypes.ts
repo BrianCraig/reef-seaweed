@@ -33,3 +33,10 @@ export interface IDO {
   paidToOwner: BigNumber;
   id?: number;
 }
+
+export interface Vesting {
+  beneficiary: string;
+  amount: BigNumber;
+  timestamp: BigNumber;
+  claimed: boolean;
+}

@@ -4,7 +4,7 @@ import { useSubscription } from "@apollo/client"
 import gql from 'graphql-tag'
 import { BigNumber } from '@ethersproject/bignumber';
 import { IIDO, IIDOInterface, SeaweedIDOAddress } from '../abis/contracts';
-import { useAsync, useCallbackAsync } from '../utils/hooks';
+import { useCallbackAsync } from '../utils/hooks';
 import { IPFSIDO } from '../utils/types';
 import { getMultihashFromBytes32 } from "ipfs-multihash-on-solidity";
 import { NetworkContext } from './NetworkContext';

@@ -76,3 +76,9 @@ export interface IPFSIDO {
   subtitle: string,
   description: string
 }
+
+export interface VestingForm {
+  beneficiary: string;
+  amount: number;
+  timestamp: string;
+}

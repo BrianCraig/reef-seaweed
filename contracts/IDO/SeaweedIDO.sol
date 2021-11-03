@@ -7,6 +7,13 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "../erc20/ERC20Entangled.sol";
 import "./IIDO.sol";
 
+struct Vesting {
+    address beneficiary;
+    uint256 amount;
+    uint256 timestamp;
+    bool claimed;
+}
+
 struct IPFSMultihash {
     bytes32 digest;
     uint8 hashFunction;
@@ -40,6 +47,8 @@ struct IDO {
     uint256 paidToOwner;
 }
 
+uint256 constant MAX_VESTING_OCURRENCES = 16;
+
 function _isValidMultiplier(Multiplier memory multiplier) pure returns (bool) {
     return multiplier.multiplier > 0 && multiplier.divider > 0;
 }
@@ -48,6 +57,7 @@ contract SeaweedIDO is Ownable {
     IDO[] private idos;
     mapping(uint256 => mapping(address => uint256)) bought;
     mapping(uint256 => mapping(address => bool)) _beenPaid;
+    Vesting[MAX_VESTING_OCURRENCES][] _vesting;
 
     constructor() {}
 
@@ -63,7 +73,8 @@ contract SeaweedIDO is Ownable {
     function publish(
         string memory tokenName,
         string memory tokenSymbol,
-        IDOParams memory params
+        IDOParams memory params,
+        Vesting[MAX_VESTING_OCURRENCES] calldata vesting
     ) public {
         require(block.timestamp < params.open.end, "would already ended");
         require(
@@ -74,6 +85,7 @@ contract SeaweedIDO is Ownable {
             _isValidMultiplier(params.multiplier),
             "Multiplier isn't valid"
         );
+
         ERC20Entangled token = new ERC20Entangled(tokenName, tokenSymbol);
         uint256 id = idos.length;
         idos.push(IDO(params, msg.sender, 0));
@@ -87,11 +99,35 @@ contract SeaweedIDO is Ownable {
             );
         }
         ido.params.totalBought = 0;
+
+        Vesting[MAX_VESTING_OCURRENCES] storage vest = _vesting.push();
+        for (uint256 i = 0; i < MAX_VESTING_OCURRENCES; i++) {
+            vest[i] = vesting[i];
+        }
+
         emit IDOPublished(id, ido);
     }
 
     function information(uint256 id) public view returns (IDO memory) {
         return idos[id];
+    }
+
+    function vestingFor(uint256 id)
+        public
+        view
+        returns (Vesting[MAX_VESTING_OCURRENCES] memory vesting)
+    {
+        return _vesting[id];
+    }
+
+    function claimVesting(uint256 id, uint256 index) external {
+        Vesting storage vesting = _vesting[id][index];
+        IDO storage ido = getId(id);
+        require(!vesting.claimed, "Already claimed");
+        require(vesting.timestamp >= block.timestamp);
+        require(ido.owner == msg.sender, "Not IDO Owner");
+        ido.params.token.mint(vesting.beneficiary, vesting.amount);
+        vesting.claimed = true;
     }
 
     /**

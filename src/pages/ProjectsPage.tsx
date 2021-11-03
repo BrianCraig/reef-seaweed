@@ -10,7 +10,7 @@ import { rangeToStatus } from "../utils/utils"
 
 const IDOSummary: FunctionComponent<{}> = () => {
   let { push } = useHistory();
-  let { IDO: { params: { baseAmount, totalBought }, id }, ipfs: { title, subtitle } } = useContext(IDOContext)
+  let { IDO: { params: { baseAmount, totalBought, maxAmountPerAddress }, id }, ipfs: { title, subtitle } } = useContext(IDOContext)
   return <Stack border={"1px"} borderColor={"app.400"} borderRadius={8} spacing={4} padding={4} onClick={() => push(`/ido/${id}`)}>
     <Stack direction={"row"} spacing={4}>
       <Avatar size={"md"} name="Y K" />
@@ -33,7 +33,7 @@ const IDOSummary: FunctionComponent<{}> = () => {
     </Stack>
     <Stack direction={"row"} justifyContent={"space-between"}>
       <Text>Max allocation</Text>
-      <Text>1,000 REEF</Text>
+      <Text>{utils.formatEther(maxAmountPerAddress)} REEF</Text>
     </Stack>
     <Box border={"1px"} borderColor={"app.600"} borderRadius={8} bg={"app.100"}>
       <Box width={`${totalBought.mul(10000).div(baseAmount).toNumber() / 100}%`} bg={"app.600"} height={2} />
