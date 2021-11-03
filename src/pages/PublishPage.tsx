@@ -70,23 +70,21 @@ const FormikFormComponent: FunctionComponent<FormikProps<PublishValues>> = ({ is
 export const PublishPage = () => {
   const toast = useToast();
   let { selectedSigner } = useContext(AccountsContext)
-  let { setIDOList } = useContext(ContractsContext)
   return <Stack spacing={2}>
     <Heading>Publish</Heading>
     <Formik<PublishValues>
       initialValues={initialValues}
       validationSchema={validationSchema}
       onSubmit={async (values, actions) => {
-        let address = await ContractBasicIDOAction(IIDO(selectedSigner!.signer as any), values);
+        await ContractBasicIDOAction(IIDO(selectedSigner!.signer as any), values);
         toast({
-          title: "IDO Contract deployed.",
-          description: "Hooray 🥳! Your Crowdsale Contract has been deployed successfully.",
+          title: "IDO published.",
+          description: "Hooray 🥳! Your IDO has been published successfully.",
           status: "success",
           duration: 9000,
           isClosable: true,
           position: "top"
         })
-        setIDOList((or) => [...or, address]);
       }}
     >
       {FormikFormComponent}

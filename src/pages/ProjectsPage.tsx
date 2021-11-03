@@ -66,10 +66,12 @@ export const ProjectsPage = () => {
     </SimpleGrid>
     <Heading>Upcoming projects</Heading>
     <SimpleGrid columns={3} spacing={8}>
+      {pendingProjects.length === 0 ? alert : null}
       {pendingProjects.map(ido => <IDOContextProvider id={ido.id!} key={ido.id}><IDOSummary /></IDOContextProvider>)}
     </SimpleGrid>
     <Heading>Finalized projects</Heading>
     <SimpleGrid columns={3} spacing={8}>
+      {endedProjects.length === 0 ? alert : null}
       {endedProjects.map(ido => <IDOContextProvider id={ido.id!} key={ido.id}><IDOSummary /></IDOContextProvider>)}
     </SimpleGrid>
   </Stack>

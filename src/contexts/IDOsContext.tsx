@@ -38,7 +38,7 @@ const onlyUnique = (value: any, index: number, self: any[]): boolean => {
 const CONTRACT_EVENTS_GQL = gql`
 subscription event($contractId: String!) {
   event(
-    limit: 100
+    limit: 1
     order_by: { block_number: desc }
     where: {
       method: { _eq: "Log" }
@@ -67,7 +67,7 @@ export const IDOsContextProvider: React.FunctionComponent = ({ children }) => {
     return IDOsInfo;
   }, false);
 
-  const { data, loading } = useSubscription(
+  const { data } = useSubscription(
     CONTRACT_EVENTS_GQL,
     {
       variables: {
@@ -75,7 +75,10 @@ export const IDOsContextProvider: React.FunctionComponent = ({ children }) => {
       }
     }
   );
-  console.log(data)
+
+  useEffect(() => {
+    console.log(data);
+  }, [data])
 
   useEffect(() => {
     if (provider && connected) {
