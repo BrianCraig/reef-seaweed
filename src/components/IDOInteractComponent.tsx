@@ -71,7 +71,7 @@ export const IDOInteractComponent = () => {
   const { IDO: { params: { multiplier } } } = useContext(IDOContext);
   const { status, onBuy, onWithdraw, balance, paid, onGetPayout } = useContext(IDOInteractContext);
   const { symbol } = useContext(TokenContext);
-  const [buying, setBuying, setWithdrawing] = useToggle(true);
+  const [buying, _, setBuying, setWithdrawing] = useToggle(true);
 
   if (status !== IDOStatus.Ended)
     return <Box borderRadius="md" borderColor={"app.400"} borderWidth={"1px"} w={480} alignSelf={"flex-start"} display={"flex"} flexDirection={"column"} padding={2} boxSizing={"border-box"} flexShrink={0}>
