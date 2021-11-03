@@ -4,11 +4,11 @@ import { useSubscription } from "@apollo/client"
 import gql from 'graphql-tag'
 import { BigNumber } from '@ethersproject/bignumber';
 import { IIDO, IIDOInterface, SeaweedIDOAddress } from '../abis/contracts';
-import { useAsync } from '../utils/hooks';
+import { useAsync, useCallbackAsync } from '../utils/hooks';
 import { IPFSIDO } from '../utils/types';
 import { getMultihashFromBytes32 } from "ipfs-multihash-on-solidity";
 import { NetworkContext } from './NetworkContext';
-import { IDO } from '../utils/contractTypes';
+import { IDO, IPFSMultihash } from '../utils/contractTypes';
 
 interface IDOsContextInterface {
   IDOs?: IDO[],
@@ -66,10 +66,25 @@ let topicNames: string[] = [
 
 let topicsMap = topicNames.map(name => ({ name, topic: utils.id(name) }))
 
+let execute = (data: any, exec: (params: { name: string, data: any }) => any) => {
+  if (data && data.event[0]) {
+    let parse: [{ address: string, data: string, topics: string[] }] = JSON.parse(data.event[0].data);
+    if (parse[0]) {
+      const { data, topics } = parse[0];
+      const topic = topicsMap.find(t => t.topic === topics[0])
+      if (topic) {
+        let event = IIDOInterface.decodeEventLog(topic.name, data, topics);
+        exec({ name: topic.name, data: event })
+      }
+    }
+  }
+}
+
 export const IDOsContextProvider: React.FunctionComponent = ({ children }) => {
   const { provider, connected } = useContext(NetworkContext);
   const [ipfsMap, setIPFS] = useState<{ [key: string]: IPFSIDO }>({})
-  const { execute, value: IDOs } = useAsync<IDO[]>(async () => {
+  const [IDOs, setIDOs] = useState<IDO[] | undefined>()
+  useCallbackAsync(async () => {
     const contract = IIDO(provider as any);
     let length = ((await contract.idosLength()) as BigNumber).toNumber();
     let IDOsInfo = await Promise.all(Array.from(Array(length).keys()).map((id): Promise<IDO> => contract.information(id)))
@@ -80,8 +95,8 @@ export const IDOsContextProvider: React.FunctionComponent = ({ children }) => {
         ipfs => IPFSFetch(ipfs).then((value) => setIPFS(ori => ({ ...ori, [ipfs]: value })))
       )
     )
-    return IDOsInfo;
-  }, false);
+    setIDOs(IDOsInfo);
+  }, !!provider && connected, [provider, connected])
 
   const { data } = useSubscription(
     CONTRACT_EVENTS_GQL,
@@ -93,25 +108,40 @@ export const IDOsContextProvider: React.FunctionComponent = ({ children }) => {
   );
 
   useEffect(() => {
-    if (data && data.event[0]) {
-      let parse: [{ address: string, data: string, topics: string[] }] = JSON.parse(data.event[0].data);
-      if (parse[0]) {
-        const { data, topics } = parse[0];
-        const topic = topicsMap.find(t => t.topic === topics[0])
-        if (topic) {
-          let event = IIDOInterface.decodeEventLog(topic.name, data, topics);
-          console.log(event)
+    execute(data, ({ name, data }) => {
+      let numberId = data.id.toNumber() as number
+      if (name === IDO_PUBLISHED) {
+        const { ido } = data as { ido: IDO }
+        if (IDOs !== undefined) {
+          setIDOs(Object.assign([], IDOs, { [numberId]: { ...ido, id: numberId } }));
+        }
+      } else if (name === IPFS) {
+        const { ipfs } = data as { ipfs: IPFSMultihash }
+        if (IDOs !== undefined && IDOs[numberId]) {
+          setIDOs(Object.assign([], IDOs,
+            { [numberId]: { ...IDOs[numberId], params: { ...IDOs[numberId].params, ipfs } } }
+          ));
+          let ipfsUri = getMultihashFromBytes32(ipfs);
+          IPFSFetch(ipfsUri).then((value) => setIPFS(ori => ({ ...ori, [ipfsUri]: value })))
+        }
+      } else if (name === BOUGHT) {
+        const { totalBought } = data as { owner: string, quantity: BigNumber, totalBought: BigNumber }
+        if (IDOs !== undefined && IDOs[numberId]) {
+          setIDOs(Object.assign([], IDOs,
+            { [numberId]: { ...IDOs[numberId], params: { ...IDOs[numberId].params, totalBought } } }
+          ));
+        }
+      } else if (name === WITHDRAWN) {
+        const { totalBought } = data as { owner: string, quantity: BigNumber, totalBought: BigNumber }
+        if (IDOs !== undefined && IDOs[numberId]) {
+          setIDOs(Object.assign([], IDOs,
+            { [numberId]: { ...IDOs[numberId], params: { ...IDOs[numberId].params, totalBought } } }
+          ));
         }
       }
-    }
-  }, [data])
-
-  useEffect(() => {
-    if (provider && connected) {
-      execute()
-    }
+    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [provider, connected])
+  }, [data])
 
   return <IDOsContext.Provider value={{
     IDOs,
