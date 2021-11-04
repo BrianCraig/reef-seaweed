@@ -2,10 +2,10 @@
 import { FunctionComponent, useCallback, useContext, useState } from "react";
 import { utils, BigNumber } from "ethers";
 import { formatDistanceStrict } from "date-fns";
-import { Stat, StatLabel, StatNumber, Box, Stack, InputGroup, InputLeftAddon, Input, Button } from "@chakra-ui/react"
+import { Stat, StatLabel, StatNumber, Box, Stack, InputGroup, InputLeftAddon, Input, Button, useBoolean } from "@chakra-ui/react"
 import { IDOInteractContext } from "../contexts/IDOInteractContext";
 import { TokenContext } from "../contexts/TokenContext";
-import { useToggle, useIntervalUpdate } from "../utils/hooks";
+import { useIntervalUpdate } from "../utils/hooks";
 import { timestampToDate } from "../utils/utils";
 import { IDOStatus } from "../utils/types";
 import { IDOContext } from "../contexts/IDOContext";
@@ -71,7 +71,7 @@ export const IDOInteractComponent = () => {
   const { IDO: { params: { multiplier } } } = useContext(IDOContext);
   const { status, onBuy, onWithdraw, balance, paid, onGetPayout } = useContext(IDOInteractContext);
   const { symbol } = useContext(TokenContext);
-  const [buying, _, setBuying, setWithdrawing] = useToggle(true);
+  const [buying, { on: setBuying, off: setWithdrawing }] = useBoolean(true);
 
   if (status !== IDOStatus.Ended)
     return <Box borderRadius="md" borderColor={"app.400"} borderWidth={"1px"} w={480} alignSelf={"flex-start"} display={"flex"} flexDirection={"column"} padding={2} boxSizing={"border-box"} flexShrink={0}>
