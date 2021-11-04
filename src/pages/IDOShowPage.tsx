@@ -1,12 +1,12 @@
 import { Heading, Text, Stack, Tag, TagLabel, TagRightIcon, CircularProgress } from "@chakra-ui/react";
-import { CheckIcon, InfoOutlineIcon } from "@chakra-ui/icons";
+import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
 import { FunctionComponent, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { IDOInteractContext, IDOInteractContextProvider } from "../contexts/IDOInteractContext";
 import { IDOInteractComponent } from "../components/IDOInteractComponent";
 import { CrowdsaleInformationComponent } from "../components/CrowdsaleInformationComponent";
 import { IDOStatus } from "../utils/types";
-import { IDOContextProvider } from "../contexts/IDOContext";
+import { IDOContext, IDOContextProvider } from "../contexts/IDOContext";
 import { VestingInformationComponent } from "../components/VestingInformationComponent";
 
 const onLoading = <Stack spacing={8} alignItems={"center"} overflow={"hidden"}>
@@ -16,14 +16,25 @@ const onLoading = <Stack spacing={8} alignItems={"center"} overflow={"hidden"}>
 
 export const IDOShowPage: FunctionComponent = () => {
   let { tx } = useParams<{ tx: string }>();
-  return <IDOContextProvider id={parseInt(tx, 10)} onLoading={onLoading} loadVesting>
+  return <IDOContextProvider id={parseInt(tx, 10)} onLoading={onLoading} loadVesting whitelisting>
     <IDOInteractContextProvider>
       <IDOInformation />
     </IDOInteractContextProvider>
   </IDOContextProvider>
 }
 
+let whitelistedEl = <Tag alignSelf={"flex-start"} size="sm" variant="outline">
+  <TagLabel>Whitelisted</TagLabel>
+  <TagRightIcon as={CheckIcon} />
+</Tag>
+
+let whitelistedntEl = <Tag alignSelf={"flex-start"} size="sm" variant="outline" colorScheme="red">
+  <TagLabel>Not whitelisted</TagLabel>
+  <TagRightIcon as={CloseIcon} />
+</Tag>
+
 const IDOInformation: FunctionComponent = () => {
+  const { whitelisted } = useContext(IDOContext)
   const { status, ipfs } = useContext(IDOInteractContext)
 
   return <Stack spacing={8}>
@@ -31,14 +42,7 @@ const IDOInformation: FunctionComponent = () => {
       <Stack direction={"row"} spacing={2}>
         <Heading>{ipfs?.title}</Heading>
         <Text>{status !== undefined && IDOStatus[status]}</Text>
-        <Tag alignSelf={"flex-start"} size="sm" variant="outline" colorScheme="blue">
-          <TagLabel>Can Buy</TagLabel>
-          <TagRightIcon as={CheckIcon} />
-        </Tag>
-        <Tag alignSelf={"flex-start"} size="sm" variant="outline" colorScheme="red">
-          <TagLabel>Contract Not Verified</TagLabel>
-          <TagRightIcon as={InfoOutlineIcon} />
-        </Tag>
+        {whitelisted !== undefined && (whitelisted ? whitelistedEl : whitelistedntEl)}
       </Stack>
       <Heading size={"sm"}>{ipfs?.subtitle}</Heading>
     </Stack>

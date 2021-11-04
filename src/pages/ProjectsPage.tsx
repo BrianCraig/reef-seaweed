@@ -1,4 +1,4 @@
-import { CheckIcon } from "@chakra-ui/icons"
+import { CheckIcon, CloseIcon } from "@chakra-ui/icons"
 import { Alert, AlertIcon, Avatar, Box, CircularProgress, Heading, SimpleGrid, Stack, Tag, TagLabel, TagRightIcon, Text } from "@chakra-ui/react"
 import { utils } from "ethers";
 import { FunctionComponent, useContext } from "react"
@@ -8,9 +8,19 @@ import { IDOsContext } from "../contexts/IDOsContext";
 import { IDOStatus } from "../utils/types"
 import { rangeToStatus } from "../utils/utils"
 
+let whitelistedEl = <Tag variant="solid">
+  <TagLabel>Whitelisted</TagLabel>
+  <TagRightIcon as={CheckIcon} />
+</Tag>
+
+let whitelistedntEl = <Tag colorScheme="solid">
+  <TagLabel>Not whitelisted</TagLabel>
+  <TagRightIcon as={CloseIcon} />
+</Tag>
+
 const IDOSummary: FunctionComponent<{}> = () => {
   let { push } = useHistory();
-  let { IDO: { params: { baseAmount, totalBought, maxAmountPerAddress }, id }, ipfs: { title, subtitle } } = useContext(IDOContext)
+  let { IDO: { params: { baseAmount, totalBought, maxAmountPerAddress }, id }, ipfs: { title, subtitle }, whitelisted } = useContext(IDOContext)
   return <Stack border={"1px"} borderColor={"app.400"} borderRadius={8} spacing={4} padding={4} onClick={() => push(`/projects/${id}`)}>
     <Stack direction={"row"} spacing={4}>
       <Avatar size={"md"} name="Y K" />
@@ -21,10 +31,7 @@ const IDOSummary: FunctionComponent<{}> = () => {
     </Stack>
     <Box borderTop={"1px"} borderBottom={"1px"} borderColor={"app.600"} bg={"app.100"}>
       <Stack width={"100%"} bg={"app.600"} height={140} padding={2} direction={"row"} alignItems={"flex-start"} justifyContent={"flex-end"}>
-        <Tag variant="solid" >
-          <TagLabel>Blue</TagLabel>
-          <TagRightIcon as={CheckIcon} />
-        </Tag>
+        {whitelisted !== undefined && (whitelisted ? whitelistedEl : whitelistedntEl)}
       </Stack>
     </Box>
     <Stack direction={"row"} justifyContent={"space-between"}>
@@ -62,17 +69,17 @@ export const ProjectsPage = () => {
     <Heading>Open projects</Heading>
     <SimpleGrid columns={3} spacing={8}>
       {openProjects.length === 0 ? alert : null}
-      {openProjects.map(ido => <IDOContextProvider id={ido.id!} key={ido.id}><IDOSummary /></IDOContextProvider>)}
+      {openProjects.map(ido => <IDOContextProvider id={ido.id!} key={ido.id} whitelisting><IDOSummary /></IDOContextProvider>)}
     </SimpleGrid>
     <Heading>Upcoming projects</Heading>
     <SimpleGrid columns={3} spacing={8}>
       {pendingProjects.length === 0 ? alert : null}
-      {pendingProjects.map(ido => <IDOContextProvider id={ido.id!} key={ido.id}><IDOSummary /></IDOContextProvider>)}
+      {pendingProjects.map(ido => <IDOContextProvider id={ido.id!} key={ido.id} whitelisting><IDOSummary /></IDOContextProvider>)}
     </SimpleGrid>
     <Heading>Finalized projects</Heading>
     <SimpleGrid columns={3} spacing={8}>
       {endedProjects.length === 0 ? alert : null}
-      {endedProjects.map(ido => <IDOContextProvider id={ido.id!} key={ido.id}><IDOSummary /></IDOContextProvider>)}
+      {endedProjects.map(ido => <IDOContextProvider id={ido.id!} key={ido.id} whitelisting><IDOSummary /></IDOContextProvider>)}
     </SimpleGrid>
   </Stack>
 }
