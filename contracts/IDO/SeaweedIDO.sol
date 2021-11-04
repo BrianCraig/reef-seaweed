@@ -5,6 +5,7 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "../erc20/ERC20Entangled.sol";
+import "../locking/ILockedAmount.sol";
 import "./IIDO.sol";
 
 struct Vesting {
@@ -36,6 +37,7 @@ struct IDOParams {
     Multiplier multiplier;
     IPFSMultihash ipfs;
     Range open;
+    uint256 minimumLockedAmount;
     uint256 baseAmount;
     uint256 maxAmountPerAddress;
     uint256 totalBought;
@@ -58,6 +60,7 @@ contract SeaweedIDO is Ownable {
     mapping(uint256 => mapping(address => uint256)) bought;
     mapping(uint256 => mapping(address => bool)) _beenPaid;
     Vesting[MAX_VESTING_OCURRENCES][] _vesting;
+    ILockedAmount private _lockingContract;
 
     constructor() {}
 
@@ -149,17 +152,41 @@ contract SeaweedIDO is Ownable {
     }
 
     /**
+     * @dev Change IPFS hash
+     */
+    function setLockingAddress(address lockingContract) public onlyOwner {
+        _lockingContract = ILockedAmount(lockingContract);
+    }
+
+    /**
+     * @dev Returns if the selected address is whitelisted via locking.
+     */
+
+    function whitelisted(uint256 id, address account)
+        public
+        view
+        returns (bool status)
+    {
+        if (_lockingContract == ILockedAmount(address(0))) return true;
+        IDO storage ido = idos[id];
+        if (ido.params.minimumLockedAmount == 0) return true;
+        return (_lockingContract.lockedAmount(account) >=
+            ido.params.minimumLockedAmount);
+    }
+
+    /**
      * @dev Returns if the selected address can buy.
      */
     function canBuy(uint256 id, address account)
-        public
+        private
         view
         returns (bool status)
     {
         IDO storage ido = idos[id];
         return
             (block.timestamp >= ido.params.open.start) &&
-            (block.timestamp < ido.params.open.end);
+            (block.timestamp < ido.params.open.end) &&
+            whitelisted(id, account);
     }
 
     function _availableToBuy(IDO storage ido)
