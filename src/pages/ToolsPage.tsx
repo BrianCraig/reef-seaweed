@@ -1,14 +1,9 @@
-import { FunctionComponent, useContext, useState, useCallback } from "react";
+import { FunctionComponent, useContext } from "react";
 import { Stack, Heading, Input, Button, useToast } from "@chakra-ui/react"
 
 import { AccountsContext } from "../contexts/AccountsContext";
-import { LockingContract, SeaweedIDO } from "../abis/contracts";
-
-const useInput = (defaultValue = "") => {
-  const [val, setVal] = useState<string>(defaultValue)
-  const setEv = useCallback((ev: React.ChangeEvent<HTMLInputElement>) => setVal(ev.target.value), [setVal]);
-  return [val, setEv] as const
-}
+import { IIDO, LockingContract, SeaweedIDO } from "../abis/contracts";
+import { useInput } from "../utils/hooks";
 
 export const ToolsPage: FunctionComponent = () => {
   const { selectedSigner } = useContext(AccountsContext);
@@ -41,6 +36,16 @@ export const ToolsPage: FunctionComponent = () => {
     })
   }
 
+  let onLockingContract = async () => {
+    await IIDO(selectedSigner!.signer).setLockingAddress(lockingContractAddress);
+    toast({
+      title: "Locking contract address changed",
+      status: "success",
+      isClosable: true,
+      position: "top"
+    })
+  }
+
   return <Stack spacing={4}>
     <Heading>Deploy</Heading>
     <Stack direction={"row"} alignItems={"flex-start"}>
@@ -49,7 +54,7 @@ export const ToolsPage: FunctionComponent = () => {
     <Button onClick={deploySeaweed} alignSelf={"flex-start"}>Deploy Seaweed IDO Contract</Button>
     <Heading>Update</Heading>
     <Stack direction={"row"} alignItems={"flex-start"}>
-      <Input width={300} value={lockingContractAddress} onChange={setLockingContractAddress} placeholder={"0xaf..."} /><Button>Set Locking contract address</Button>
+      <Input width={300} value={lockingContractAddress} onChange={setLockingContractAddress} placeholder={"0xaf..."} /><Button onClick={onLockingContract}>Set Locking contract address</Button>
     </Stack>
     <Stack direction={"row"} alignItems={"flex-start"}>
       <Input width={300} value={lockingTime} onChange={setLockingTime} placeholder={"0xaf..."} /><Button>Set Locking time</Button>

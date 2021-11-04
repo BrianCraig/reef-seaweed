@@ -51,7 +51,7 @@ contract Locking is ILockedAmount, Ownable {
 
     function unlock(uint256 amount) public {
         require(_lockedAmount[msg.sender] >= amount, "Not enough stack");
-        require(_lockedUntil[msg.sender] >= block.timestamp, "Too early");
+        require(_lockedUntil[msg.sender] <= block.timestamp, "Too early");
         token.transfer(msg.sender, amount);
         _lockedAmount[msg.sender] -= amount;
         emit Withdraw(msg.sender, amount);

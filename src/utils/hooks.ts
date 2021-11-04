@@ -106,3 +106,10 @@ export const useCallbackAsync = (ex: (...params: any[]) => Promise<any>, execute
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps);
 }
+
+
+export const useInput = (defaultValue = "") => {
+  const [val, setVal] = useState<string>(defaultValue)
+  const setEv = useCallback((ev: React.ChangeEvent<HTMLInputElement>) => setVal(ev.target.value), [setVal]);
+  return [val, setEv] as const
+}

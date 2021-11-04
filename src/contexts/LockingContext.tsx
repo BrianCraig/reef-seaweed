@@ -14,7 +14,7 @@ export const LockingContext = React.createContext<LockingContextInterface>({});
 export const LockingContextProvider: React.FunctionComponent = ({ children }) => {
   const { provider } = useContext(NetworkContext);
   const { value: contractAddress } = useAsync<string>(() => IIDO(provider!).lockingContract(), !!provider)
-  const { value: tokenAddress } = useAsync<string>(() => ILocking(contractAddress!, provider!).lockingContract(), !!provider && contractAddress !== undefined && contractAddress !== zeroAddress)
+  const { value: tokenAddress } = useAsync<string>(() => ILocking(contractAddress!, provider!).tokenAddress(), !!provider && contractAddress !== undefined && contractAddress !== zeroAddress)
 
   return <LockingContext.Provider value={{
     tokenAddress,
