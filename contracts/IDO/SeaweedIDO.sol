@@ -106,7 +106,8 @@ contract SeaweedIDO is Ownable {
         Vesting[MAX_VESTING_OCURRENCES] storage vest = _vesting.push();
         for (uint256 i = 0; i < MAX_VESTING_OCURRENCES; i++) {
             require(
-                vest[i].timestamp >= ido.params.open.end,
+                vest[i].beneficiary == address(0) ||
+                    vest[i].timestamp >= ido.params.open.end,
                 "Tokens must be vested after the IDO ends"
             );
             vest[i] = vesting[i];
@@ -154,8 +155,15 @@ contract SeaweedIDO is Ownable {
     /**
      * @dev Change IPFS hash
      */
-    function setLockingAddress(address lockingContract) public onlyOwner {
-        _lockingContract = ILockedAmount(lockingContract);
+    function setLockingAddress(address where) public onlyOwner {
+        _lockingContract = ILockedAmount(where);
+    }
+
+    /**
+     * @dev Change IPFS hash
+     */
+    function lockingContract() public view returns (address) {
+        return address(_lockingContract);
     }
 
     /**

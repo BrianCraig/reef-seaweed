@@ -21,6 +21,10 @@ contract Locking is ILockedAmount, Ownable {
         token = _token;
     }
 
+    function tokenAddress() public view returns (address) {
+        return address(token);
+    }
+
     function locked(address owner)
         external
         view

@@ -2,7 +2,7 @@ import { FunctionComponent, useContext, useState, useCallback } from "react";
 import { Stack, Heading, Input, Button, useToast } from "@chakra-ui/react"
 
 import { AccountsContext } from "../contexts/AccountsContext";
-import { SeaweedIDO } from "../abis/contracts";
+import { LockingContract, SeaweedIDO } from "../abis/contracts";
 
 const useInput = (defaultValue = "") => {
   const [val, setVal] = useState<string>(defaultValue)
@@ -29,10 +29,22 @@ export const ToolsPage: FunctionComponent = () => {
       position: "top"
     })
   }
+
+  let deployLocking = async () => {
+    const { address } = await LockingContract.connect(selectedSigner!.signer as any).deploy(lockingTokenAddress);
+    toast({
+      title: "Locking contract deployed",
+      description: `deployed at ${address}`,
+      status: "success",
+      isClosable: true,
+      position: "top"
+    })
+  }
+
   return <Stack spacing={4}>
     <Heading>Deploy</Heading>
     <Stack direction={"row"} alignItems={"flex-start"}>
-      <Input width={300} value={lockingTokenAddress} onChange={setLockingTokenAddress} placeholder={"0xaf..."} /><Button>Deploy Locking Contract</Button>
+      <Input width={300} value={lockingTokenAddress} onChange={setLockingTokenAddress} placeholder={"0xaf..."} /><Button onClick={deployLocking}>Deploy Locking Contract</Button>
     </Stack>
     <Button onClick={deploySeaweed} alignSelf={"flex-start"}>Deploy Seaweed IDO Contract</Button>
     <Heading>Update</Heading>
