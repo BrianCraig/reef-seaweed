@@ -2,7 +2,7 @@ import { Contract, ContractFactory, utils } from "ethers";
 import SeaweedIDOJson from "../artifacts/contracts/IDO/SeaweedIDO.sol/SeaweedIDO.json";
 import IERC20Json from "../abis/erc20.abi.json";
 
-export const SeaweedIDOAddress = "0x49163cB8a324f484fA37cFAc53069aE20056C665"
+export const SeaweedIDOAddress = "0x570Ad58C48753340C626B106FC3721FCf85BA243"
 export const MAX_VESTING_OCURRENCES = 16;
 
 export const SeaweedIDO = ContractFactory.fromSolidity(SeaweedIDOJson);
