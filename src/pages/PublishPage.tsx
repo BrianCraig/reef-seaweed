@@ -1,12 +1,11 @@
-import { Box, Button, Heading, Input, Stack, useToast } from "@chakra-ui/react"
-import { Form, Formik, FormikProps } from 'formik';
-import React, { FunctionComponent, useContext, useState } from "react";
+import { Button, Heading, Stack, useToast } from "@chakra-ui/react"
+import { Form, Formik } from 'formik';
+import { useContext, useState } from "react";
 import * as Yup from 'yup';
 import { IIDO, MAX_VESTING_OCURRENCES } from "../abis/contracts";
 import { FieldRenderer } from "../components/FieldRenderer";
 import { VestingFormComponent } from "../components/VestingFormComponent";
 import { AccountsContext } from "../contexts/AccountsContext";
-import { ContractsContext } from "../contexts/ContractsContext";
 import { ContractBasicIDOAction } from "../utils/txFactorys";
 import { PublishValues, VestingForm } from "../utils/types";
 

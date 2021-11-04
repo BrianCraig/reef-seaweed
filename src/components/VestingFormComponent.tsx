@@ -1,6 +1,6 @@
 import { Button, Input, Stack } from "@chakra-ui/react";
-import { Field, Formik, FormikProps } from "formik";
-import React, { Dispatch, FunctionComponent, SetStateAction, useCallback, useRef } from "react";
+import { Field, Formik } from "formik";
+import { Dispatch, FunctionComponent, SetStateAction } from "react";
 import Box from "ui-box";
 import { VestingForm } from "../utils/types";
 
@@ -9,7 +9,6 @@ const initialValues: VestingForm = {
   amount: 0,
   timestamp: ""
 }
-
 
 export const VestingFormComponent: FunctionComponent<{ id: number, setVesting: Dispatch<SetStateAction<VestingForm[]>> }> = ({ id, setVesting }) => {
   return <Formik<VestingForm>

@@ -7,6 +7,7 @@ import { IDOInteractComponent } from "../components/IDOInteractComponent";
 import { CrowdsaleInformationComponent } from "../components/CrowdsaleInformationComponent";
 import { IDOStatus } from "../utils/types";
 import { IDOContextProvider } from "../contexts/IDOContext";
+import { VestingInformationComponent } from "../components/VestingInformationComponent";
 
 const onLoading = <Stack spacing={8} alignItems={"center"} overflow={"hidden"}>
   <Heading>Loading IDO</Heading>
@@ -15,7 +16,7 @@ const onLoading = <Stack spacing={8} alignItems={"center"} overflow={"hidden"}>
 
 export const IDOShowPage: FunctionComponent = () => {
   let { tx } = useParams<{ tx: string }>();
-  return <IDOContextProvider id={parseInt(tx, 10)} onLoading={onLoading}>
+  return <IDOContextProvider id={parseInt(tx, 10)} onLoading={onLoading} loadVesting>
     <IDOInteractContextProvider>
       <IDOInformation />
     </IDOInteractContextProvider>
@@ -23,7 +24,7 @@ export const IDOShowPage: FunctionComponent = () => {
 }
 
 const IDOInformation: FunctionComponent = () => {
-  const { status, ipfs } = useContext(IDOInteractContext);
+  const { status, ipfs } = useContext(IDOInteractContext)
 
   return <Stack spacing={8}>
     <Stack>
@@ -44,7 +45,10 @@ const IDOInformation: FunctionComponent = () => {
     <Stack direction={"row"} spacing={8}>
       <Stack spacing={8}>
         <Text>{ipfs?.description}</Text>
+        <Heading size={"lg"}>IDO Rules</Heading>
         <CrowdsaleInformationComponent />
+        <Heading size={"lg"}>Vesting</Heading>
+        <VestingInformationComponent />
       </Stack>
       <IDOInteractComponent />
     </Stack>
