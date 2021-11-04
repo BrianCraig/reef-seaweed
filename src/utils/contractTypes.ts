@@ -22,6 +22,7 @@ export interface IDOParams {
   multiplier: Multiplier;
   ipfs: IPFSMultihash;
   open: IDORange;
+  minimumLockedAmount: BigNumber;
   baseAmount: BigNumber;
   maxAmountPerAddress: BigNumber;
   totalBought: BigNumber;
