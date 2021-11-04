@@ -33,7 +33,7 @@ export const Layout = () => {
               <Route exact path="/projects">
                 <ProjectsPage />
               </Route>
-              <Route path="/ido/:tx">
+              <Route path="/projects/:tx">
                 <IDOShowPage />
               </Route>
               <Route exact path="/my-account">

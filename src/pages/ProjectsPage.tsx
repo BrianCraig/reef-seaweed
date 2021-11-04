@@ -11,7 +11,7 @@ import { rangeToStatus } from "../utils/utils"
 const IDOSummary: FunctionComponent<{}> = () => {
   let { push } = useHistory();
   let { IDO: { params: { baseAmount, totalBought, maxAmountPerAddress }, id }, ipfs: { title, subtitle } } = useContext(IDOContext)
-  return <Stack border={"1px"} borderColor={"app.400"} borderRadius={8} spacing={4} padding={4} onClick={() => push(`/ido/${id}`)}>
+  return <Stack border={"1px"} borderColor={"app.400"} borderRadius={8} spacing={4} padding={4} onClick={() => push(`/projects/${id}`)}>
     <Stack direction={"row"} spacing={4}>
       <Avatar size={"md"} name="Y K" />
       <Stack justifyContent={"space-between"} spacing={0}>
