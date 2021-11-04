@@ -102,6 +102,10 @@ contract SeaweedIDO is Ownable {
 
         Vesting[MAX_VESTING_OCURRENCES] storage vest = _vesting.push();
         for (uint256 i = 0; i < MAX_VESTING_OCURRENCES; i++) {
+            require(
+                vest[i].timestamp >= ido.params.open.end,
+                "Tokens must be vested after the IDO ends"
+            );
             vest[i] = vesting[i];
         }
 
