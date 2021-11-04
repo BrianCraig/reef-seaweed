@@ -6,7 +6,6 @@ import { ApolloProvider } from '@apollo/client';
 import { NetworkContextProvider } from './contexts/NetworkContext';
 import { AccountsContextProvider } from './contexts/AccountsContext';
 import { SignerStatusContextProvider } from './contexts/SignerStatusContext';
-import { TxContextProvider } from './contexts/TxContext';
 import { ContractsContextProvider } from './contexts/ContractsContext';
 import { ChakraProvider } from '@chakra-ui/react';
 import { appTheme } from './utils/chakraTheme';
@@ -21,11 +20,9 @@ ReactDOM.render(
           <AccountsContextProvider>
             <SignerStatusContextProvider>
               <IDOsContextProvider>
-                <TxContextProvider>
-                  <ContractsContextProvider>
-                    <Layout />
-                  </ContractsContextProvider>
-                </TxContextProvider>
+                <ContractsContextProvider>
+                  <Layout />
+                </ContractsContextProvider>
               </IDOsContextProvider>
             </SignerStatusContextProvider>
           </AccountsContextProvider>

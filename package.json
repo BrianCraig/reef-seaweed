@@ -23,7 +23,6 @@
     "bn.js": "^5.2.0",
     "date-fns": "^2.25.0",
     "ethers": "^5.5.1",
-    "evergreen-ui": "^6.5.1",
     "formik": "^2.2.9",
     "framer-motion": "^4",
     "graphql": "^16.0.1",

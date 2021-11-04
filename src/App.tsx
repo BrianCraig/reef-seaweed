@@ -1,7 +1,6 @@
 import { Box, Stack } from "@chakra-ui/react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { ActualReefComponent, ConnectionStatusComponent, SelectAccountComponent } from './components/SmallComponents';
-import { TxCallerComponent } from './components/TxCallerComponent';
 import { ToolsPage } from './pages/ToolsPage';
 import { IDOShowPage } from './pages/IDOShowPage';
 import { MenuComponent } from "./components/MenuComponent";
@@ -54,7 +53,6 @@ export const Layout = () => {
             </Switch>
           </Box>
         </Box>
-        <TxCallerComponent />
       </Stack>
     </Router >
   );
