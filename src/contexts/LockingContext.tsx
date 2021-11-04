@@ -1,5 +1,4 @@
-import React, { } from 'react';
-import { useContext } from 'react-transition-group/node_modules/@types/react';
+import React, { useContext } from 'react';
 import { IIDO, ILocking } from '../abis/contracts';
 import { useAsync } from '../utils/hooks';
 import { zeroAddress } from '../utils/utils';
