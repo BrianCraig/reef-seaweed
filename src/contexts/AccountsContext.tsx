@@ -4,19 +4,22 @@ import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
 import type { Signer as InjectedSigner } from '@polkadot/api/types';
 import type { InjectedAccountWithMeta, InjectedExtension } from '@polkadot/extension-inject/types';
 import { Provider, Signer } from '@reef-defi/evm-provider';
-import { ensure, sleep } from '../utils/utils';
+import { ensure } from '../utils/utils';
 import { NetworkContext } from './NetworkContext';
 import { AccountSigner } from '../utils/types';
+import { useToast } from '@chakra-ui/react';
 
 interface AccountsContextInterface {
   accounts?: InjectedAccountWithMeta[],
   signers?: AccountSigner[],
   selectedSigner?: AccountSigner,
-  setSelectedSigner: React.Dispatch<React.SetStateAction<AccountSigner | undefined>>
+  setSelectedSigner: React.Dispatch<React.SetStateAction<AccountSigner | undefined>>,
+  onConnect: () => any
 }
 
 export const AccountsContext = React.createContext<AccountsContextInterface>({
-  setSelectedSigner: () => { }
+  setSelectedSigner: () => { },
+  onConnect: () => { }
 });
 
 export const accountToSigner = async (account: InjectedAccountWithMeta, provider: Provider, sign: InjectedSigner): Promise<AccountSigner> => {
@@ -41,23 +44,28 @@ export const AccountsContextProvider: React.FunctionComponent = ({ children }) =
   const [accounts, setAccounts] = useState<InjectedAccountWithMeta[] | undefined>()
   const [signers, setSigners] = useState<AccountSigner[] | undefined>();
   const [selectedSigner, setSelectedSigner] = useState<AccountSigner | undefined>();
+  const toast = useToast()
 
-  useEffect(() => {
-    const load = async (): Promise<void> => {
+  const onConnect = async (): Promise<void> => {
+    try {
       if (!accounts) {
-        await sleep(300); // Sometimes web3enable fails due to extension not injected
-        const inj = await web3Enable('SeaWeed');
-        ensure(inj.length > 0, 'SeaWeed can not be access Polkadot-Extension. Please install <a href="https://addons.mozilla.org/en-US/firefox/addon/polkadot-js-extension/" target="_blank">Polkadot-Extension</a> in your browser and refresh the page to use Reefswap.');
-
+        const inj = await web3Enable('Seaweed');
+        ensure(inj.length > 0, 'Seaweed can not be access Polkadot-Extension. Please install Polkadot Extension in your browser and refresh the page to use Seaweed.');
         const web3accounts = await web3Accounts();
-        ensure(web3accounts.length > 0, 'Reefswap requires at least one account Polkadot-extension. Please create or import account/s and refresh the page.');
+        ensure(web3accounts.length > 0, 'Seaweed requires at least one account Polkadot-extension. Please create or import account/s and refresh the page.');
         setAccounts(web3accounts);
         setInjected(inj)
       }
+    } catch (error) {
+      toast({
+        title: "Error ocurred while connecting to wallet.",
+        description: (error as Error).message,
+        status: "error",
+        isClosable: true,
+        position: "top"
+      })
     }
-    load();
-  }, [accounts])
-
+  }
 
   useEffect(() => {
     const load = async (): Promise<void> => {
@@ -79,7 +87,8 @@ export const AccountsContextProvider: React.FunctionComponent = ({ children }) =
       accounts,
       signers,
       selectedSigner,
-      setSelectedSigner
+      setSelectedSigner,
+      onConnect
     }} >
     {children}
   </AccountsContext.Provider >

@@ -3,7 +3,6 @@ import { Stack } from "@chakra-ui/react"
 import { Heading, Pane, majorScale, Button, Text } from "evergreen-ui";
 import { ContractDeployerComponent } from "../components/ContractDeployerComponent";
 import { ContractListEditorComponent } from "../components/ListEditorComponent";
-import { ReefManageComponent } from '../components/SmallComponents';
 import { StakingControlsComponent } from "../components/StakingControlsComponent";
 import { TokenInformationComponent } from "../components/TokenInformationComponent";
 import { AccountsContext } from "../contexts/AccountsContext";
@@ -19,10 +18,6 @@ export const ToolsPage: FunctionComponent = () => {
   let claimEvm = () => setTx({ args: {}, type: ClaimEvmTx })
 
   return <Stack margin={2}>
-    <Heading is="h2" size={700}>Account information</Heading>
-    <Pane display={"flex"} alignItems="center" gap={majorScale(1)}>
-      <ReefManageComponent />
-    </Pane>
     <Pane display={"flex"} alignItems="center" gap={majorScale(1)}>
       <Text>EVM Address: {selectedSigner?.evmAddress || " "}</Text>
       {!selectedSigner?.isEvmClaimed && <Button onClick={claimEvm}>Generate EVM</Button>}
