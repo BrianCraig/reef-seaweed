@@ -1,7 +1,6 @@
-import { Button, Input, Stack } from "@chakra-ui/react";
+import { Button, Input, Stack, Box } from "@chakra-ui/react";
 import { Field, Formik } from "formik";
 import { Dispatch, FunctionComponent, SetStateAction } from "react";
-import Box from "ui-box";
 import { VestingForm } from "../utils/types";
 
 const initialValues: VestingForm = {
