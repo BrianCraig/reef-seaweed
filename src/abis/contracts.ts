@@ -8,6 +8,7 @@ export const MAX_VESTING_OCURRENCES = 16;
 
 export const SeaweedIDO = ContractFactory.fromSolidity(SeaweedIDOJson);
 export const LockingContract = ContractFactory.fromSolidity(LockingJson);
+export const ILocking = (address: string, signer?: any) => new Contract(address, LockingJson.abi, signer);
 export const IIDO = (signer?: any) => new Contract(SeaweedIDOAddress, SeaweedIDOJson.abi, signer);
 export const IIDOInterface = new utils.Interface(SeaweedIDOJson.abi);
 export const IERC20 = (address: string) => new Contract(address, IERC20Json);

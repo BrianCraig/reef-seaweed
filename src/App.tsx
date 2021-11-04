@@ -10,6 +10,7 @@ import { DocumentationPage } from "./pages/DocumentationPage";
 import { MyAccountPage } from "./pages/MyAccountPage";
 import { PublishPage } from "./pages/PublishPage";
 import { PublishDescriptionPage } from "./pages/PublishDescriptionPage";
+import { LockingPage } from "./pages/LockingPage";
 import "./app.css"
 
 export const Layout = () => {
@@ -37,6 +38,9 @@ export const Layout = () => {
               </Route>
               <Route exact path="/my-account">
                 <MyAccountPage />
+              </Route>
+              <Route exact path="/locking">
+                <LockingPage />
               </Route>
               <Route exact path="/docs">
                 <DocumentationPage />

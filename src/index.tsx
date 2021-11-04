@@ -10,6 +10,7 @@ import { ChakraProvider } from '@chakra-ui/react';
 import { appTheme } from './utils/chakraTheme';
 import { IDOsContextProvider } from './contexts/IDOsContext';
 import { apolloClientInstance } from './utils/apolloClient';
+import { LockingContextProvider } from './contexts/LockingContext';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -18,15 +19,17 @@ ReactDOM.render(
         <NetworkContextProvider>
           <AccountsContextProvider>
             <SignerStatusContextProvider>
-              <IDOsContextProvider>
-                <Layout />
-              </IDOsContextProvider>
+              <LockingContextProvider>
+                <IDOsContextProvider>
+                  <Layout />
+                </IDOsContextProvider>
+              </LockingContextProvider>
             </SignerStatusContextProvider>
           </AccountsContextProvider>
         </NetworkContextProvider>
       </ChakraProvider>
     </ApolloProvider>
-  </React.StrictMode>,
+  </React.StrictMode >,
   document.getElementById('root')
 );
 
