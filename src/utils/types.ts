@@ -46,6 +46,7 @@ export interface PublishValues {
   reefAmount: number;
   reefMultiplier: number;
   reefMaxPerAddress: number;
+  swdWhitelisting: number;
   start: string;
   end: string;
 }

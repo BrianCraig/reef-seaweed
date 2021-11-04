@@ -22,6 +22,7 @@ const initialValues: PublishValues = {
   reefAmount: 100000,
   reefMultiplier: 5,
   reefMaxPerAddress: 100,
+  swdWhitelisting: 0,
   start: "",
   end: ""
 }
@@ -83,6 +84,12 @@ export const PublishPage = () => {
               name={"reefMaxPerAddress"}
               type={"number"}
               placeholder={"100"}
+            />
+            <FieldRenderer
+              title={"$SWD locked amount for joining"}
+              name={"swdWhitelisting"}
+              type={"number"}
+              helper={"0 means anyone can buy without locking $SWD"}
             />
             <FieldRenderer
               title={"Crowdsale start"}
