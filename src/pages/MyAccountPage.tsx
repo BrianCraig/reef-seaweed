@@ -5,17 +5,19 @@ import { IIDO } from "../abis/contracts"
 import { AccountsContext } from "../contexts/AccountsContext"
 import { IDOContext, IDOContextProvider } from "../contexts/IDOContext"
 import { IDOsContext } from "../contexts/IDOsContext"
+import { NetworkContext } from "../contexts/NetworkContext"
 import { IDOStatus } from "../utils/types"
 import { rangeToStatus } from "../utils/utils"
 
 const MyIDO: FunctionComponent = () => {
+  const { network: { SeaweedAddress } } = useContext(NetworkContext)
   const { IDO, ipfs } = useContext(IDOContext);
-  const { selectedSigner } = useContext(AccountsContext);
+  const { signer } = useContext(AccountsContext);
   const { push } = useHistory();
   const status = rangeToStatus(IDO.params.open)
 
   const getRaised = () => {
-    IIDO(selectedSigner!.signer).getRaised(IDO.id)
+    IIDO(SeaweedAddress, signer).getRaised(IDO.id)
   }
 
   return <Stack direction={"row"} spacing={4}>

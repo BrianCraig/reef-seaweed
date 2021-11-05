@@ -4,18 +4,20 @@ import { Stack, Heading, Input, Button, useToast } from "@chakra-ui/react"
 import { AccountsContext } from "../contexts/AccountsContext";
 import { IIDO, LockingContract, SeaweedIDO } from "../abis/contracts";
 import { useInput } from "../utils/hooks";
+import { NetworkContext } from "../contexts/NetworkContext";
 
 export const ToolsPage: FunctionComponent = () => {
-  const { selectedSigner } = useContext(AccountsContext);
+  const { network: { SeaweedAddress } } = useContext(NetworkContext)
+  const { signer } = useContext(AccountsContext);
   const [lockingTokenAddress, setLockingTokenAddress] = useInput("");
   const [lockingContractAddress, setLockingContractAddress] = useInput("");
   const [lockingTime, setLockingTime] = useInput("");
   const toast = useToast();
 
-  if (selectedSigner === undefined) return <Heading>Connect wallet first</Heading>
+  if (signer === undefined) return <Heading>Connect wallet first</Heading>
 
   let deploySeaweed = async () => {
-    const { address } = await SeaweedIDO.connect(selectedSigner!.signer as any).deploy();
+    const { address } = await SeaweedIDO.connect(signer).deploy();
     toast({
       title: "Seaweed IDO deployed",
       description: `deployed at ${address}`,
@@ -26,7 +28,7 @@ export const ToolsPage: FunctionComponent = () => {
   }
 
   let deployLocking = async () => {
-    const { address } = await LockingContract.connect(selectedSigner!.signer as any).deploy(lockingTokenAddress);
+    const { address } = await LockingContract.connect(signer).deploy(lockingTokenAddress);
     toast({
       title: "Locking contract deployed",
       description: `deployed at ${address}`,
@@ -37,7 +39,7 @@ export const ToolsPage: FunctionComponent = () => {
   }
 
   let onLockingContract = async () => {
-    await IIDO(selectedSigner!.signer).setLockingAddress(lockingContractAddress);
+    await IIDO(SeaweedAddress, signer).setLockingAddress(lockingContractAddress);
     toast({
       title: "Locking contract address changed",
       status: "success",

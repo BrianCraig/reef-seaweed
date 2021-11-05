@@ -3,7 +3,7 @@ import { utils } from "ethers";
 import { useSubscription } from "@apollo/client"
 import gql from 'graphql-tag'
 import { BigNumber } from '@ethersproject/bignumber';
-import { IIDO, IIDOInterface, SeaweedIDOAddress } from '../abis/contracts';
+import { IIDO, IIDOInterface } from '../abis/contracts';
 import { useCallbackAsync } from '../utils/hooks';
 import { IPFSIDO } from '../utils/types';
 import { getMultihashFromBytes32 } from "ipfs-multihash-on-solidity";
@@ -80,11 +80,11 @@ let execute = (data: any, exec: (params: { name: string, data: any }) => any) =>
 }
 
 export const IDOsContextProvider: React.FunctionComponent = ({ children }) => {
-  const { provider, connected } = useContext(NetworkContext);
+  const { provider, connected, network: { SeaweedAddress } } = useContext(NetworkContext);
   const [ipfsMap, setIPFS] = useState<{ [key: string]: IPFSIDO }>({})
   const [IDOs, setIDOs] = useState<IDO[] | undefined>()
   useCallbackAsync(async () => {
-    const contract = IIDO(provider as any);
+    const contract = IIDO(SeaweedAddress, provider);
     let length = ((await contract.idosLength()) as BigNumber).toNumber();
     let IDOsInfo = await Promise.all(Array.from(Array(length).keys()).map((id): Promise<IDO> => contract.information(id)))
     let ipfsKeys = IDOsInfo.map(ido => getMultihashFromBytes32(ido.params.ipfs)).filter(onlyUnique);
@@ -101,7 +101,7 @@ export const IDOsContextProvider: React.FunctionComponent = ({ children }) => {
     CONTRACT_EVENTS_GQL,
     {
       variables: {
-        contractId: `[{"address":"${SeaweedIDOAddress.toLowerCase()}"%`,
+        contractId: `[{"address":"${SeaweedAddress.toLowerCase()}"%`,
       }
     }
   );
