@@ -34,8 +34,8 @@ let whitelistedntEl = <Tag alignSelf={"flex-start"} size="sm" variant="outline" 
 </Tag>
 
 const IDOInformation: FunctionComponent = () => {
-  const { whitelisted } = useContext(IDOContext)
-  const { status, ipfs } = useContext(IDOInteractContext)
+  const { whitelisted, ipfs } = useContext(IDOContext)
+  const { status } = useContext(IDOInteractContext)
 
   return <Stack spacing={8}>
     <Stack>

@@ -4,7 +4,7 @@ import { IIDO } from '../abis/contracts';
 import { useAsync, useIntervalUpdate } from '../utils/hooks';
 import { AccountsContext } from './AccountsContext';
 import { TokenContextProvider } from './TokenContext';
-import { IDOStatus, IPFSIDO } from '../utils/types';
+import { IDOStatus } from '../utils/types';
 import { rangeToStatus } from '../utils/utils';
 import { IDOContext } from './IDOContext';
 
@@ -16,8 +16,7 @@ interface IDOInteractContextInterface {
   onWithdraw: () => any,
   onGetPayout: () => any,
   balance: BigNumber,
-  paid: boolean,
-  ipfs?: IPFSIDO
+  paid: boolean
 }
 
 export const IDOInteractContext = React.createContext<IDOInteractContextInterface>({
@@ -32,7 +31,7 @@ export const IDOInteractContext = React.createContext<IDOInteractContextInterfac
 
 
 export const IDOInteractContextProvider: React.FunctionComponent = ({ children }) => {
-  const { IDO, ipfs } = useContext(IDOContext);
+  const { IDO } = useContext(IDOContext);
   const { selectedSigner } = useContext(AccountsContext);
   const [wei, setWei] = useState<BigNumber>(BigNumber.from(0));
   let contract = selectedSigner ? IIDO(selectedSigner.signer as any) : undefined;
@@ -82,10 +81,9 @@ export const IDOInteractContextProvider: React.FunctionComponent = ({ children }
     onWithdraw,
     onGetPayout,
     paid: !!paidValue,
-    balance: balanceValue || BigNumber.from(0),
-    ipfs
+    balance: balanceValue || BigNumber.from(0)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }), [status, wei, setWei, balanceValue, paidValue, ipfs])
+  }), [status, wei, setWei, balanceValue, paidValue])
 
   return <IDOInteractContext.Provider value={value}>
     <TokenContextProvider address={IDO.params.token} children={children} />

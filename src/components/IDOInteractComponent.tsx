@@ -13,18 +13,25 @@ import { IDOContext } from "../contexts/IDOContext";
 const { parseEther, formatEther } = utils;
 
 const useWeiConversion = (value: BigNumber, setWei: React.Dispatch<React.SetStateAction<BigNumber>>, multiplier: number, divisor: number) => {
-  const [to, setTo] = useState<BigNumber>(value.mul(multiplier).div(divisor));
+  const [fromInput, setFromInput] = useState<string>("")
+  const [toInput, setToInput] = useState<string>("")
   const setFromString = useCallback((value: string) => {
-    let wei = parseEther(value);
-    setWei(wei);
-    setTo(wei.mul(multiplier).div(divisor))
+    setFromInput(value);
+    try {
+      let wei = parseEther(value);
+      setWei(wei);
+      setToInput(formatEther(wei.mul(multiplier).div(divisor)))
+    } catch (e) { }
   }, [setWei, divisor, multiplier])
   const setToString = useCallback((value: string) => {
-    let wei = parseEther(value);
-    setTo(wei);
-    setWei(wei.div(multiplier).mul(divisor))
+    setToInput(value)
+    try {
+      let wei = parseEther(value);
+      setWei(wei);
+      setFromInput(formatEther(wei.div(multiplier).mul(divisor)))
+    } catch (e) { }
   }, [setWei, divisor, multiplier])
-  return [formatEther(value), formatEther(to), setFromString, setToString] as const
+  return [fromInput, toInput, setFromString, setToString] as const
 }
 
 const ActionButtonComponent: FunctionComponent<{ action: () => any, actionName: string }> = ({ action, actionName }) => {
