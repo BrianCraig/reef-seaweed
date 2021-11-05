@@ -7,9 +7,3 @@ body {
   padding: 0;
   overflow:hidden;
 }
-
-.clipText {
-  -webkit-background-clip: text !important;
-  font-size: 1.4em !important;
-  -webkit-text-fill-color: transparent;
-}
