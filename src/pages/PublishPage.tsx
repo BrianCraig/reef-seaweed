@@ -30,7 +30,7 @@ const initialValues: PublishValues = {
 export const PublishPage = () => {
   const [vesting, setVesting] = useState<VestingForm[]>([])
   const toast = useToast();
-  let { selectedSigner } = useContext(AccountsContext)
+  let { signer } = useContext(AccountsContext)
   const addVesting = () => {
     if (vesting.length >= MAX_VESTING_OCURRENCES) return;
     setVesting([...vesting, { beneficiary: "", amount: 0, timestamp: "" }])
@@ -41,7 +41,7 @@ export const PublishPage = () => {
       initialValues={initialValues}
       validationSchema={validationSchema}
       onSubmit={async (values, actions) => {
-        await ContractBasicIDOAction(IIDO(selectedSigner!.signer as any), values, vesting);
+        await ContractBasicIDOAction(IIDO(signer!), values, vesting);
         toast({
           title: "IDO published.",
           description: "Hooray 🥳! Your IDO has been published successfully.",
@@ -107,7 +107,7 @@ export const PublishPage = () => {
               <Heading size={"lg"}>Vesting</Heading><Button onClick={addVesting}>Add</Button>
             </Stack>
             {vesting.map((e, index) => <VestingFormComponent key={index} id={index} setVesting={setVesting} />)}
-            <Button type={"submit"} isFullWidth marginTop={"32px !important"} disabled={isSubmitting}>Publish Contract</Button>
+            <Button type={"submit"} isFullWidth marginTop={"32px !important"} disabled={isSubmitting || (signer === undefined)}>Publish Contract</Button>
           </Stack>
         </Form>
       }}
