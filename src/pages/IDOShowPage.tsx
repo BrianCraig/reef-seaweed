@@ -1,5 +1,5 @@
 import { Heading, Text, Stack, Tag, TagLabel, TagRightIcon, CircularProgress } from "@chakra-ui/react";
-import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
+import { CheckIcon, LockIcon } from "@chakra-ui/icons";
 import { FunctionComponent, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { IDOInteractContext, IDOInteractContextProvider } from "../contexts/IDOInteractContext";
@@ -30,7 +30,7 @@ let whitelistedEl = <Tag alignSelf={"flex-start"} size="sm" variant="outline">
 
 let whitelistedntEl = <Tag alignSelf={"flex-start"} size="sm" variant="outline" colorScheme="red">
   <TagLabel>Not whitelisted</TagLabel>
-  <TagRightIcon as={CloseIcon} />
+  <TagRightIcon as={LockIcon} />
 </Tag>
 
 const IDOInformation: FunctionComponent = () => {

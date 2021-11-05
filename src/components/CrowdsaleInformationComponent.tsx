@@ -8,7 +8,7 @@ import { timestampToDate } from "../utils/utils"
 import { IDOContext } from "../contexts/IDOContext"
 
 export const CrowdsaleInformationComponent = () => {
-  const { IDO: { params: { multiplier, token, baseAmount, open, maxAmountPerAddress } } } = useContext(IDOContext);
+  const { IDO: { params: { multiplier, token, baseAmount, open, maxAmountPerAddress, minimumLockedAmount } } } = useContext(IDOContext);
   const { symbol, name } = useContext(TokenContext);
   let mul = multiplier.multiplier / multiplier.divider;
   let reefBase = parseFloat(utils.formatEther(baseAmount))
@@ -55,16 +55,8 @@ export const CrowdsaleInformationComponent = () => {
           <Td isNumeric>{format(timestampToDate(open.start), "PPpp")} to {format(timestampToDate(open.end), "PPpp")}</Td>
         </Tr>
         <Tr>
-          <Td>Is refundable?</Td>
-          <Td isNumeric>Yes</Td>
-        </Tr>
-        <Tr>
-          <Td>Refundable percentage</Td>
-          <Td isNumeric>80%</Td>
-        </Tr>
-        <Tr>
-          <Td>Refund range</Td>
-          <Td isNumeric>{format(timestampToDate(open.start), "PPpp")} to {format(timestampToDate(open.start), "PPpp")}</Td>
+          <Td>$SWD locked tokens required to join</Td>
+          <Td isNumeric>{utils.formatEther(minimumLockedAmount)}</Td>
         </Tr>
       </Tbody>
     </Table>

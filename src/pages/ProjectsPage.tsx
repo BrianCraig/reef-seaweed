@@ -1,4 +1,4 @@
-import { CheckIcon, CloseIcon } from "@chakra-ui/icons"
+import { CheckIcon, LockIcon } from "@chakra-ui/icons"
 import { Alert, AlertIcon, Avatar, Box, CircularProgress, Heading, SimpleGrid, Stack, Tag, TagLabel, TagRightIcon, Text } from "@chakra-ui/react"
 import { utils } from "ethers";
 import { FunctionComponent, useContext } from "react"
@@ -13,9 +13,9 @@ let whitelistedEl = <Tag variant="solid">
   <TagRightIcon as={CheckIcon} />
 </Tag>
 
-let whitelistedntEl = <Tag colorScheme="solid">
+let whitelistedntEl = <Tag variant="solid">
   <TagLabel>Not whitelisted</TagLabel>
-  <TagRightIcon as={CloseIcon} />
+  <TagRightIcon as={LockIcon} />
 </Tag>
 
 const IDOSummary: FunctionComponent<{}> = () => {

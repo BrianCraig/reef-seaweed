@@ -1,5 +1,5 @@
 import { BigNumber } from 'ethers';
-import React, { useContext, useEffect, useMemo } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { IERC20 } from '../abis/contracts';
 import { useAsync } from '../utils/hooks';
 import { AccountsContext } from './AccountsContext';
