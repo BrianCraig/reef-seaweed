@@ -1,5 +1,5 @@
 import { useContext } from "react"
-import { Text, Select, Tag, TagLabel, TagLeftIcon, Button, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react"
+import { Text, Select, Tag, TagLabel, TagLeftIcon, Button, Menu, MenuButton, MenuItem, MenuList, CircularProgress } from "@chakra-ui/react"
 import { SignerStatusContext } from "../contexts/SignerStatusContext"
 import { AccountsContext } from "../contexts/AccountsContext"
 import { stringShorten } from '@polkadot/util';
@@ -35,7 +35,7 @@ export const ConnectionStatusComponent = () => {
   const { connected, network, setNetwork } = useContext(NetworkContext);
   return <Menu>
     <MenuButton as={Button} rightIcon={<ChevronDownIcon />} variant={"outline"}>
-      {connected ? "Connected" : "Connecting"}
+      {connected ? network.name : [<CircularProgress size={6} mr={4} color={"app.400"} isIndeterminate />, "Connecting"]}
     </MenuButton>
     <MenuList>
       <MenuItem onClick={() => setNetwork("mainnet")}>

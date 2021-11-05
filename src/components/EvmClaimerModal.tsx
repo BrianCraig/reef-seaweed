@@ -26,7 +26,7 @@ export const EvmClaimerModal = () => {
       <ModalCloseButton />
       <ModalBody>
         <Text>Your current account {selectedSigner?.name}: {selectedSigner?.address}, currently has the assigned evm address {selectedSigner?.evmAddress} but it hasn't been claimed.</Text>
-        <Text>Please claim it for the correct functioning of this DApp.</Text>
+        <Text>Please claim it for the correct behave of this DApp.</Text>
       </ModalBody>
       <ModalFooter>
         <Button mr={4} onClick={onClaim}>Claim</Button><Button onClick={onClose} variant={"outline"}>Close</Button>
