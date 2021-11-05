@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from 'react';
-
+import React, { useEffect, useState, Dispatch, SetStateAction } from 'react';
 import { WsProvider } from '@polkadot/api';
 import { Provider } from '@reef-defi/evm-provider';
 import { useLocalStorage } from '../utils/hooks';
-import { Dispatch, SetStateAction } from 'react-transition-group/node_modules/@types/react';
 
 export type AvailableNetworks = 'mainnet' | 'testnet';
 export interface ReefNetwork {
