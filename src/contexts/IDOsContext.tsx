@@ -53,9 +53,8 @@ subscription event($contractId: String!) {
 
 const BOUGHT = 'Bought(uint256,address,uint256,uint256)';
 const WITHDRAWN = 'Withdrawn(uint256,address,uint256,uint256)';
-const IDO_PUBLISHED = 'IDOPublished(uint256,((bool,address,(uint32,uint32),(bytes32,uint8,uint8),(uint256,uint256),uint256,uint256),address,uint256))';
+const IDO_PUBLISHED = 'IDOPublished(uint256,((bool,address,(uint32,uint32),(bytes32,uint8,uint8),(uint256,uint256),uint256,uint256,uint256,uint256),address,uint256))';
 const IPFS = 'IPFSChange(uint256,(bytes32,uint8,uint8))';
-
 
 let topicNames: string[] = [
   BOUGHT,

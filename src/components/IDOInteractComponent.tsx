@@ -75,7 +75,7 @@ const BuyConversorComponent: FunctionComponent = () => {
 }
 
 export const IDOInteractComponent = () => {
-  const { IDO: { params: { multiplier } } } = useContext(IDOContext);
+  const { IDO: { params: { multiplier, totalBought, baseAmount } } } = useContext(IDOContext);
   const { status, onBuy, onWithdraw, balance, paid, onGetPayout } = useContext(IDOInteractContext);
   const { symbol } = useContext(TokenContext);
   const [buying, { on: setBuying, off: setWithdrawing }] = useBoolean(true);
@@ -102,6 +102,9 @@ export const IDOInteractComponent = () => {
           action={buying ? onBuy : onWithdraw}
           actionName={buying ? "Buy" : "Withdraw"}
         />
+        <Box border={"1px"} borderColor={"app.600"} borderRadius={8} bg={"app.100"}>
+          <Box width={`${totalBought.mul(10000).div(baseAmount).toNumber() / 100}%`} bg={"app.600"} height={2} />
+        </Box>
       </Stack>
     </Box >
 
