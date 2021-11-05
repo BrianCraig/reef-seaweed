@@ -11,11 +11,13 @@ import { MyAccountPage } from "./pages/MyAccountPage";
 import { PublishPage } from "./pages/PublishPage";
 import { PublishDescriptionPage } from "./pages/PublishDescriptionPage";
 import { LockingPage } from "./pages/LockingPage";
+import { EvmClaimerModal } from "./components/EvmClaimerModal";
 import "./app.css"
 
 export const Layout = () => {
   return (
     <Router>
+      <EvmClaimerModal />
       <Stack height="100vh" width="100vw" position={"absolute"} top={0} left={0} bottom={0} right={0} spacing={0}>
         <Stack direction={"row"} alignItems="center" justifyContent={"flex-end"} padding={2} spacing={2} borderBottom={"1px"} borderColor={"app.400"} width="100%" flexGrow={0} flexShrink={0}>
           <MenuComponent />
