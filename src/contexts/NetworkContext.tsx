@@ -25,7 +25,7 @@ export const reefNetworks: ReefNetworks = {
     name: 'mainnet',
     rpcUrl: 'wss://rpc.reefscan.com/ws',
     reefscanUrl: 'https://reefscan.com/',
-    SeaweedAddress: "0x9Ec67d3E0bd0B83C4C5b7eab6edb16fE394E7Efd"
+    SeaweedAddress: "0x916cD9a007cd4fc891834057bFA89143E2aC072c"
   },
 };
 
@@ -55,6 +55,9 @@ export const NetworkContextProvider: React.FunctionComponent = ({ children }) =>
         setProvider(undefined);
       }
       const newProvider = new Provider({
+        types: {
+          AccountInfo: 'AccountInfoWithTripleRefCount'
+        },
         provider: new WsProvider(reefNetworks[network].rpcUrl),
       });
       await newProvider.api.isReadyOrError;
