@@ -9,6 +9,7 @@ import { useIntervalUpdate } from "../utils/hooks";
 import { timestampToDate } from "../utils/utils";
 import { IDOStatus } from "../utils/types";
 import { IDOContext } from "../contexts/IDOContext";
+import { AccountsContext } from "../contexts/AccountsContext";
 
 const { parseEther, formatEther } = utils;
 
@@ -35,9 +36,10 @@ const useWeiConversion = (value: BigNumber, setWei: React.Dispatch<React.SetStat
 }
 
 const ActionButtonComponent: FunctionComponent<{ action: () => any, actionName: string }> = ({ action, actionName }) => {
+  const { selectedSigner } = useContext(AccountsContext);
   const { IDO: { params: { open: { start } } } } = useContext(IDOContext);
   const { status } = useContext(IDOInteractContext);
-  const disabled = status === IDOStatus.Pending || status === IDOStatus.Ended;
+  const disabled = status === IDOStatus.Pending || status === IDOStatus.Ended || selectedSigner === undefined;
   let text = "";
   if (status === IDOStatus.Pending)
     text = `Opens in ${formatDistanceStrict(Date.now(), timestampToDate(start))}`;

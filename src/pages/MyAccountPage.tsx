@@ -1,6 +1,7 @@
 import { CircularProgress, Heading, Stack, Button, Tag, Alert, AlertIcon } from "@chakra-ui/react"
 import { FunctionComponent, useContext, useMemo } from "react"
 import { useHistory } from "react-router"
+import { IIDO } from "../abis/contracts"
 import { AccountsContext } from "../contexts/AccountsContext"
 import { IDOContext, IDOContextProvider } from "../contexts/IDOContext"
 import { IDOsContext } from "../contexts/IDOsContext"
@@ -9,13 +10,19 @@ import { rangeToStatus } from "../utils/utils"
 
 const MyIDO: FunctionComponent = () => {
   const { IDO, ipfs } = useContext(IDOContext);
+  const { selectedSigner } = useContext(AccountsContext);
   const { push } = useHistory();
   const status = rangeToStatus(IDO.params.open)
+
+  const getRaised = () => {
+    IIDO(selectedSigner!.signer).getRaised(IDO.id)
+  }
+
   return <Stack direction={"row"} spacing={4}>
     <Heading size={"md"} flexGrow={1}>{ipfs.title}</Heading>
     <Tag size={"md"} variant="outline">{IDOStatus[status]}</Tag>
     <Button disabled={status !== IDOStatus.Pending} onClick={() => push(`/publish/${IDO.id}/description`)}>Edit Description</Button>
-    <Button disabled={status !== IDOStatus.Ended}>Get Raised REEF</Button>
+    <Button disabled={status !== IDOStatus.Ended} onClick={getRaised}>Get Raised REEF</Button>
   </Stack>
 }
 
