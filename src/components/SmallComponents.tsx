@@ -35,7 +35,7 @@ export const ConnectionStatusComponent = () => {
   const { connected, network, setNetwork } = useContext(NetworkContext);
   return <Menu>
     <MenuButton as={Button} rightIcon={<ChevronDownIcon />} variant={"outline"}>
-      {connected ? network.name : [<CircularProgress size={6} mr={4} color={"app.400"} isIndeterminate />, "Connecting"]}
+      {connected ? network.name : [<CircularProgress key={"x"} size={6} mr={4} color={"app.400"} isIndeterminate />, "Connecting"]}
     </MenuButton>
     <MenuList>
       <MenuItem onClick={() => setNetwork("mainnet")}>

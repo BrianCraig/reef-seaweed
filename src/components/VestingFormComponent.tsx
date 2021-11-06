@@ -10,6 +10,9 @@ const initialValues: VestingForm = {
 }
 
 export const VestingFormComponent: FunctionComponent<{ id: number, setVesting: Dispatch<SetStateAction<VestingForm[]>> }> = ({ id, setVesting }) => {
+  const onRemove = () => {
+    setVesting((ori) => Object.assign([], ori, { [id]: null }))
+  }
   return <Formik<VestingForm>
     initialValues={initialValues}
     onSubmit={() => { }}
@@ -42,7 +45,7 @@ export const VestingFormComponent: FunctionComponent<{ id: number, setVesting: D
         }
       </Field >
       <Box flexGrow={1} />
-      <Button>Remove</Button>
+      <Button onClick={onRemove}>Remove</Button>
     </Stack>
   }
     }
