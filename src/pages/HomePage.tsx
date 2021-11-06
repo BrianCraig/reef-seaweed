@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Button, Heading, Stack, useColorMode } from "@chakra-ui/react"
+import { Button, Heading, Stack } from "@chakra-ui/react"
 import "./homepage.css"
 import { useHistory } from "react-router"
 
@@ -49,7 +49,6 @@ const EffectComponent = () => {
 }
 
 export const HomePage = () => {
-  const { colorMode, toggleColorMode } = useColorMode()
   return <Stack spacing={8} justifyContent={"space-around"} height={"calc(100vh - 128px)"} overflow={"visible"}>
     < EffectComponent />
   </Stack >

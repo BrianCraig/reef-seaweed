@@ -5,7 +5,7 @@ import type { Signer as InjectedSigner } from '@polkadot/api/types';
 import type { InjectedAccountWithMeta, InjectedExtension } from '@polkadot/extension-inject/types';
 import { Provider, Signer } from '@reef-defi/evm-provider';
 import { Signer as EtherSigner } from "ethers";
-import { ensure, useUpdate } from '../utils/utils';
+import { ensure } from '../utils/utils';
 import { NetworkContext } from './NetworkContext';
 import { AccountSigner } from '../utils/types';
 import { useToast } from '@chakra-ui/react';
