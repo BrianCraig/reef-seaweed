@@ -20,7 +20,9 @@ export const IDOsContext = React.createContext<IDOsContextInterface>({ ipfsMap: 
 const errorFetching: IPFSIDO = {
   title: "Title unreachable",
   subtitle: "",
-  description: ""
+  description: "",
+  logo: "",
+  background: ""
 }
 
 const IPFSFetch = async (ipfs: string): Promise<IPFSIDO> => {

@@ -35,8 +35,8 @@ export const PublishFilesContext = React.createContext<PublishFilesInterface>({
 
 export const PublishFilesContextProvider: React.FunctionComponent = ({ children }) => {
   const { ipfs } = useContext(IDOContext);
-  let [logo, setLogo] = useState<string>("")
-  let [background, setBackground] = useState<string>("")
+  let [logo, setLogo] = useState<string>(ipfs.logo)
+  let [background, setBackground] = useState<string>(ipfs.background)
   return <PublishFilesContext.Provider value={{
     logo,
     background,

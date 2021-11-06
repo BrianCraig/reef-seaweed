@@ -1,5 +1,6 @@
 
 import { Provider } from '@reef-defi/evm-provider';
+import { getBytes32FromMultiash } from "ipfs-multihash-on-solidity";
 import { AccountSigner, PublishValues, VestingForm } from '../utils/types';
 import { ensure, ratioToMulDiv } from './utils';
 import { utils } from "ethers";
@@ -182,6 +183,8 @@ export const WithdrawTX: TxType = {
 
 let timestampFromDate = (date: Date) => Math.floor(date.valueOf() / 1000);
 
+let defaultIPFS = getBytes32FromMultiash("QmVweXv2jnLGsQWixDAeHb8NqPzcZFWYfjDtaunhrqRkMJ")
+
 export const ContractBasicIDOAction = async (contract: any, { tokenName, tokenSymbol, reefAmount, reefMultiplier, reefMaxPerAddress, swdWhitelisting, start, end }: PublishValues, vesting: VestingForm[]) => {
   let [mul, div] = ratioToMulDiv(reefMultiplier);
 
@@ -206,7 +209,7 @@ export const ContractBasicIDOAction = async (contract: any, { tokenName, tokenSy
       true,
       "0x0000000000000000000000000000000000000000",
       [mul, div],
-      ["0x65b57eb7111c51b539ee694a5dd5f893e3f1ae4f7d47b6c31fb5903c9c8e7141", 18, 32],
+      defaultIPFS,
       [timestampFromDate(new Date(start)), timestampFromDate(new Date(end))],
       utils.parseEther(swdWhitelisting.toString()),
       utils.parseEther(reefAmount.toString()),

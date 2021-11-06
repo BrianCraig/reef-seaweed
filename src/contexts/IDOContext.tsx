@@ -18,7 +18,9 @@ interface IDOContextInterface {
 let defaultIPFS: IPFSIDO = {
   title: "Title not found",
   description: "",
-  subtitle: ""
+  subtitle: "",
+  logo: "",
+  background: ""
 }
 
 export const IDOContext = React.createContext<IDOContextInterface>({} as IDOContextInterface);

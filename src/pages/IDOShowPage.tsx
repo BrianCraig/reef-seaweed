@@ -48,7 +48,7 @@ const IDOInformation: FunctionComponent = () => {
     </Stack>
     <Stack direction={"row"} spacing={8}>
       <Stack spacing={8}>
-        <Text>{ipfs?.description}</Text>
+        <Text whiteSpace={"break-spaces"}>{ipfs?.description}</Text>
         <Heading size={"lg"}>IDO Rules</Heading>
         <CrowdsaleInformationComponent />
         <Heading size={"lg"}>Vesting</Heading>

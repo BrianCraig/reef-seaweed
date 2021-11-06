@@ -75,7 +75,9 @@ export interface FullIDOInfo { address: string, info: InformationInterface }
 export interface IPFSIDO {
   title: string,
   subtitle: string,
-  description: string
+  description: string,
+  logo: string,
+  background: string
 }
 
 export interface VestingForm {

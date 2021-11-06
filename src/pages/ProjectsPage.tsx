@@ -1,5 +1,5 @@
 import { CheckIcon, LockIcon } from "@chakra-ui/icons"
-import { Alert, AlertIcon, Avatar, Box, CircularProgress, Heading, SimpleGrid, Stack, Tag, TagLabel, TagRightIcon, Text } from "@chakra-ui/react"
+import { Alert, AlertIcon, Image, Box, CircularProgress, Heading, SimpleGrid, Stack, Tag, TagLabel, TagRightIcon, Text } from "@chakra-ui/react"
 import { utils } from "ethers";
 import { FunctionComponent, useContext } from "react"
 import { useHistory } from "react-router";
@@ -20,17 +20,17 @@ let whitelistedntEl = <Tag variant="solid">
 
 const IDOSummary: FunctionComponent<{}> = () => {
   let { push } = useHistory();
-  let { IDO: { params: { baseAmount, totalBought, maxAmountPerAddress }, id }, ipfs: { title, subtitle }, whitelisted } = useContext(IDOContext)
+  let { IDO: { params: { baseAmount, totalBought, maxAmountPerAddress }, id }, ipfs: { title, subtitle, logo, background }, whitelisted } = useContext(IDOContext)
   return <Stack border={"1px"} borderColor={"app.400"} borderRadius={8} spacing={4} padding={4} onClick={() => push(`/projects/${id}`)}>
     <Stack direction={"row"} spacing={4}>
-      <Avatar size={"md"} name="Y K" />
+      <Image height={"48px"} src={`https://ipfs.infura.io/ipfs/${logo}`} alt="Project logo" />
       <Stack justifyContent={"space-between"} spacing={0}>
         <Heading size={"md"}>{title}</Heading>
         <Text>{subtitle}</Text>
       </Stack>
     </Stack>
-    <Box borderTop={"1px"} borderBottom={"1px"} borderColor={"app.600"} bg={"app.100"}>
-      <Stack width={"100%"} bg={"app.600"} height={140} padding={2} direction={"row"} alignItems={"flex-start"} justifyContent={"flex-end"}>
+    <Box borderTop={"1px"} borderBottom={"1px"} borderColor={"app.600"} bg={"app.100"} backgroundSize={"cover"} backgroundImage={`url("https://ipfs.infura.io/ipfs/${background}")`}>
+      <Stack width={"100%"} height={140} padding={2} direction={"row"} alignItems={"flex-start"} justifyContent={"flex-end"}>
         {whitelisted !== undefined && (whitelisted ? whitelistedEl : whitelistedntEl)}
       </Stack>
     </Box>
