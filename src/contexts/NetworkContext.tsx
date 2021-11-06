@@ -17,7 +17,7 @@ export const reefNetworks: ReefNetworks = {
     name: 'testnet',
     rpcUrl: 'wss://rpc-testnet.reefscan.com/ws',
     reefscanUrl: 'https://testnet.reefscan.com/',
-    SeaweedAddress: "0x9Ec67d3E0bd0B83C4C5b7eab6edb16fE394E7Efd"
+    SeaweedAddress: "0xBC2683D0eA7D0e7714AFD00FB84Cb8AD981b5A0B"
   },
   mainnet: {
     name: 'mainnet',
