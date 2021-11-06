@@ -1,0 +1,21 @@
+.wrapper {
+  display:block;
+  transform: translate(10px, 10px) perspective(600px) rotateY(20deg) rotateX(10deg);
+  transform-style: preserve-3d;
+  width: auto;
+  height: 300px;
+  border-radius: 10px;
+}
+.wrapper .shape {
+  border-radius: 10px;
+  width: auto;
+  transform: translateZ(50px) scale(0.85);
+  opacity: 0.8;
+}
+.wrapper .shape2 {
+  width: auto;
+  transform: translateZ(150px) scale(0.85);
+}
+.wrapper p {
+  text-align: center;
+}
