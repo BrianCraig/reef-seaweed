@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { BigNumber } from '@ethersproject/bignumber';
 import { IIDO } from '../abis/contracts';
-import { useAsync, useIntervalUpdate } from '../utils/hooks';
+import { useAsync, useIntervalUpdate, useToastCatch } from '../utils/hooks';
 import { AccountsContext } from './AccountsContext';
 import { TokenContextProvider } from './TokenContext';
 import { IDOStatus } from '../utils/types';
@@ -17,7 +17,8 @@ interface IDOInteractContextInterface {
   onWithdraw: () => any,
   onGetPayout: () => any,
   balance: BigNumber,
-  paid: boolean
+  paid: boolean,
+  interacting: boolean,
 }
 
 export const IDOInteractContext = React.createContext<IDOInteractContextInterface>({
@@ -27,7 +28,8 @@ export const IDOInteractContext = React.createContext<IDOInteractContextInterfac
   onWithdraw: () => { },
   onGetPayout: () => { },
   balance: BigNumber.from(0),
-  paid: false
+  paid: false,
+  interacting: false
 });
 
 
@@ -39,21 +41,37 @@ export const IDOInteractContextProvider: React.FunctionComponent = ({ children }
   let contract = signer ? IIDO(SeaweedAddress, signer) : undefined;
   const { execute: balanceExecute, value: balanceValue } = useAsync<any>(() => contract!.boughtAmount(IDO.id, evmAddress), false);
   const { execute: paidExecute, value: paidValue } = useAsync<boolean>(() => contract!.beenPaid(IDO.id, evmAddress), false);
+  const [interacting, setInteracting] = useState<boolean>(false);
+
+  const buyToastCatcher = useToastCatch("Bought successful",
+    () => "You have bought succesfully on the IDO",
+    setInteracting,
+    () => contract!.buy(IDO.id, wei, { value: wei }));
+
+  const withdrawToastCatcher = useToastCatch("Withdraw successful",
+    () => "You have withedrawn succesfully on the IDO",
+    setInteracting,
+    () => contract!.withdraw(IDO.id, wei));
+
+  const payoutToastCatcher = useToastCatch("Payout successful",
+    () => "You have your new Tokens in your wallet",
+    setInteracting,
+    () => contract!.getPayout(IDO.id));
 
   let onBuy = useCallback(async () => {
-    await contract!.buy(IDO.id, wei, { value: wei })
+    await buyToastCatcher()
     balanceExecute();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contract, wei])
 
   let onWithdraw = useCallback(async () => {
-    await contract!.withdraw(IDO.id, wei);
+    await withdrawToastCatcher();
     balanceExecute();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contract, wei])
 
   let onGetPayout = useCallback(async () => {
-    await contract!.getPayout(IDO.id);
+    await payoutToastCatcher();
     paidExecute();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contract, wei])
@@ -77,9 +95,10 @@ export const IDOInteractContextProvider: React.FunctionComponent = ({ children }
     onWithdraw,
     onGetPayout,
     paid: !!paidValue,
-    balance: balanceValue || BigNumber.from(0)
+    balance: balanceValue || BigNumber.from(0),
+    interacting
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }), [status, wei, setWei, balanceValue, paidValue])
+  }), [status, wei, setWei, balanceValue, paidValue, interacting])
 
   return <IDOInteractContext.Provider value={value}>
     <TokenContextProvider address={IDO.params.token} children={children} />

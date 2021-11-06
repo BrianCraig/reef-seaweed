@@ -1,3 +1,4 @@
+import { useToast } from '@chakra-ui/toast';
 import React, { useCallback, useEffect, useState } from 'react';
 
 export const useLocalStorage = <T>(key: string, initialValue: T): [T, React.Dispatch<React.SetStateAction<T>>] => {
@@ -107,9 +108,46 @@ export const useCallbackAsync = (ex: (...params: any[]) => Promise<any>, execute
   }, deps);
 }
 
-
 export const useInput = (defaultValue = "") => {
   const [val, setVal] = useState<string>(defaultValue)
   const setEv = useCallback((ev: React.ChangeEvent<HTMLInputElement>) => setVal(ev.target.value), [setVal]);
   return [val, setEv] as const
+}
+
+export const useToastCatch = <T>(
+  successTitle: string,
+  successText: (input: T) => string,
+  setLoading: (status: boolean) => any,
+  prom: () => Promise<T>
+): () => Promise<T> => {
+  const toast = useToast();
+  let work = async () => {
+    setLoading(true);
+    try {
+      let value = await prom()
+      toast({
+        title: successTitle,
+        description: successText(value),
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+        position: "top"
+      })
+      setLoading(false);
+      return value;
+    } catch (e) {
+      (window as any).a = e
+      toast({
+        title: "An error ocurred",
+        description: (e as Error).message,
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+        position: "top"
+      })
+      setLoading(false);
+      throw e;
+    }
+  }
+  return work;
 }

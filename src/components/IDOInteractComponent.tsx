@@ -38,8 +38,8 @@ const useWeiConversion = (value: BigNumber, setWei: React.Dispatch<React.SetStat
 const ActionButtonComponent: FunctionComponent<{ action: () => any, actionName: string }> = ({ action, actionName }) => {
   const { signer } = useContext(AccountsContext);
   const { IDO: { params: { open: { start } } } } = useContext(IDOContext);
-  const { status } = useContext(IDOInteractContext);
-  const disabled = status === IDOStatus.Pending || status === IDOStatus.Ended || signer === undefined;
+  const { status, interacting } = useContext(IDOInteractContext);
+  const disabled = status === IDOStatus.Pending || status === IDOStatus.Ended || signer === undefined || interacting;
   let text = "";
   if (status === IDOStatus.Pending)
     text = `Opens in ${formatDistanceStrict(Date.now(), timestampToDate(start))}`;
