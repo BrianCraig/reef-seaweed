@@ -6,8 +6,10 @@ import { utils } from "ethers"
 import { TokenContext } from "../contexts/TokenContext"
 import { timestampToDate } from "../utils/utils"
 import { IDOContext } from "../contexts/IDOContext"
+import { NetworkContext } from "../contexts/NetworkContext"
 
 export const CrowdsaleInformationComponent = () => {
+  const { network: { reefscanUrl } } = useContext(NetworkContext)
   const { IDO: { params: { multiplier, token, baseAmount, open, maxAmountPerAddress, minimumLockedAmount } } } = useContext(IDOContext);
   const { symbol, name } = useContext(TokenContext);
   let mul = multiplier.multiplier / multiplier.divider;
@@ -24,7 +26,7 @@ export const CrowdsaleInformationComponent = () => {
       <Tbody>
         <Tr>
           <Td>Token Address</Td>
-          <Td isNumeric><a href={`https://testnet.reefscan.com/token/${token}`}>{token}</a></Td>
+          <Td isNumeric><a href={`${reefscanUrl}token/${token}`}>{token}</a></Td>
         </Tr>
         <Tr>
           <Td>Token Name</Td>
@@ -48,7 +50,7 @@ export const CrowdsaleInformationComponent = () => {
         </Tr>
         <Tr>
           <Td>Raise goal</Td>
-          <Td isNumeric>{reefBase} REEF - {reefBase * 0.03} U$D</Td>
+          <Td isNumeric>{reefBase} REEF - {reefBase * 0.0335} U$D</Td>
         </Tr>
         <Tr>
           <Td>Open range</Td>

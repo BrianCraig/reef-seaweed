@@ -136,7 +136,6 @@ export const useToastCatch = <T>(
       setLoading(false);
       return value;
     } catch (e) {
-      (window as any).a = e
       toast({
         title: "An error ocurred",
         description: (e as Error).message,

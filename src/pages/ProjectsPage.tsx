@@ -67,17 +67,17 @@ export const ProjectsPage = () => {
 
   return <Stack spacing={8}>
     <Heading>Open projects</Heading>
-    <SimpleGrid columns={3} spacing={8}>
+    <SimpleGrid columns={openProjects.length === 0 ? 1 : 3} spacing={8}>
       {openProjects.length === 0 ? alert : null}
       {openProjects.map(ido => <IDOContextProvider id={ido.id!} key={ido.id} whitelisting><IDOSummary /></IDOContextProvider>)}
     </SimpleGrid>
     <Heading>Upcoming projects</Heading>
-    <SimpleGrid columns={3} spacing={8}>
+    <SimpleGrid columns={pendingProjects.length === 0 ? 1 : 3} spacing={8}>
       {pendingProjects.length === 0 ? alert : null}
       {pendingProjects.map(ido => <IDOContextProvider id={ido.id!} key={ido.id} whitelisting><IDOSummary /></IDOContextProvider>)}
     </SimpleGrid>
     <Heading>Finalized projects</Heading>
-    <SimpleGrid columns={3} spacing={8}>
+    <SimpleGrid columns={(endedProjects.length === 0) ? 1 : 3} spacing={8}>
       {endedProjects.length === 0 ? alert : null}
       {endedProjects.map(ido => <IDOContextProvider id={ido.id!} key={ido.id} whitelisting><IDOSummary /></IDOContextProvider>)}
     </SimpleGrid>
