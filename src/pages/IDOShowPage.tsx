@@ -1,4 +1,4 @@
-import { Heading, Text, Stack, Tag, TagLabel, TagRightIcon, CircularProgress } from "@chakra-ui/react";
+import { Heading, Text, Stack, Tag, TagLabel, TagRightIcon, CircularProgress, Image } from "@chakra-ui/react";
 import { CheckIcon, LockIcon } from "@chakra-ui/icons";
 import { FunctionComponent, useContext } from "react";
 import { useParams } from "react-router-dom";
@@ -39,16 +39,23 @@ const IDOInformation: FunctionComponent = () => {
 
   return <Stack spacing={8}>
     <Stack>
-      <Stack direction={"row"} spacing={2}>
-        <Heading>{ipfs?.title}</Heading>
-        <Text>{status !== undefined && IDOStatus[status]}</Text>
-        {whitelisted !== undefined && (whitelisted ? whitelistedEl : whitelistedntEl)}
+      <Stack direction={"row"} spacing={8}>
+        <Image height={"70px"} src={`https://ipfs.infura.io/ipfs/${ipfs.logo}`} alt="Project logo" />
+        <Stack spacing={2}>
+          <Stack direction={"row"} spacing={2}>
+            <Heading>{ipfs.title}</Heading>
+            <Text>{status !== undefined && IDOStatus[status]}</Text>
+            {whitelisted !== undefined && (whitelisted ? whitelistedEl : whitelistedntEl)}
+          </Stack>
+          <Heading size={"sm"}>{ipfs.subtitle}</Heading>
+        </Stack>
+
       </Stack>
-      <Heading size={"sm"}>{ipfs?.subtitle}</Heading>
     </Stack>
     <Stack direction={"row"} spacing={8}>
       <Stack spacing={8}>
-        <Text whiteSpace={"break-spaces"}>{ipfs?.description}</Text>
+        <Image src={`https://ipfs.infura.io/ipfs/${ipfs.background}`} />
+        <Text whiteSpace={"break-spaces"}>{ipfs.description}</Text>
         <Heading size={"lg"}>IDO Rules</Heading>
         <CrowdsaleInformationComponent />
         <Heading size={"lg"}>Vesting</Heading>
