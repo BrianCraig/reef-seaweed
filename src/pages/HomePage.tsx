@@ -7,8 +7,8 @@ const EffectComponent = () => {
 
   const { push } = useHistory();
   const [state, setState] = useState<any>({
-    offsetX: '',
-    offsetY: '',
+    offsetX: 0,
+    offsetY: 0,
     friction: 1 / 64
   })
   const mouseMove = (e: any) => {
