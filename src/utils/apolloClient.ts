@@ -2,18 +2,23 @@ import { HttpLink, split, ApolloClient, InMemoryCache, ApolloLink } from "@apoll
 import { WebSocketLink } from "@apollo/client/link/ws";
 import { getMainDefinition } from "@apollo/client/utilities"
 
-const httpLink = new HttpLink({
-  uri: 'https://dev.reef.polkastats.io/api/v3'
+interface Network {
+  gqlHttps: string;
+  gqlWss: string;
+}
+
+const httpLink = ({ gqlHttps }: Network) => new HttpLink({
+  uri: gqlHttps
 });
 
-const wsLink = new WebSocketLink({
+const wsLink = ({ gqlWss }: Network) => new WebSocketLink({
   options: {
     reconnect: true
   },
-  uri: 'wss://dev.reef.polkastats.io/api/v3'
+  uri: gqlWss
 });
 
-const splitLink = split(
+const splitLink = (network: Network) => split(
   ({ query }) => {
     const definition = getMainDefinition(query);
 
@@ -22,11 +27,11 @@ const splitLink = split(
       definition.operation === 'subscription'
     );
   },
-  wsLink,
-  httpLink
+  wsLink(network),
+  httpLink(network)
 );
 
-export const apolloClientInstance = new ApolloClient({
+export const apolloClientInstance = (network: Network) => new ApolloClient({
   cache: new InMemoryCache(),
-  link: ApolloLink.from([splitLink])
+  link: ApolloLink.from([splitLink(network)])
 });

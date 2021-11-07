@@ -2,6 +2,8 @@ import React, { useEffect, useState, Dispatch, SetStateAction } from 'react';
 import { WsProvider } from '@polkadot/api';
 import { Provider } from '@reef-defi/evm-provider';
 import { useLocalStorage } from '../utils/hooks';
+import { ApolloClient, ApolloProvider, NormalizedCacheObject } from '@apollo/client';
+import { apolloClientInstance } from '../utils/apolloClient';
 
 export type AvailableNetworks = 'mainnet' | 'testnet';
 export interface ReefNetwork {
@@ -9,6 +11,8 @@ export interface ReefNetwork {
   reefscanUrl: string;
   SeaweedAddress: string;
   name: AvailableNetworks;
+  gqlHttps: string;
+  gqlWss: string;
 }
 type ReefNetworks = Record<AvailableNetworks, ReefNetwork>;
 
@@ -17,15 +21,26 @@ export const reefNetworks: ReefNetworks = {
     name: 'testnet',
     rpcUrl: 'wss://rpc-testnet.reefscan.com/ws',
     reefscanUrl: 'https://testnet.reefscan.com/',
-    SeaweedAddress: "0xBC2683D0eA7D0e7714AFD00FB84Cb8AD981b5A0B"
+    SeaweedAddress: "0xBC2683D0eA7D0e7714AFD00FB84Cb8AD981b5A0B",
+    gqlHttps: "https://dev.reef.polkastats.io/api/v3",
+    gqlWss: "wss://dev.reef.polkastats.io/api/v3",
   },
   mainnet: {
     name: 'mainnet',
     rpcUrl: 'wss://rpc.reefscan.com/ws',
     reefscanUrl: 'https://reefscan.com/',
-    SeaweedAddress: "0x916cD9a007cd4fc891834057bFA89143E2aC072c"
+    SeaweedAddress: "0x916cD9a007cd4fc891834057bFA89143E2aC072c",
+    gqlHttps: "https://reefscan.com/api/v3",
+    gqlWss: "wss://reefscan.com/api/v3"
   },
 };
+
+type ApolloClients = Record<AvailableNetworks, ApolloClient<NormalizedCacheObject>>
+
+const apolloClientsMap: ApolloClients = {
+  testnet: apolloClientInstance(reefNetworks.testnet),
+  mainnet: apolloClientInstance(reefNetworks.mainnet)
+}
 
 interface NetworkContextInterface {
   connected: boolean,
@@ -76,6 +91,8 @@ export const NetworkContextProvider: React.FunctionComponent = ({ children }) =>
       network: reefNetworks[network],
       setNetwork
     }} >
-    {children}
+    <ApolloProvider client={apolloClientsMap[network]}>
+      {children}
+    </ApolloProvider>
   </NetworkContext.Provider >
 }
