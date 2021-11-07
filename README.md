@@ -2,7 +2,7 @@
 
 Open Source IDO Launcher for the REEF Platform.
 
-[https://reefseaweed.netlify.app/](See it live on https://reefseaweed.netlify.app/)
+See it live on [https://reefseaweed.netlify.app/](https://reefseaweed.netlify.app/)
 
 ## Try
 
