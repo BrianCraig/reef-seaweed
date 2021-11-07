@@ -27,7 +27,7 @@ export const Layout = () => {
           <ConnectionStatusComponent />
         </Stack>
         <Box flexGrow={1} flexShrink={0} height={"calc(100vh - 57px)"} overflowY={"auto"} >
-          <Box maxWidth={1200} overflowY={"visible"} marginX={"auto"} marginY={8}>
+          <Box maxWidth={1200} overflowY={"visible"} marginX={"auto"} marginY={8} paadingX={2}>
             <Switch>
               <Route exact path="/">
                 <HomePage />

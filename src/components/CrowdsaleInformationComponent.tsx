@@ -45,10 +45,6 @@ export const CrowdsaleInformationComponent = () => {
           <Td isNumeric>{mul.toFixed(2)}</Td>
         </Tr>
         <Tr>
-          <Td>IDO mint percentage</Td>
-          <Td isNumeric>75.23%</Td>
-        </Tr>
-        <Tr>
           <Td>Raise goal</Td>
           <Td isNumeric>{reefBase} REEF - {reefBase * 0.0335} U$D</Td>
         </Tr>
