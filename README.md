@@ -1,4 +1,5 @@
 # SeaWeed
+<img src="./public/seaweed-purple.svg" alt="drawing" height="192"/>  
 
 Open Source IDO Launcher for the REEF Platform.
 
